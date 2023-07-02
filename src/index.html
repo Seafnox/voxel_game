@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="base.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+French+Canon+SC&display=swap" rel="stylesheet">
+  <title>Webpack App</title>
+</head>
+
+<body>
+<div class="container" id="container">
+</div>
+<div class="hud top left">
+  TL HUD
+</div>
+<div class="hud bottom right">
+  BR HUD
+</div>
+</body>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js",
+      "three/GLTFLoader": "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/loaders/GLTFLoader.js",
+      "three/FBXLoader": "https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/loaders/FBXLoader.js"
+    }
+  }
+</script>
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("service-worker.js")
+        .then((registration) => {
+          console.log("Service Worker registered: ", registration);
+        })
+        .catch((registrationError) => {
+          console.error("Service Worker registration failed: ", registrationError);
+        });
+    });
+  }
+</script>
+</html>

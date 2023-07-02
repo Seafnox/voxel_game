@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "strict": true,
+    "module": "commonjs",
+    "target": "es5",
+    "outDir": "dist",
+    "sourceMap": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": ["es2015", "dom"],
+    "baseUrl": "."
+  },
+  "files": ["src/index.ts"]
+}
