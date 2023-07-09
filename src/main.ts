@@ -1,5 +1,19 @@
-import { PerspectiveCamera, WebGLRenderer, Scene, Color, FogExp2, DirectionalLight, Mesh, PlaneGeometry, MeshStandardMaterial } from 'three';
+import {
+  PerspectiveCamera,
+  WebGLRenderer,
+  Scene,
+  Color,
+  FogExp2,
+  DirectionalLight,
+  Mesh,
+  PlaneGeometry,
+  MeshStandardMaterial,
+  HemisphereLight,
+  Object3D, SphereGeometry, ShaderMaterial, BackSide, IUniform,
+} from 'three';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
+import * as skyVertex from './resources/sky.vert';
+import * as skyFragment from './resources/sky.frag';
 
 export class VoxelGame {
   static containerId = 'container';
@@ -22,12 +36,13 @@ export class VoxelGame {
     this.scene = this.createScene();
     this.camera = this.createCamera();
     this.sun = this.createLightning();
-    this.scene.add(this.sun);
+    this.putIntoScene(this.sun);
     this.surface = this.createSurface();
-    this.scene.add(this.surface);
-//    this.createHelioSphere();
-//    this.createSky();
-//    this.createClouds();
+    this.putIntoScene(this.surface);
+    this.buildSky();
+    this.initClouds();
+    this.initThrees();
+    this.initUnits();
   }
 
   private addWindowSizeWatcher() {
@@ -108,5 +123,76 @@ export class VoxelGame {
     surface.rotation.x = -Math.PI / 2;
 
     return surface;
+  }
+
+  private createHelioSphere(): HemisphereLight {
+    const helioSphere = new HemisphereLight(0xFFFFFF, 0xFFFFFFF, 0.6);
+    helioSphere.color.setHSL(0.6, 1, 0.6);
+    helioSphere.groundColor.setHSL(0.095, 1, 0.75);
+
+    return helioSphere;
+  }
+
+  private putIntoScene(...objects: Object3D[]) {
+    this.scene.add(...objects);
+  }
+
+  private createSkyMesh(uniforms: Record<string, IUniform>): Mesh {
+    const skyGeo = new SphereGeometry(1000, 32, 15);
+    const skyMat = new ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: skyVertex,
+      fragmentShader: skyFragment,
+      side: BackSide,
+    });
+
+    return new Mesh(skyGeo, skyMat);
+  }
+
+  private buildSky() {
+    const helio = this.createHelioSphere();
+    this.putIntoScene(helio);
+    // TODO Make uniform more strict and typed
+    const uniforms: Record<string, IUniform> = {
+      topColor: {value: new Color(0x0077ff)},
+      bottomColor: {value: new Color(0xffffff)},
+      offset: {value: 33},
+      exponent: {value: 0.6},
+    };
+    uniforms['topColor'].value.copy(helio.color);
+
+    this.scene.fog?.color.copy(uniforms['bottomColor'].value)
+    this.putIntoScene(this.createSkyMesh(uniforms));
+  }
+
+  private initClouds() {
+    // TODO create when static objects could be created
+  }
+
+  private initThrees() {
+    // TODO create when static objects could be created
+  }
+
+  private initUnits() {
+    this.initNPC();
+    this.initEnemies();
+    this.initQuestPlaces();
+    this.initItems();
+  }
+
+  private initNPC() {
+    // TODO create when dynamic objects could be created
+  }
+
+  private initEnemies() {
+    // TODO create when dynamic objects could be created
+  }
+
+  private initQuestPlaces() {
+    // TODO create when dynamic objects could be created
+  }
+
+  private initItems() {
+    // TODO create when dynamic objects could be created
   }
 }
