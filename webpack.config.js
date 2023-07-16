@@ -1,5 +1,5 @@
+/* eslint-disable no-undef,@typescript-eslint/no-var-requires */
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
-
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -15,6 +15,7 @@ const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader
 const config = {
   entry: './src/index.ts',
   output: {
+
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
     filename: '[name].js'
@@ -52,6 +53,22 @@ const config = {
         use: [stylesHandler, 'css-loader', 'postcss-loader'],
       },
       {
+        test: /\.(glsl|vs|fs)$/,
+        loader: 'ts-shader-loader',
+      },
+      {
+        test: /\.(png|jpeg|jpg|svg)$/,
+        loader: 'file-loader',
+      },
+      {
+        test: /\.(ogg|mp3)$/,
+        loader: 'file-loader',
+      },
+      {
+        test: /\.(mesh|obj|glb)$/,
+        loader: 'file-loader',
+      },
+      {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: 'asset',
       },
@@ -60,12 +77,9 @@ const config = {
       // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
-  },
 };
 
-module.exports = () => {
+module.exports = ()=> {
   if (isProduction) {
     config.mode = 'production';
 
