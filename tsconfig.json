@@ -9,7 +9,13 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": ["es2015", "dom"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "typeRoots": [
+      "node_modules/@types",
+      "src/@types"
+    ]
   },
-  "files": ["src/index.ts"]
+  "include": [
+    "src"
+  ]
 }
