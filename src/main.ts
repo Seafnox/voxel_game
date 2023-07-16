@@ -9,11 +9,15 @@ import {
   PlaneGeometry,
   MeshStandardMaterial,
   HemisphereLight,
-  Object3D, SphereGeometry, ShaderMaterial, BackSide, IUniform,
+  Object3D,
+  SphereGeometry,
+  ShaderMaterial,
+  BackSide,
+  IUniform,
 } from 'three';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
-import * as skyVertex from './resources/sky.vert';
-import * as skyFragment from './resources/sky.frag';
+import skyFragment from './resources/sky.fs';
+import skyVertex from './resources/sky.vs';
 
 export class VoxelGame {
   static containerId = 'container';
@@ -94,7 +98,7 @@ export class VoxelGame {
   }
 
   private createLightning(): DirectionalLight {
-    let light = new DirectionalLight(0xFFFFFF, 1.0);
+    const light = new DirectionalLight(0xFFFFFF, 1.0);
     light.position.set(-10, 500, 10);
     light.target.position.set(0, 0, 0);
     light.castShadow = true;
@@ -159,9 +163,9 @@ export class VoxelGame {
       offset: {value: 33},
       exponent: {value: 0.6},
     };
-    uniforms['topColor'].value.copy(helio.color);
+    (uniforms.topColor.value as Color).copy(helio.color);
 
-    this.scene.fog?.color.copy(uniforms['bottomColor'].value)
+    this.scene.fog?.color.copy((uniforms.bottomColor.value as Color))
     this.putIntoScene(this.createSkyMesh(uniforms));
   }
 
