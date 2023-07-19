@@ -22,6 +22,7 @@ import skyVertex from './resources/sky.vs';
 export class VoxelGame {
   static containerId = 'container';
   static sceneId = 'threeJs';
+  static fpsId = 'fps';
   private threeJs = new WebGLRenderer({
     antialias: true,
   });
@@ -29,12 +30,15 @@ export class VoxelGame {
   private scene!: Scene;
   private sun!: DirectionalLight;
   private surface!: Mesh;
+  private prevTick: number | undefined;
+  private tickFrames: number[] = [];
 
   constructor() {
     this.initialize();
   }
 
   private initialize() {
+    console.log('Start Initialize');
     this.configureThreeJs();
     this.addWindowSizeWatcher();
     this.scene = this.createScene();
@@ -47,9 +51,12 @@ export class VoxelGame {
     this.initClouds();
     this.initThrees();
     this.initUnits();
+    this.requestAnimation();
+    console.log('Finish Initialize');
   }
 
   private addWindowSizeWatcher() {
+    console.log('add window size watcher');
     const container = document.getElementById(VoxelGame.containerId);
 
     if (!container) {
@@ -70,6 +77,7 @@ export class VoxelGame {
   }
 
   private createCamera(): PerspectiveCamera {
+    console.log('Create Camera');
     const fov = 60;
     const aspect = 1920 / 1080;
     const near = 1.0;
@@ -81,6 +89,7 @@ export class VoxelGame {
   }
 
   private configureThreeJs() {
+    console.log('Configulre ThreeJS');
     this.threeJs.outputColorSpace = SRGBColorSpace;
     this.threeJs.shadowMap.enabled = true;
     this.threeJs.shadowMap.type = PCFSoftShadowMap;
@@ -90,6 +99,7 @@ export class VoxelGame {
   }
 
   private createScene(): Scene {
+    console.log('create Scene');
     const scene = new Scene();
     scene.background = new Color(0xFFFFFF);
     scene.fog = new FogExp2(0x89b2eb, 0.002);
@@ -98,6 +108,7 @@ export class VoxelGame {
   }
 
   private createLightning(): DirectionalLight {
+    console.log('Create Lights');
     const light = new DirectionalLight(0xFFFFFF, 1.0);
     light.position.set(-10, 500, 10);
     light.target.position.set(0, 0, 0);
@@ -116,6 +127,7 @@ export class VoxelGame {
   }
 
   private createSurface(): Mesh {
+    console.log('Create surface');
     const surface = new Mesh(
       new PlaneGeometry(5000, 5000, 10, 10),
       new MeshStandardMaterial({
@@ -154,6 +166,7 @@ export class VoxelGame {
   }
 
   private buildSky() {
+    console.log('buildSky');
     const helio = this.createHelioSphere();
     this.putIntoScene(helio);
     // TODO Make uniform more strict and typed
@@ -170,14 +183,17 @@ export class VoxelGame {
   }
 
   private initClouds() {
+    console.log('initClouds');
     // TODO create when static objects could be created
   }
 
   private initThrees() {
+    console.log('initThrees');
     // TODO create when static objects could be created
   }
 
   private initUnits() {
+    console.log('InitUnits');
     this.initNPC();
     this.initEnemies();
     this.initQuestPlaces();
@@ -185,18 +201,49 @@ export class VoxelGame {
   }
 
   private initNPC() {
+    console.log('initNPC');
     // TODO create when dynamic objects could be created
   }
 
   private initEnemies() {
+    console.log('initEnemies');
     // TODO create when dynamic objects could be created
   }
 
   private initQuestPlaces() {
+    console.log('initQuestPlaces');
     // TODO create when dynamic objects could be created
   }
 
   private initItems() {
+    console.log('initItems');
     // TODO create when dynamic objects could be created
+  }
+
+  private requestAnimation() {
+    requestAnimationFrame((t) => {
+      if (this.prevTick === null) {
+        this.prevTick = t;
+      }
+
+      this.requestAnimation();
+
+      this.threeJs.render(this.scene, this.camera);
+      this.updateTick(t, t - this.prevTick!);
+      this.prevTick = t;
+    });
+  }
+
+  private updateTick(_: number, tickTime: number) {
+    if (this.tickFrames.length >= 1000) {
+      this.tickFrames = this.tickFrames.slice(this.tickFrames.length - 200);
+    }
+
+    this.tickFrames.push(tickTime);
+    const fpsWrapper = document.getElementById(VoxelGame.fpsId);
+    const sectionTicks = this.tickFrames.slice(this.tickFrames.length - 200);
+    if (fpsWrapper) {
+      fpsWrapper.innerText = Math.floor(1000 * sectionTicks.length / sectionTicks.reduce((a, b) => a + b, 0)).toString();
+    }
   }
 }
