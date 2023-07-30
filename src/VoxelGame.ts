@@ -13,11 +13,15 @@ import {
   SphereGeometry,
   ShaderMaterial,
   BackSide,
-  IUniform,
+  IUniform, Vector3,
 } from 'three';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
+import { Entity } from './entity/Entity';
+import { EntityManager } from './entity/EntityManager';
+import { StaticModelComponent } from './entity/models/StaticModelComponent';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
+import { VMath } from './VMath';
 
 export class VoxelGame {
   static containerId = 'container';
@@ -26,6 +30,7 @@ export class VoxelGame {
   private threeJs = new WebGLRenderer({
     antialias: true,
   });
+  private entityManager = new EntityManager();
   private camera!: PerspectiveCamera;
   private scene!: Scene;
   private sun!: DirectionalLight;
@@ -184,7 +189,25 @@ export class VoxelGame {
 
   private initClouds() {
     console.log('initClouds');
-    // TODO create when static objects could be created
+    for (let i = 0; i < 25; ++i) {
+      const index = VMath.rand_int(1, 3);
+      const pos = new Vector3(
+          (Math.random() * 2.0 - 1.0) * 500,
+          100,
+          (Math.random() * 2.0 - 1.0) * 500);
+
+      const cloudEntity = new Entity();
+      cloudEntity.AddComponent(new StaticModelComponent({
+        scene: this.scene,
+        resourcePath: './resources/nature2/GLTF/',
+        resourceName: 'Cloud' + index + '.glb',
+        scale: Math.random() * 5 + 10,
+        emissive: new Color(0x808080),
+      }));
+      cloudEntity.setPosition(pos);
+      this.entityManager.add(cloudEntity);
+      cloudEntity.disactivate();
+    }
   }
 
   private initThrees() {
