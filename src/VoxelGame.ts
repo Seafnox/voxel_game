@@ -19,6 +19,8 @@ import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './entity/Entity';
 import { EntityManager } from './entity/EntityManager';
 import { StaticModelComponent } from './entity/models/StaticModelComponent';
+import { SpatialGridController } from './grid/SpatialGridController';
+import { SpatialHashGrid } from './grid/SpatialHashGrid';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
 import { VMath } from './VMath';
@@ -37,6 +39,7 @@ export class VoxelGame {
   private surface!: Mesh;
   private prevTick: number | undefined;
   private tickFrames: number[] = [];
+  private grid = new SpatialHashGrid([[-1000, -1000], [1000, 1000]], [100, 100]);
 
   constructor() {
     this.initialize();
