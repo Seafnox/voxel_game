@@ -215,7 +215,37 @@ export class VoxelGame {
 
   private initThrees() {
     console.log('initThrees');
-    // TODO create when static objects could be created
+    for (let i = 0; i < 100; ++i) {
+      const names = [
+        'CommonTree_Dead', 'CommonTree',
+        'BirchTree', 'BirchTree_Dead',
+        'Willow', 'Willow_Dead',
+        'PineTree',
+      ];
+      const name = names[VMath.rand_int(0, names.length - 1)];
+      const index = VMath.rand_int(1, 5);
+
+      const pos = new Vector3(
+        (Math.random() * 2.0 - 1.0) * 500,
+        0,
+        (Math.random() * 2.0 - 1.0) * 500);
+
+      const e = new Entity();
+      e.AddComponent(new StaticModelComponent({
+        scene: this.scene,
+        resourcePath: './resources/trees/FBX/',
+        resourceName: name + '_' + index + '.fbx',
+        scale: 0.25,
+        emissive: new Color(0x000000),
+        specular: new Color(0x000000),
+        receiveShadow: true,
+        castShadow: true,
+      }));
+      e.AddComponent(new SpatialGridController(this.grid));
+      e.setPosition(pos);
+      this.entityManager.add(e);
+      e.disactivate();
+    }
   }
 
   private initUnits() {
