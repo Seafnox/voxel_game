@@ -97,7 +97,7 @@ export class VoxelGame {
   }
 
   private configureThreeJs() {
-    console.log('Configulre ThreeJS');
+    console.log('Configure ThreeJS');
     this.threeJs.outputColorSpace = SRGBColorSpace;
     this.threeJs.shadowMap.enabled = true;
     this.threeJs.shadowMap.type = PCFSoftShadowMap;
