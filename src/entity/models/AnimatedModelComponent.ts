@@ -1,4 +1,4 @@
-import { Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color } from 'three';
+import { Vector3, Scene, Color, AnimationClip, TextureLoader, sRGBEncoding, Texture, Material, AnimationMixer, Object3D, Mesh } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
@@ -6,9 +6,10 @@ import { Component } from '../Component';
 import { EmittedEvent } from '../EmittedEvent';
 import { Entity } from '../Entity';
 
-export interface StaticModelConfig {
+export interface AnimatedModelConfig {
     resourcePath: string;
     resourceName: string;
+    resourceAnimation: string;
     scene: Scene;
     scale: number;
     resourceTexture?: string;
@@ -19,24 +20,26 @@ export interface StaticModelConfig {
     visible?: boolean;
 }
 
-export class StaticModelComponent implements Component {
+export class AnimatedModelComponent implements Component {
     private boundOnPositionChange = this.onPositionChange.bind(this);
     entity: Entity | undefined;
-    target: Group | undefined;
+    _target: Object3D | undefined;
+    private _mixer?: AnimationMixer;
 
     constructor(
-        private params: StaticModelConfig,
+        private params: AnimatedModelConfig,
     ) {
         this.loadModels();
     }
 
     initComponent() {
-        this.entity?.on<Vector3>('update.position', this.boundOnPositionChange);
+        this.entity?.on('update.position', this.boundOnPositionChange);
     }
 
     onPositionChange(m: EmittedEvent<Vector3>) {
-        if (this.target) {
-            this.target.position.copy(m.value);
+        if (this._target) {
+            this._target.position.copy(m.value);
+            this._target.position.y = 0.35;
         }
     }
 
@@ -48,18 +51,19 @@ export class StaticModelComponent implements Component {
         }
     }
 
-    onTargetLoaded(obj: Group) {
+    onTargetLoaded(obj: Object3D, animations: AnimationClip[]) {
         if (!this.entity) {
             throw new Error(`Can't find parent entity`);
         }
+        this._target = obj;
+        this.params.scene.add(this._target);
 
-        this.target = obj;
-        this.params.scene.add(this.target);
+        this._target.scale.setScalar(this.params.scale);
+        this._target.position.copy(this.entity.getPosition());
 
-        this.target.scale.setScalar(this.params.scale);
-        this.entity && this.target.position.copy(this.entity.getPosition());
+        this.entity.setPosition(this.entity.getPosition());
 
-        let texture: Texture | null = null;
+        let texture: Texture | undefined;
         if (this.params.resourceTexture) {
             const texLoader = new TextureLoader();
             texture = texLoader.load(this.params.resourceTexture);
@@ -69,7 +73,7 @@ export class StaticModelComponent implements Component {
         // FIXME fake type declaration
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
-        this.target.traverse((c: Mesh) => {
+        this._target.traverse((c: Mesh) => {
             const materials: Material[] = c.material instanceof Array ? c.material : [c.material];
 
             // FIXME fake type declaration
@@ -86,6 +90,7 @@ export class StaticModelComponent implements Component {
                     }
                 }
             }
+
             if (this.params.receiveShadow != undefined) {
                 c.receiveShadow = this.params.receiveShadow;
             }
@@ -97,6 +102,16 @@ export class StaticModelComponent implements Component {
             }
         });
 
+        if (Array.isArray(animations) && animations.length > 0) {
+            setTimeout(() => {
+                this._mixer = new AnimationMixer(obj);
+                const clip = animations[0];
+                const action = this._mixer.clipAction(clip);
+
+                action.play();
+            });
+        }
+
         this.entity.setModel(obj);
     }
 
@@ -104,7 +119,7 @@ export class StaticModelComponent implements Component {
         const loader = new GLTFLoader();
         loader.setPath(this.params.resourcePath);
         loader.load(this.params.resourceName, (glb) => {
-            this.onTargetLoaded(glb.scene);
+            this.onTargetLoaded(glb.scene, []);
         });
     }
 
@@ -112,10 +127,15 @@ export class StaticModelComponent implements Component {
         const loader = new FBXLoader();
         loader.setPath(this.params.resourcePath);
         loader.load(this.params.resourceName, (fbx) => {
-            this.onTargetLoaded(fbx);
+            loader.load(this.params.resourceAnimation, (a) => {
+                this.onTargetLoaded(fbx, a.animations);
+            });
         });
     }
 
-    public update(): void {
+    update(timeElapsed: number) {
+        if (this._mixer) {
+            this._mixer.update(timeElapsed);
+        }
     }
 }

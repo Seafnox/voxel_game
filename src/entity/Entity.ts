@@ -1,15 +1,16 @@
-import { Vector3, Quaternion } from 'three';
+import { Vector3, Quaternion, Object3D } from 'three';
 import { Component } from './Component';
 import { Emittable } from './Emittable';
 import { EmittedEvent } from './EmittedEvent';
 import { EntityManager } from './EntityManager';
 
 export class Entity extends Emittable {
-  name: string | undefined;
+  name?: string;
+  entityManager?: EntityManager;
   private components: Record<string, Component> = {}; // SET OF COMPONENTS
   private position = new Vector3();
   private rotation = new Quaternion();
-  entityManager: EntityManager | undefined;
+  private model?: Object3D;
 
   disactivate() {
     this.entityManager?.disactivate(this);
@@ -59,5 +60,14 @@ export class Entity extends Emittable {
 
   update(timeElapsed: number) {
     Object.values(this.components).forEach(component => component.update(timeElapsed));
+  }
+
+  public setModel(model: Object3D) {
+    this.model = model;
+    this.broadcast<Object3D>({
+      topic: 'load.character',
+      value: this.model,
+    });
+
   }
 }
