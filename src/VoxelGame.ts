@@ -24,11 +24,14 @@ import { SpatialHashGrid } from './grid/SpatialHashGrid';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
 import { VMath } from './VMath';
+import {ThirdPersonCamera} from "./entity/ThirdPersonCamera";
 
 export class VoxelGame {
   static containerId = 'container';
   static sceneId = 'threeJs';
   static fpsId = 'fps';
+  static playerEntityName = 'player';
+  static cameraEntityName = 'camera';
   private threeJs = new WebGLRenderer({
     antialias: true,
   });
@@ -51,6 +54,7 @@ export class VoxelGame {
     this.addWindowSizeWatcher();
     this.scene = this.createScene();
     this.camera = this.createCamera();
+    this.initCamera();
     this.sun = this.createLightning();
     this.putIntoScene(this.sun);
     this.surface = this.createSurface();
@@ -94,6 +98,12 @@ export class VoxelGame {
     camera.position.set(25, 10, 25);
 
     return camera;
+  }
+
+  private initCamera(): void {
+    const camera = new Entity();
+    camera.AddComponent(new ThirdPersonCamera(this.camera));
+    this.entityManager.add(camera, VoxelGame.cameraEntityName);
   }
 
   private configureThreeJs() {
@@ -274,6 +284,19 @@ export class VoxelGame {
   private initItems() {
     console.log('initItems');
     // TODO create when dynamic objects could be created
+  }
+
+  private focusCameraOn(entityName: string) {
+    const target = this.entityManager.get(entityName);
+    const cameraEntity = this.entityManager.get(VoxelGame.cameraEntityName);
+    const camera = cameraEntity?.getComponent<ThirdPersonCamera>(ThirdPersonCamera.constructor.name);
+
+    if (!camera) {
+      console.error(VoxelGame.cameraEntityName, cameraEntity, ThirdPersonCamera.constructor.name, camera);
+      throw new Error(`No camera detected for focus on object`);
+    }
+
+    camera.target = target;
   }
 
   private requestAnimation() {
