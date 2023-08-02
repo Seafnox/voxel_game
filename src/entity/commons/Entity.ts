@@ -23,8 +23,8 @@ export class Entity extends Emittable {
     c.initComponent();
   }
 
-  getComponent(name: string) {
-    return this.components[name];
+  getComponent<TComponent extends Component>(name: string): TComponent {
+    return this.components[name] as TComponent;
   }
 
   // FIXME simplify event and emit only left alive

@@ -2,9 +2,9 @@ import { Vector3, Scene, Color, AnimationClip, TextureLoader, sRGBEncoding, Text
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { Component } from '../Component';
-import { EmittedEvent } from '../EmittedEvent';
-import { Entity } from '../Entity';
+import { Component } from '../commons/Component';
+import { EmittedEvent } from '../commons/EmittedEvent';
+import { Entity } from '../commons/Entity';
 
 export interface AnimatedModelConfig {
     resourcePath: string;

@@ -1,4 +1,4 @@
-import { Entity } from '../entity/Entity';
+import { Entity } from '../entity/commons/Entity';
 import { VMath } from '../VMath';
 
 export type SpatialPoint = [number, number];

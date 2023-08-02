@@ -1,7 +1,7 @@
-import { Entity } from 'src/entity/Entity';
+import { Entity } from 'src/entity/commons/Entity';
 import { Vector3 } from 'three';
-import { Component } from '../entity/Component';
-import { EmittedEvent } from '../entity/EmittedEvent';
+import { Component } from '../entity/commons/Component';
+import { EmittedEvent } from '../entity/commons/EmittedEvent';
 import { SpatialHashGrid, SpatialPoint, SpatialClient } from './SpatialHashGrid';
 
 export class SpatialGridController implements Component {

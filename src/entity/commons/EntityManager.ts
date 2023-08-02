@@ -13,7 +13,7 @@ export class EntityManager {
     return '__name__' + this.idCounter;
   }
 
-  get(name: string) {
+  get(name: string): Entity | undefined {
     return this.entities[name];
   }
 

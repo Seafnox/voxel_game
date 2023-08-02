@@ -16,8 +16,8 @@ import {
   IUniform, Vector3,
 } from 'three';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
-import { Entity } from './entity/Entity';
-import { EntityManager } from './entity/EntityManager';
+import { Entity } from './entity/commons/Entity';
+import { EntityManager } from './entity/commons/EntityManager';
 import { StaticModelComponent } from './entity/models/StaticModelComponent';
 import { SpatialGridController } from './grid/SpatialGridController';
 import { SpatialHashGrid } from './grid/SpatialHashGrid';
