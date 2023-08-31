@@ -2,6 +2,7 @@ import { Entity } from './Entity';
 
 export interface Component {
   entity: Entity | undefined;
-  initComponent(): void;
+  // FIXME turn into setter with onChange hook oldEntity, newEntity
+  onEntityChange?(): void;
   update(timeElapsed: number): void;
 }

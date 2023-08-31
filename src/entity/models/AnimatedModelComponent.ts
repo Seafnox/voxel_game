@@ -23,8 +23,8 @@ export interface AnimatedModelConfig {
 export class AnimatedModelComponent implements Component {
     private boundOnPositionChange = this.onPositionChange.bind(this);
     entity: Entity | undefined;
-    _target: Object3D | undefined;
-    private _mixer?: AnimationMixer;
+    target: Object3D | undefined;
+    private mixer?: AnimationMixer;
 
     constructor(
         private params: AnimatedModelConfig,
@@ -32,14 +32,19 @@ export class AnimatedModelComponent implements Component {
         this.loadModels();
     }
 
-    initComponent() {
-        this.entity?.on('update.position', this.boundOnPositionChange);
+    onEntityChange() {
+      if (!this.entity) {
+        console.log(this);
+        throw new Error(`Can't find entity in ${this.constructor.name}`);
+      }
+
+      this.entity.on('update.position', this.boundOnPositionChange);
     }
 
     onPositionChange(m: EmittedEvent<Vector3>) {
-        if (this._target) {
-            this._target.position.copy(m.value);
-            this._target.position.y = 0.35;
+        if (this.target) {
+            this.target.position.copy(m.value);
+            this.target.position.y = 0.35;
         }
     }
 
@@ -55,11 +60,11 @@ export class AnimatedModelComponent implements Component {
         if (!this.entity) {
             throw new Error(`Can't find parent entity`);
         }
-        this._target = obj;
-        this.params.scene.add(this._target);
+        this.target = obj;
+        this.params.scene.add(this.target);
 
-        this._target.scale.setScalar(this.params.scale);
-        this._target.position.copy(this.entity.getPosition());
+        this.target.scale.setScalar(this.params.scale);
+        this.target.position.copy(this.entity.getPosition());
 
         this.entity.setPosition(this.entity.getPosition());
 
@@ -73,7 +78,7 @@ export class AnimatedModelComponent implements Component {
         // FIXME fake type declaration
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
-        this._target.traverse((c: Mesh) => {
+        this.target.traverse((c: Mesh) => {
             const materials: Material[] = c.material instanceof Array ? c.material : [c.material];
 
             // FIXME fake type declaration
@@ -104,9 +109,9 @@ export class AnimatedModelComponent implements Component {
 
         if (Array.isArray(animations) && animations.length > 0) {
             setTimeout(() => {
-                this._mixer = new AnimationMixer(obj);
+                this.mixer = new AnimationMixer(obj);
                 const clip = animations[0];
-                const action = this._mixer.clipAction(clip);
+                const action = this.mixer.clipAction(clip);
 
                 action.play();
             });
@@ -134,8 +139,8 @@ export class AnimatedModelComponent implements Component {
     }
 
     update(timeElapsed: number) {
-        if (this._mixer) {
-            this._mixer.update(timeElapsed);
+        if (this.mixer) {
+            this.mixer.update(timeElapsed);
         }
     }
 }

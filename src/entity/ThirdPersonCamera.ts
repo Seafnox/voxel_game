@@ -17,8 +17,6 @@ export class ThirdPersonCamera implements Component {
     this.currentLookAt = new Vector3();
   }
 
-  initComponent(): void {}
-
   calculateIdealOffset(target: Entity) {
     const idealOffset = new Vector3(-0, 10, -15);
     idealOffset.applyQuaternion(target.getRotation());

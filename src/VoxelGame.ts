@@ -25,6 +25,8 @@ import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
 import { VMath } from './VMath';
 import {ThirdPersonCamera} from "./entity/ThirdPersonCamera";
+import {CustomizableModelComponent} from "./entity/models/CustomizableModelComponent";
+import {UserCharacterController} from "./entity/user/UserCharacterController";
 
 export class VoxelGame {
   static containerId = 'container';
@@ -225,13 +227,16 @@ export class VoxelGame {
 
   private initThrees() {
     console.log('initThrees');
+    const names = [
+      'CommonTree_Dead',
+      'CommonTree',
+      'BirchTree',
+      'BirchTree_Dead',
+      'Willow',
+      'Willow_Dead',
+      'PineTree',
+    ];
     for (let i = 0; i < 100; ++i) {
-      const names = [
-        'CommonTree_Dead', 'CommonTree',
-        'BirchTree', 'BirchTree_Dead',
-        'Willow', 'Willow_Dead',
-        'PineTree',
-      ];
       const name = names[VMath.rand_int(0, names.length - 1)];
       const index = VMath.rand_int(1, 5);
 
@@ -260,10 +265,49 @@ export class VoxelGame {
 
   private initUnits() {
     console.log('InitUnits');
+    this.initPlayer();
     this.initNPC();
     this.initEnemies();
     this.initQuestPlaces();
     this.initItems();
+  }
+
+  private initPlayer() {
+    const player = new Entity();
+    player.AddComponent(new CustomizableModelComponent({
+      scene: this.scene,
+      resourcePath: './resources/guard/',
+      resourceModel: 'castle_guard_01.fbx',
+      resourceAnimations: {
+        swordAndShieldIdle: 'Sword And Shield Idle.fbx',
+        swordAndShieldRun: 'Sword And Shield Run.fbx',
+        swordAndShieldWalk: 'Sword And Shield Walk.fbx',
+        swordAndShieldSlash: 'Sword And Shield Slash.fbx',
+        swordAndShieldDeath: 'Sword And Shield Death.fbx',
+      },
+      scale: 0.035,
+      receiveShadow: true,
+      castShadow: true,
+    }))
+    // player.AddComponent(new BasicCharacterControllerInput(params));
+    player.AddComponent(new UserCharacterController());
+    // player.AddComponent(new EquipWeapon({anchor: 'RightHandIndex1'}));
+    // player.AddComponent(new InventoryController(params));
+    // player.AddComponent(new HealthComponent({
+    //   updateUI: true,
+    //   health: 100,
+    //   maxHealth: 100,
+    //   strength: 50,
+    //   wisdomness: 5,
+    //   benchpress: 20,
+    //   curl: 100,
+    //   experience: 0,
+    //   level: 1,
+    // }));
+    player.AddComponent(new SpatialGridController(this.grid));
+    // player.AddComponent(new AttackController({timing: 0.7}));
+    this.entityManager.add(player, VoxelGame.playerEntityName);
+    this.focusCameraOn(VoxelGame.playerEntityName)
   }
 
   private initNPC() {
@@ -289,7 +333,7 @@ export class VoxelGame {
   private focusCameraOn(entityName: string) {
     const target = this.entityManager.get(entityName);
     const cameraEntity = this.entityManager.get(VoxelGame.cameraEntityName);
-    const camera = cameraEntity?.getComponent<ThirdPersonCamera>(ThirdPersonCamera.constructor.name);
+    const camera = cameraEntity?.getComponent(ThirdPersonCamera);
 
     if (!camera) {
       console.error(VoxelGame.cameraEntityName, cameraEntity, ThirdPersonCamera.constructor.name, camera);

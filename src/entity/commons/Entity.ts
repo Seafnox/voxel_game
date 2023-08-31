@@ -3,6 +3,7 @@ import { Component } from './Component';
 import { Emittable } from './Emittable';
 import { EmittedEvent } from './EmittedEvent';
 import { EntityManager } from './EntityManager';
+import {isFunction} from "../../utils/isFunction";
 
 export class Entity extends Emittable {
   name?: string;
@@ -16,15 +17,17 @@ export class Entity extends Emittable {
     this.entityManager?.disactivate(this);
   }
 
-  AddComponent(c: Component) {
-    c.entity = this;
-    this.components[c.constructor.name] = c;
+  AddComponent(component: Component) {
+    component.entity = this;
+    this.components[component.constructor.name] = component;
 
-    c.initComponent();
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    isFunction(component.onEntityChange) && component.onEntityChange();
   }
 
-  getComponent<TComponent extends Component>(name: string): TComponent {
-    return this.components[name] as TComponent;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getComponent<TComponent extends Component>(constructor: { new(...args: any[]): TComponent }): TComponent {
+    return this.components[constructor.name] as TComponent;
   }
 
   // FIXME simplify event and emit only left alive

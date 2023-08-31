@@ -1,47 +1,53 @@
-import { Entity } from 'src/entity/commons/Entity';
-import { Vector3 } from 'three';
-import { Component } from '../entity/commons/Component';
-import { EmittedEvent } from '../entity/commons/EmittedEvent';
-import { SpatialHashGrid, SpatialPoint, SpatialClient } from './SpatialHashGrid';
+import {Entity} from 'src/entity/commons/Entity';
+import {Vector3} from 'three';
+import {Component} from '../entity/commons/Component';
+import {EmittedEvent} from '../entity/commons/EmittedEvent';
+import {SpatialHashGrid, SpatialPoint, SpatialClient} from './SpatialHashGrid';
 
 export class SpatialGridController implements Component {
-    private _client?: SpatialClient;
-    private boundedOnPositionChange = this._OnPosition.bind(this);
-    constructor(
-        private grid: SpatialHashGrid
-    ) {}
+  private _client?: SpatialClient;
+  private boundedOnPositionChange = this._OnPosition.bind(this);
 
-    entity: Entity | undefined;
-    update(): void {}
+  constructor(
+    private grid: SpatialHashGrid
+  ) {
+  }
 
-    initComponent() {
-        if (!this.entity) {
-            throw new Error(`Can't find entity in component ${this.constructor.name}`);
-        }
-        const entityPosition = this.entity.getPosition();
-        const pos: SpatialPoint = [
-            entityPosition.x,
-            entityPosition.z,
-        ];
+  entity: Entity | undefined;
 
-        this._client = this.grid.NewClient(pos, [1, 1]);
-        this._client.entity = this.entity;
-        this.entity.on('update.position', this.boundedOnPositionChange);
+  update(): void {
+  }
+
+  onEntityChange() {
+    if (!this.entity) {
+      console.log(this);
+      throw new Error(`Can't find entity in ${this.constructor.name}`);
     }
 
-    _OnPosition(msg: EmittedEvent<Vector3>) {
-        if (!this._client) return;
+    const entityPosition = this.entity.getPosition();
+    const pos: SpatialPoint = [
+      entityPosition.x,
+      entityPosition.z,
+    ];
 
-        this._client.position = [msg.value.x, msg.value.z];
-        this.grid.UpdateClient(this._client);
-    }
+    this._client = this.grid.NewClient(pos, [1, 1]);
+    this._client.entity = this.entity;
+    this.entity.on('update.position', this.boundedOnPositionChange);
+  }
 
-    FindNearbyEntities(range: number): SpatialClient[] {
-        if (!this.entity) return [];
+  _OnPosition(msg: EmittedEvent<Vector3>) {
+    if (!this._client) return;
 
-        const results = this.grid.FindNear(
-            [this.entity.getPosition().x, this.entity.getPosition().z], [range, range]);
+    this._client.position = [msg.value.x, msg.value.z];
+    this.grid.UpdateClient(this._client);
+  }
 
-        return results.filter(c => c.entity != this.entity);
-    }
+  FindNearbyEntities(range: number): SpatialClient[] {
+    if (!this.entity) return [];
+
+    const results = this.grid.FindNear(
+      [this.entity.getPosition().x, this.entity.getPosition().z], [range, range]);
+
+    return results.filter(c => c.entity != this.entity);
+  }
 }
