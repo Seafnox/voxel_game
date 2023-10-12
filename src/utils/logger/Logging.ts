@@ -8,22 +8,14 @@ export class Logging {
 
 	private static getEnvironmentSpecifiedLevel(name: string): string | undefined {
 		if (!Logging.envSettings) {
-			Logging.envSettings = {}
-			try {
-				if (process.env.LOG_LEVELS) {
-					Logging.envSettings = JSON.parse(process.env.LOG_LEVELS) as Record<string, string>
-				}
-			} catch (problem) {
-				console.log(
-					`Unable to parse log levels (${process.env.LOG_LEVELS}). ${(problem as Error).toString()}. You may need to adjust quoting, use the example -l='{\\"ConfigurationManager\\":\\"debug\\", \\"hf\\":\\"debug\\"}'`
-				)
-			}
+			Logging.envSettings = {};
 		}
 
 		if (Logging.envSettings[name]) {
-			return Logging.envSettings[name]
+			return Logging.envSettings[name];
 		}
-		return process.env.LOG_LEVEL
+
+    return
 	}
 
 	static newLogger(name: string): Logger {
@@ -36,9 +28,6 @@ export class Logging {
 
 		// environment specified log level
 		if (!level) level = LevelFromText(this.getEnvironmentSpecifiedLevel(name))
-
-		// overall default = info
-		if (!level) level = Level.info
 
 		return new Logger(name, level)
 	}

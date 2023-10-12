@@ -12,12 +12,12 @@ export enum Level {
 
 export const LEVEL_TEXT: string[] = []
 
-LEVEL_TEXT[Level.trace] = 'TRACE'
-LEVEL_TEXT[Level.debug] = 'DEBUG'
-LEVEL_TEXT[Level.error] = 'ERROR'
-LEVEL_TEXT[Level.fatal] = 'FATAL'
-LEVEL_TEXT[Level.info] = 'INFO'
-LEVEL_TEXT[Level.warn] = 'WARN'
+LEVEL_TEXT[Level.trace] = 'trace'
+LEVEL_TEXT[Level.debug] = 'debug'
+LEVEL_TEXT[Level.error] = 'error'
+LEVEL_TEXT[Level.fatal] = 'fatal'
+LEVEL_TEXT[Level.info] = 'info'
+LEVEL_TEXT[Level.warn] = 'warn'
 
 export function LevelFromText(text?: string): Level {
 	const lower = text?.toLocaleLowerCase()
