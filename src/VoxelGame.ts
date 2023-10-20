@@ -27,6 +27,8 @@ import { VMath } from './VMath';
 import {ThirdPersonCamera} from "./entity/ThirdPersonCamera";
 import {CustomizableModelComponent} from "./entity/models/CustomizableModelComponent";
 import {UserCharacterController} from "./entity/user/UserCharacterController";
+import {LogMethod} from "./utils/logger/LogMethod";
+import {Level} from "./utils/logger/Level";
 
 export class VoxelGame {
   static containerId = 'container';
@@ -50,8 +52,8 @@ export class VoxelGame {
     this.initialize();
   }
 
+  @LogMethod({level: Level.info})
   private initialize() {
-    console.log('Start Initialize');
     this.configureThreeJs();
     this.addWindowSizeWatcher();
     this.scene = this.createScene();
@@ -66,11 +68,10 @@ export class VoxelGame {
     this.initThrees();
     this.initUnits();
     this.requestAnimation();
-    console.log('Finish Initialize');
   }
 
+  @LogMethod({level: Level.info})
   private addWindowSizeWatcher() {
-    console.log('add window size watcher');
     const container = document.getElementById(VoxelGame.containerId);
 
     if (!container) {
@@ -90,8 +91,8 @@ export class VoxelGame {
     this.threeJs.setSize(window.innerWidth, window.innerHeight);
   }
 
+  @LogMethod({level: Level.info})
   private createCamera(): PerspectiveCamera {
-    console.log('Create Camera');
     const fov = 60;
     const aspect = 1920 / 1080;
     const near = 1.0;
@@ -108,8 +109,8 @@ export class VoxelGame {
     this.entityManager.add(camera, VoxelGame.cameraEntityName);
   }
 
+  @LogMethod({level: Level.info})
   private configureThreeJs() {
-    console.log('Configure ThreeJS');
     this.threeJs.outputColorSpace = SRGBColorSpace;
     this.threeJs.shadowMap.enabled = true;
     this.threeJs.shadowMap.type = PCFSoftShadowMap;
@@ -118,8 +119,8 @@ export class VoxelGame {
     this.threeJs.domElement.id = VoxelGame.sceneId;
   }
 
+  @LogMethod({level: Level.info})
   private createScene(): Scene {
-    console.log('create Scene');
     const scene = new Scene();
     scene.background = new Color(0xFFFFFF);
     scene.fog = new FogExp2(0x89b2eb, 0.002);
@@ -127,8 +128,8 @@ export class VoxelGame {
     return scene;
   }
 
+  @LogMethod({level: Level.info})
   private createLightning(): DirectionalLight {
-    console.log('Create Lights');
     const light = new DirectionalLight(0xFFFFFF, 1.0);
     light.position.set(-10, 500, 10);
     light.target.position.set(0, 0, 0);
@@ -146,8 +147,8 @@ export class VoxelGame {
     return light;
   }
 
+  @LogMethod({level: Level.info})
   private createSurface(): Mesh {
-    console.log('Create surface');
     const surface = new Mesh(
       new PlaneGeometry(5000, 5000, 10, 10),
       new MeshStandardMaterial({
@@ -185,8 +186,8 @@ export class VoxelGame {
     return new Mesh(skyGeo, skyMat);
   }
 
+  @LogMethod({level: Level.info})
   private buildSky() {
-    console.log('buildSky');
     const helio = this.createHelioSphere();
     this.putIntoScene(helio);
     // TODO Make uniform more strict and typed
@@ -202,8 +203,8 @@ export class VoxelGame {
     this.putIntoScene(this.createSkyMesh(uniforms));
   }
 
+  @LogMethod({level: Level.info})
   private initClouds() {
-    console.log('initClouds');
     for (let i = 0; i < 25; ++i) {
       const index = VMath.rand_int(1, 3);
       const pos = new Vector3(
@@ -225,8 +226,8 @@ export class VoxelGame {
     }
   }
 
+  @LogMethod({level: Level.info})
   private initThrees() {
-    console.log('initThrees');
     const names = [
       'CommonTree_Dead',
       'CommonTree',
@@ -263,8 +264,8 @@ export class VoxelGame {
     }
   }
 
+  @LogMethod({level: Level.info})
   private initUnits() {
-    console.log('InitUnits');
     this.initPlayer();
     this.initNPC();
     this.initEnemies();
@@ -272,6 +273,7 @@ export class VoxelGame {
     this.initItems();
   }
 
+  @LogMethod({level: Level.info})
   private initPlayer() {
     const player = new Entity();
     player.AddComponent(new CustomizableModelComponent({
@@ -305,28 +307,33 @@ export class VoxelGame {
     //   level: 1,
     // }));
     player.AddComponent(new SpatialGridController(this.grid));
+    const pos = new Vector3(
+      30,
+      0,
+      0);
+    player.setPosition(pos);
     // player.AddComponent(new AttackController({timing: 0.7}));
     this.entityManager.add(player, VoxelGame.playerEntityName);
     this.focusCameraOn(VoxelGame.playerEntityName)
   }
 
+  @LogMethod({level: Level.info})
   private initNPC() {
-    console.log('initNPC');
     // TODO create when dynamic objects could be created
   }
 
+  @LogMethod({level: Level.info})
   private initEnemies() {
-    console.log('initEnemies');
     // TODO create when dynamic objects could be created
   }
 
+  @LogMethod({level: Level.info})
   private initQuestPlaces() {
-    console.log('initQuestPlaces');
     // TODO create when dynamic objects could be created
   }
 
+  @LogMethod({level: Level.info})
   private initItems() {
-    console.log('initItems');
     // TODO create when dynamic objects could be created
   }
 

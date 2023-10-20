@@ -6,6 +6,8 @@ import {StateMachine} from "../commons/StateMachine";
 import {IdleUser} from "./states/IdleUser";
 import {CustomizableModelComponent} from "../models/CustomizableModelComponent";
 import {SpatialGridController} from "../../grid/SpatialGridController";
+import {LogMethod} from "../../utils/logger/LogMethod";
+import {Level} from "../../utils/logger/Level";
 
 export const enum UserState {
   Idle,
@@ -36,6 +38,7 @@ export class UserCharacterController implements Component {
     this.stateMachine.addState(IdleUser);
   }
 
+  @LogMethod({level: Level.info})
   onEntityChange() {
     this.stateMachine.setEntity(this.entity!);
     this.stateMachine.setState(IdleUser.name);
@@ -78,6 +81,7 @@ export class UserCharacterController implements Component {
     return collisions;
   }
 
+  @LogMethod({level: Level.info})
   private getModel(): Object3D | undefined {
     if (!this.modelComponent) {
       console.log(this);

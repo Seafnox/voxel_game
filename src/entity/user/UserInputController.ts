@@ -1,3 +1,6 @@
+import {LogMethod} from "../../utils/logger/LogMethod";
+import {Level} from "../../utils/logger/Level";
+
 export class UserInputController {
   private boundedOnKeyDown = this.onKeyDown.bind(this);
   private boundedOnKeyUp = this.onKeyUp.bind(this);
@@ -15,14 +18,14 @@ export class UserInputController {
     document.addEventListener('mouseup', this.boundedOnMouseUp, false);
   }
 
+  @LogMethod({level: Level.info})
   private onKeyDown(event: KeyboardEvent) {
     this.setAction(event.keyCode, true);
-    console.log('onKeyDown: ', event.keyCode, event.key);
   }
 
+  @LogMethod({level: Level.info})
   private onKeyUp(event: KeyboardEvent) {
     this.setAction(event.keyCode, false);
-    console.log('onKeyUp: ', event.keyCode, event.key);
   }
 
   private setAction(actionCode: number, value: boolean) {
@@ -48,7 +51,8 @@ export class UserInputController {
     }
   }
 
+  @LogMethod({level: Level.info})
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private onMouseUp(event: MouseEvent) {
-    console.log('onMouseUp: click', event);
   }
 }
