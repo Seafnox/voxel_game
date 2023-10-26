@@ -17,9 +17,11 @@ export class Entity extends Emittable {
     this.entityManager?.disactivate(this);
   }
 
-  AddComponent(component: Component) {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  AddComponent(component: Component, as?: Function) {
     component.entity = this;
-    this.components[component.constructor.name] = component;
+    const registeredAs = as || component.constructor;
+    this.components[registeredAs.name] = component;
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
     isFunction(component.onEntityChange) && component.onEntityChange();

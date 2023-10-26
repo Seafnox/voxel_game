@@ -30,6 +30,7 @@ import {UserCharacterController} from "./entity/user/UserCharacterController";
 import {LogMethod} from "./utils/logger/LogMethod";
 import {Level} from "./utils/logger/Level";
 import {GltfModelComponent} from "./entity/models/GltfModelComponent";
+import {ModelComponent} from "./entity/models/ModelComponent";
 
 const initialPlayerPositionX = 25;
 const initialPlayerPositionY = 10;
@@ -284,33 +285,21 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initPlayer() {
     const player = new Entity();
-    player.AddComponent(new GltfModelComponent({
-      scene: this.scene,
-      resourcePath: './resources/units/',
-      resourceModel: 'guard.glb',
-      scale: 15,
-      receiveShadow: true,
-      castShadow: true,
-    }))
-    // player.AddComponent(new CustomizableModelConfig({
-    //   scene: this.scene,
-    //   resourcePath: './resources/units/',
-    //   resourceModel: 'guard.glb',
-    //   resourceAnimations: {
-    //     swordAndShieldIdle: 'Sword And Shield Idle.fbx',
-    //     swordAndShieldRun: 'Sword And Shield Run.fbx',
-    //     swordAndShieldWalk: 'Sword And Shield Walk.fbx',
-    //     swordAndShieldSlash: 'Sword And Shield Slash.fbx',
-    //     swordAndShieldDeath: 'Sword And Shield Death.fbx',
-    //   },
-    //   scale: 0.035,
-    //   receiveShadow: true,
-    //   castShadow: true,
-    // }))
-    // player.AddComponent(new BasicCharacterControllerInput(params));
+    player.AddComponent(
+      new GltfModelComponent({
+        scene: this.scene,
+        resourcePath: './resources/units/',
+        resourceModel: 'guard.glb',
+        scale: 15,
+        receiveShadow: true,
+        castShadow: true,
+      }),
+      ModelComponent,
+    );
     player.AddComponent(new UserCharacterController());
     // player.AddComponent(new EquipWeapon({anchor: 'RightHandIndex1'}));
     // player.AddComponent(new InventoryController(params));
+    // player.AddComponent(new AttackController({timing: 0.7}));
     // player.AddComponent(new HealthComponent({
     //   updateUI: true,
     //   health: 100,
@@ -329,7 +318,6 @@ export class VoxelGame {
       initialPlayerPositionZ
     );
     player.setPosition(pos);
-    // player.AddComponent(new AttackController({timing: 0.7}));
     this.entityManager.add(player, VoxelGame.playerEntityName);
     this.focusCameraOn(VoxelGame.playerEntityName)
   }

@@ -16,9 +16,8 @@ import {
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {MeshPhongMaterial} from 'three/src/materials/MeshPhongMaterial';
-import {Component} from '../commons/Component';
 import {EmittedEvent} from '../commons/EmittedEvent';
-import {Entity} from '../commons/Entity';
+import {ModelComponent} from "./ModelComponent";
 
 export interface CustomizableModelConfig {
   resourcePath: string;
@@ -45,9 +44,7 @@ interface ModelConfig {
   animations: Record<string, AnimationAction>;
 }
 
-export class CustomizableModelComponent implements Component {
-  entity: Entity | undefined;
-  private model: Object3D | undefined;
+export class CustomizableModelComponent extends ModelComponent {
   private animationMap: Record<string, ModelConfig> = {};
   private activeAnimationName: string | undefined;
   private activeAnimation: ModelConfig | undefined;
@@ -58,11 +55,8 @@ export class CustomizableModelComponent implements Component {
   constructor(
     private params: CustomizableModelConfig,
   ) {
+    super();
     this.loadResources();
-  }
-
-  getModel(): Object3D | undefined {
-    return this.model;
   }
 
   onEntityChange() {

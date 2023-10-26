@@ -2,9 +2,8 @@ import {Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, M
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {MeshPhongMaterial} from 'three/src/materials/MeshPhongMaterial';
-import {Component} from '../commons/Component';
 import {EmittedEvent} from '../commons/EmittedEvent';
-import {Entity} from '../commons/Entity';
+import {ModelComponent} from "./ModelComponent";
 
 export interface StaticModelConfig {
   resourcePath: string;
@@ -19,14 +18,13 @@ export interface StaticModelConfig {
   visible?: boolean;
 }
 
-export class StaticModelComponent implements Component {
+export class StaticModelComponent extends ModelComponent {
   private boundOnPositionChange = this.onPositionChange.bind(this);
-  entity: Entity | undefined;
-  target: Group | undefined;
 
   constructor(
     private params: StaticModelConfig,
   ) {
+    super();
     this.loadModels();
   }
 
@@ -40,8 +38,8 @@ export class StaticModelComponent implements Component {
   }
 
   onPositionChange(m: EmittedEvent<Vector3>) {
-    if (this.target) {
-      this.target.position.copy(m.value);
+    if (this.model) {
+      this.model.position.copy(m.value);
     }
   }
 
@@ -58,11 +56,11 @@ export class StaticModelComponent implements Component {
       throw new Error(`Can't find parent entity`);
     }
 
-    this.target = obj;
-    this.params.scene.add(this.target);
+    this.model = obj;
+    this.params.scene.add(this.model);
 
-    this.target.scale.setScalar(this.params.scale);
-    this.entity && this.target.position.copy(this.entity.getPosition());
+    this.model.scale.setScalar(this.params.scale);
+    this.entity && this.model.position.copy(this.entity.getPosition());
 
     let texture: Texture | null = null;
     if (this.params.resourceTexture) {
@@ -74,7 +72,7 @@ export class StaticModelComponent implements Component {
     // FIXME fake type declaration
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    this.target.traverse((c: Mesh) => {
+    this.model.traverse((c: Mesh) => {
       const materials: Material[] = c.material instanceof Array ? c.material : [c.material];
 
       // FIXME fake type declaration

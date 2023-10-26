@@ -8,6 +8,8 @@ import {CustomizableModelComponent} from "../models/CustomizableModelComponent";
 import {SpatialGridController} from "../../grid/SpatialGridController";
 import {LogMethod} from "../../utils/logger/LogMethod";
 import {Level} from "../../utils/logger/Level";
+import {GltfModelComponent} from "../models/GltfModelComponent";
+import {ModelComponent} from "../models/ModelComponent";
 
 export const enum UserState {
   Idle,
@@ -31,7 +33,7 @@ export class UserCharacterController implements Component {
   private stateMachine = new StateMachine();
   private state = UserState.Idle;
   private userInput = new UserInputController();
-  private modelComponent: CustomizableModelComponent | undefined;
+  private modelComponent: ModelComponent | undefined;
   entity: Entity | undefined;
 
   constructor() {
@@ -42,7 +44,7 @@ export class UserCharacterController implements Component {
   onEntityChange() {
     this.stateMachine.setEntity(this.entity!);
     this.stateMachine.setState(IdleUser.name);
-    this.modelComponent = this.entity?.getComponent(CustomizableModelComponent);
+    this.modelComponent = this.entity?.getComponent(GltfModelComponent);
   }
 
   update(timeElapsed: number): void {

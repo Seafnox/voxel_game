@@ -5,10 +5,6 @@ export interface StateInput {
 
 }
 
-export interface PlayerStateEvent {
-
-}
-
 export interface SimpleStateConstructor {
   // eslint-disable-next-line @typescript-eslint/no-misused-new
   new (controller: StateMachine, entity: Entity): SimpleState;

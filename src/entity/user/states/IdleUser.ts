@@ -1,6 +1,8 @@
 import {SimpleState, StateMachine, StateInput} from "../../commons/StateMachine";
 import {Entity} from "../../commons/Entity";
 import {AnimationAction} from "three";
+import {LogMethod} from "../../../utils/logger/LogMethod";
+import {Level} from "../../../utils/logger/Level";
 
 export class IdleUser implements SimpleState {
   availableNext: SimpleState[] | undefined;
@@ -11,16 +13,16 @@ export class IdleUser implements SimpleState {
     private entity: Entity,
   ) {}
 
+  @LogMethod({level: Level.info})
   enter(prevState: SimpleState | undefined): void {
-    console.log(this.constructor.name, 'enter', prevState);
   }
 
+  @LogMethod({level: Level.info})
   exit(nextState: SimpleState): void {
-    console.log(this.constructor.name, 'exit', nextState);
   }
 
+  @LogMethod({level: Level.info})
   validate(timeElapsed: number, input: StateInput): void {
-    console.log(this.constructor.name, 'validate', timeElapsed, input);
   }
 
 }
