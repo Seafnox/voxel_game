@@ -3,6 +3,8 @@ import {Entity} from "../../commons/Entity";
 import {AnimationAction} from "three";
 import {LogMethod} from "../../../utils/logger/LogMethod";
 import {Level} from "../../../utils/logger/Level";
+import {EntityTopic} from "../../commons/EntityTopic";
+import {ModelController} from "../../models/ModelController";
 
 export class IdleUser implements SimpleState {
   availableNext: SimpleState[] | undefined;
@@ -14,7 +16,14 @@ export class IdleUser implements SimpleState {
   ) {}
 
   @LogMethod({level: Level.info})
-  enter(prevState: SimpleState | undefined): void {
+  enter(/* prevState: SimpleState | undefined */): void {
+    if (this.entity.isModelReady) {
+      this.getModelAndRunIdleAnimation();
+    } else {
+      this.entity.on<boolean>(EntityTopic.ModelLoaded, () => {
+        this.getModelAndRunIdleAnimation();
+      })
+    }
   }
 
   @LogMethod({level: Level.info})
@@ -25,6 +34,9 @@ export class IdleUser implements SimpleState {
   validate(timeElapsed: number, input: StateInput): void {
   }
 
+  private getModelAndRunIdleAnimation() {
+    this.entity.getComponent<ModelController>(ModelController);
+  }
 }
 
 IdleUser.name;

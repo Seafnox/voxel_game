@@ -4,6 +4,7 @@ import { Emittable } from './Emittable';
 import { EmittedEvent } from './EmittedEvent';
 import { EntityManager } from './EntityManager';
 import {isFunction} from "../../utils/isFunction";
+import {EntityTopic} from "./EntityTopic";
 
 export class Entity extends Emittable {
   name?: string;
@@ -12,6 +13,7 @@ export class Entity extends Emittable {
   private position = new Vector3();
   private rotation = new Quaternion();
   private model?: Object3D;
+  private _isModelReady = false;
 
   disactivate() {
     this.entityManager?.disactivate(this);
@@ -27,8 +29,8 @@ export class Entity extends Emittable {
     isFunction(component.onEntityChange) && component.onEntityChange();
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getComponent<TComponent extends Component>(constructor: { new(...args: any[]): TComponent }): TComponent {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  getComponent<TComponent extends Component>(constructor: Function): TComponent {
     return this.components[constructor.name] as TComponent;
   }
 
@@ -67,12 +69,15 @@ export class Entity extends Emittable {
     Object.values(this.components).forEach(component => component.update(timeElapsed));
   }
 
-  public setModel(model: Object3D) {
-    this.model = model;
-    this.broadcast<Object3D>({
-      topic: 'load.character',
-      value: this.model,
+  set isModelReady(value: boolean) {
+    this._isModelReady = value;
+    this.broadcast<boolean>({
+      topic: EntityTopic.ModelLoaded,
+      value: this._isModelReady,
     });
+  }
 
+  get isModelReady(): boolean {
+    return this._isModelReady;
   }
 }
