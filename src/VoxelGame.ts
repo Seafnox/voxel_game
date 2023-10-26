@@ -15,22 +15,22 @@ import {
   BackSide,
   IUniform, Vector3,
 } from 'three';
-import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
-import { Entity } from './entity/commons/Entity';
-import { EntityManager } from './entity/commons/EntityManager';
-import { StaticModelComponent } from './entity/models/StaticModelComponent';
-import { SpatialGridController } from './grid/SpatialGridController';
-import { SpatialHashGrid } from './grid/SpatialHashGrid';
+import {SRGBColorSpace, PCFSoftShadowMap} from 'three/src/constants';
+import {Entity} from './entity/commons/Entity';
+import {EntityManager} from './entity/commons/EntityManager';
+import {StaticModelController} from './entity/models/StaticModelController';
+import {SpatialGridController} from './grid/SpatialGridController';
+import {SpatialHashGrid} from './grid/SpatialHashGrid';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
-import { VMath } from './VMath';
+import {VMath} from './VMath';
 import {ThirdPersonCamera} from "./entity/ThirdPersonCamera";
 // import {CustomizableModelComponent, CustomizableModelConfig} from "./entity/models/CustomizableModelComponent";
 import {UserCharacterController} from "./entity/user/UserCharacterController";
 import {LogMethod} from "./utils/logger/LogMethod";
 import {Level} from "./utils/logger/Level";
-import {GltfModelComponent} from "./entity/models/GltfModelComponent";
-import {ModelComponent} from "./entity/models/ModelComponent";
+import {GltfModelController} from "./entity/models/GltfModelController";
+import {ModelController} from "./entity/models/ModelController";
 
 const initialPlayerPositionX = 25;
 const initialPlayerPositionY = 10;
@@ -217,18 +217,21 @@ export class VoxelGame {
     for (let i = 0; i < 25; ++i) {
       const index = VMath.rand_int(1, 3);
       const pos = new Vector3(
-          (Math.random() * 2.0 - 1.0) * 500,
-          100,
-          (Math.random() * 2.0 - 1.0) * 500);
+        (Math.random() * 2.0 - 1.0) * 500,
+        100,
+        (Math.random() * 2.0 - 1.0) * 500);
 
       const cloudEntity = new Entity();
-      cloudEntity.AddComponent(new StaticModelComponent({
-        scene: this.scene,
-        resourcePath: './resources/clouds/',
-        resourceName: 'Cloud' + index + '.glb',
-        scale: Math.random() * 5 + 10,
-        emissive: new Color(0x808080),
-      }));
+      cloudEntity.AddComponent(
+        new StaticModelController({
+          scene: this.scene,
+          resourcePath: './resources/clouds/',
+          resourceName: 'Cloud' + index + '.glb',
+          scale: Math.random() * 5 + 10,
+          emissive: new Color(0x808080),
+        }),
+        ModelController
+      );
       cloudEntity.setPosition(pos);
       this.entityManager.add(cloudEntity);
       cloudEntity.disactivate();
@@ -256,16 +259,19 @@ export class VoxelGame {
         (Math.random() * 2.0 - 1.0) * 500);
 
       const e = new Entity();
-      e.AddComponent(new StaticModelComponent({
-        scene: this.scene,
-        resourcePath: './resources/trees/',
-        resourceName: name + '_' + index + '.fbx',
-        scale: 0.25,
-        emissive: new Color(0x000000),
-        specular: new Color(0x000000),
-        receiveShadow: true,
-        castShadow: true,
-      }));
+      e.AddComponent(
+        new StaticModelController({
+          scene: this.scene,
+          resourcePath: './resources/trees/',
+          resourceName: name + '_' + index + '.fbx',
+          scale: 0.25,
+          emissive: new Color(0x000000),
+          specular: new Color(0x000000),
+          receiveShadow: true,
+          castShadow: true,
+        }),
+        ModelController
+      );
       e.AddComponent(new SpatialGridController(this.grid));
       e.setPosition(pos);
       this.entityManager.add(e);
@@ -286,7 +292,7 @@ export class VoxelGame {
   private initPlayer() {
     const player = new Entity();
     player.AddComponent(
-      new GltfModelComponent({
+      new GltfModelController({
         scene: this.scene,
         resourcePath: './resources/units/',
         resourceModel: 'guard.glb',
@@ -294,7 +300,7 @@ export class VoxelGame {
         receiveShadow: true,
         castShadow: true,
       }),
-      ModelComponent,
+      ModelController,
     );
     player.AddComponent(new UserCharacterController());
     // player.AddComponent(new EquipWeapon({anchor: 'RightHandIndex1'}));
@@ -345,7 +351,7 @@ export class VoxelGame {
   private focusCameraOn(entityName: string) {
     const target = this.entityManager.get(entityName);
     const cameraEntity = this.entityManager.get(VoxelGame.cameraEntityName);
-    const camera = cameraEntity?.getComponent(ThirdPersonCamera);
+    const camera = cameraEntity?.getComponent<ThirdPersonCamera>(ThirdPersonCamera);
 
     if (!camera) {
       console.error(VoxelGame.cameraEntityName, cameraEntity, ThirdPersonCamera.constructor.name, camera);

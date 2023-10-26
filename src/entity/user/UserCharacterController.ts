@@ -4,12 +4,11 @@ import {Entity} from "../commons/Entity";
 import {UserInputController} from "./UserInputController";
 import {StateMachine} from "../commons/StateMachine";
 import {IdleUser} from "./states/IdleUser";
-import {CustomizableModelComponent} from "../models/CustomizableModelComponent";
 import {SpatialGridController} from "../../grid/SpatialGridController";
 import {LogMethod} from "../../utils/logger/LogMethod";
 import {Level} from "../../utils/logger/Level";
-import {GltfModelComponent} from "../models/GltfModelComponent";
-import {ModelComponent} from "../models/ModelComponent";
+import {GltfModelController} from "../models/GltfModelController";
+import {ModelController} from "../models/ModelController";
 
 export const enum UserState {
   Idle,
@@ -33,7 +32,7 @@ export class UserCharacterController implements Component {
   private stateMachine = new StateMachine();
   private state = UserState.Idle;
   private userInput = new UserInputController();
-  private modelComponent: ModelComponent | undefined;
+  private modelComponent: ModelController | undefined;
   entity: Entity | undefined;
 
   constructor() {
@@ -44,7 +43,7 @@ export class UserCharacterController implements Component {
   onEntityChange() {
     this.stateMachine.setEntity(this.entity!);
     this.stateMachine.setState(IdleUser.name);
-    this.modelComponent = this.entity?.getComponent(GltfModelComponent);
+    this.modelComponent = this.entity?.getComponent(GltfModelController);
   }
 
   update(timeElapsed: number): void {
@@ -66,7 +65,7 @@ export class UserCharacterController implements Component {
       return !!entity && false;
     };
 
-    const grid = this.entity?.getComponent(SpatialGridController);
+    const grid = this.entity?.getComponent<SpatialGridController>(SpatialGridController);
     const nearby = grid?.FindNearbyEntities(5).filter(client => isAlive(client.entity)) || [];
     const collisions = [];
 

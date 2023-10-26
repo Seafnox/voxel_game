@@ -13,16 +13,14 @@ import {
   LoadingManager,
   AnimationAction
 } from 'three';
-import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {MeshPhongMaterial} from 'three/src/materials/MeshPhongMaterial';
 import {EmittedEvent} from '../commons/EmittedEvent';
-import {ModelComponent} from "./ModelComponent";
+import {ModelController} from "./ModelController";
 
-export interface CustomizableModelConfig {
+export interface GltfModelConfig {
   resourcePath: string;
   resourceModel: string;
-  resourceAnimations: Record<string, string>;
   scene: Scene;
   scale: number;
   resourceTexture?: string;
@@ -33,18 +31,12 @@ export interface CustomizableModelConfig {
   visible?: boolean;
 }
 
-interface LoaderConfig {
-  path: string;
-  model: string;
-  animations: Record<string, string>;
-}
-
 interface ModelConfig {
   animation: AnimationAction;
   animations: Record<string, AnimationAction>;
 }
 
-export class CustomizableModelComponent extends ModelComponent {
+export class GltfModelController extends ModelController {
   private animationMap: Record<string, ModelConfig> = {};
   private activeAnimationName: string | undefined;
   private activeAnimation: ModelConfig | undefined;
@@ -53,7 +45,7 @@ export class CustomizableModelComponent extends ModelComponent {
   private texture: Texture | undefined;
 
   constructor(
-    private params: CustomizableModelConfig,
+    private params: GltfModelConfig,
   ) {
     super();
     this.loadResources();
@@ -124,7 +116,7 @@ export class CustomizableModelComponent extends ModelComponent {
 
     this.mixer = new AnimationMixer(this.model);
 
-    this.entity.setModel(this.model);
+    this.entity.isModelReady = true;
   }
 
   setActiveAnimation(animationName: string, trusted = false) {
@@ -156,22 +148,16 @@ export class CustomizableModelComponent extends ModelComponent {
 
     const path = this.params.resourcePath;
     const model = this.params.resourceModel;
-    const animations = this.params.resourceAnimations;
-    if (model.endsWith('glb') || model.endsWith('gltf')) {
-      this.loadModelFromGLTF({
-        path,
-        model,
-        animations,
-      });
-    } else if (model.endsWith('fbx')) {
-      this.loadModelFromFBX({
-        path,
-        model,
-        animations,
-      });
-    } else {
+    if (!model.endsWith('glb') && !model.endsWith('gltf')) {
       throw new Error(`Can't find loader for such type of file: ${model}`)
     }
+    const manager = new LoadingManager();
+    const loader = new GLTFLoader(manager);
+    loader.setPath(path);
+    loader.load(model, (glb) => {
+      this.onModelLoaded(glb.scene);
+      this.onAnimationLoaded('all', glb.animations);
+    });
   }
 
   onAnimationLoaded(key: string, animationList: AnimationClip[]) {
@@ -192,29 +178,6 @@ export class CustomizableModelComponent extends ModelComponent {
     }, {});
 
     this.animationMap[key] = { animations, animation: this.mixer!.clipAction(animationList[0]) };
-  }
-
-  loadModelFromGLTF({path, model}: LoaderConfig) {
-    const manager = new LoadingManager();
-    const loader = new GLTFLoader(manager);
-    loader.setPath(path);
-    loader.load(model, (glb) => {
-      this.onModelLoaded(glb.scene);
-      this.onAnimationLoaded('all', glb.animations);
-    });
-  }
-
-  loadModelFromFBX({path, model, animations}: LoaderConfig) {
-    const manager = new LoadingManager();
-    const loader = new FBXLoader(manager);
-    loader.setPath(path);
-    loader.load(model, (fbx) => {
-      this.onModelLoaded(fbx);
-      manager.onLoad = () => setTimeout(() => this.setActiveAnimation(Object.keys(this.animationMap)[0], true), 100);
-      Object.entries(animations).forEach(([key, fileName]) => {
-        loader.load(fileName, (fbx) => this.onAnimationLoaded(key, fbx.animations))
-      })
-    });
   }
 
   update(timeElapsed: number) {

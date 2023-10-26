@@ -3,7 +3,7 @@ import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {MeshPhongMaterial} from 'three/src/materials/MeshPhongMaterial';
 import {EmittedEvent} from '../commons/EmittedEvent';
-import {ModelComponent} from "./ModelComponent";
+import {ModelController} from "./ModelController";
 
 export interface StaticModelConfig {
   resourcePath: string;
@@ -18,7 +18,7 @@ export interface StaticModelConfig {
   visible?: boolean;
 }
 
-export class StaticModelComponent extends ModelComponent {
+export class StaticModelController extends ModelController {
   private boundOnPositionChange = this.onPositionChange.bind(this);
 
   constructor(
@@ -100,7 +100,7 @@ export class StaticModelComponent extends ModelComponent {
       }
     });
 
-    this.entity.setModel(obj);
+    this.entity.isModelReady = true;
   }
 
   loadAsGLTF() {
