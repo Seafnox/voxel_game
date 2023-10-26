@@ -25,10 +25,15 @@ import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
 import { VMath } from './VMath';
 import {ThirdPersonCamera} from "./entity/ThirdPersonCamera";
-import {CustomizableModelComponent} from "./entity/models/CustomizableModelComponent";
+// import {CustomizableModelComponent, CustomizableModelConfig} from "./entity/models/CustomizableModelComponent";
 import {UserCharacterController} from "./entity/user/UserCharacterController";
 import {LogMethod} from "./utils/logger/LogMethod";
 import {Level} from "./utils/logger/Level";
+import {GltfModelComponent} from "./entity/models/GltfModelComponent";
+
+const initialPlayerPositionX = 25;
+const initialPlayerPositionY = 10;
+const initialPlayerPositionZ = 0;
 
 export class VoxelGame {
   static containerId = 'container';
@@ -98,7 +103,10 @@ export class VoxelGame {
     const near = 1.0;
     const far = 10000.0;
     const camera = new PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(25, 10, 25);
+    camera.position.set(
+      initialPlayerPositionX,
+      initialPlayerPositionY,
+      initialPlayerPositionX + 25);
 
     return camera;
   }
@@ -276,21 +284,29 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initPlayer() {
     const player = new Entity();
-    player.AddComponent(new CustomizableModelComponent({
+    player.AddComponent(new GltfModelComponent({
       scene: this.scene,
-      resourcePath: './resources/guard/',
-      resourceModel: 'castle_guard_01.fbx',
-      resourceAnimations: {
-        swordAndShieldIdle: 'Sword And Shield Idle.fbx',
-        swordAndShieldRun: 'Sword And Shield Run.fbx',
-        swordAndShieldWalk: 'Sword And Shield Walk.fbx',
-        swordAndShieldSlash: 'Sword And Shield Slash.fbx',
-        swordAndShieldDeath: 'Sword And Shield Death.fbx',
-      },
-      scale: 0.035,
+      resourcePath: './resources/units/',
+      resourceModel: 'guard.glb',
+      scale: 15,
       receiveShadow: true,
       castShadow: true,
     }))
+    // player.AddComponent(new CustomizableModelConfig({
+    //   scene: this.scene,
+    //   resourcePath: './resources/units/',
+    //   resourceModel: 'guard.glb',
+    //   resourceAnimations: {
+    //     swordAndShieldIdle: 'Sword And Shield Idle.fbx',
+    //     swordAndShieldRun: 'Sword And Shield Run.fbx',
+    //     swordAndShieldWalk: 'Sword And Shield Walk.fbx',
+    //     swordAndShieldSlash: 'Sword And Shield Slash.fbx',
+    //     swordAndShieldDeath: 'Sword And Shield Death.fbx',
+    //   },
+    //   scale: 0.035,
+    //   receiveShadow: true,
+    //   castShadow: true,
+    // }))
     // player.AddComponent(new BasicCharacterControllerInput(params));
     player.AddComponent(new UserCharacterController());
     // player.AddComponent(new EquipWeapon({anchor: 'RightHandIndex1'}));
@@ -308,9 +324,10 @@ export class VoxelGame {
     // }));
     player.AddComponent(new SpatialGridController(this.grid));
     const pos = new Vector3(
-      30,
-      0,
-      0);
+      initialPlayerPositionX,
+      initialPlayerPositionY,
+      initialPlayerPositionZ
+    );
     player.setPosition(pos);
     // player.AddComponent(new AttackController({timing: 0.7}));
     this.entityManager.add(player, VoxelGame.playerEntityName);
