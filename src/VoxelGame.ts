@@ -215,7 +215,7 @@ export class VoxelGame {
       const cloudEntity = new Entity();
       cloudEntity.AddComponent(new StaticModelComponent({
         scene: this.scene,
-        resourcePath: './resources/nature2/GLTF/',
+        resourcePath: './resources/clouds/',
         resourceName: 'Cloud' + index + '.glb',
         scale: Math.random() * 5 + 10,
         emissive: new Color(0x808080),
@@ -229,13 +229,13 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initThrees() {
     const names = [
-      'CommonTree_Dead',
-      'CommonTree',
       'BirchTree',
       'BirchTree_Dead',
+      'CommonTree',
+      'CommonTree_Dead',
+      'PineTree',
       'Willow',
       'Willow_Dead',
-      'PineTree',
     ];
     for (let i = 0; i < 100; ++i) {
       const name = names[VMath.rand_int(0, names.length - 1)];
@@ -249,7 +249,7 @@ export class VoxelGame {
       const e = new Entity();
       e.AddComponent(new StaticModelComponent({
         scene: this.scene,
-        resourcePath: './resources/trees/FBX/',
+        resourcePath: './resources/trees/',
         resourceName: name + '_' + index + '.fbx',
         scale: 0.25,
         emissive: new Color(0x000000),
