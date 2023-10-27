@@ -5,6 +5,9 @@ import { EmittedEvent } from './EmittedEvent';
 import { EntityManager } from './EntityManager';
 import {isFunction} from "../../utils/isFunction";
 import {EntityTopic} from "./EntityTopic";
+import {LogMethod} from "../../utils/logger/LogMethod";
+import {LogAction} from "../../utils/logger/LogAction";
+import {Level} from "../../utils/logger/Level";
 
 export class Entity extends Emittable {
   name?: string;
@@ -65,8 +68,8 @@ export class Entity extends Emittable {
     });
   }
 
-  update(timeElapsed: number) {
-    Object.values(this.components).forEach(component => component.update(timeElapsed));
+  update(deltaTime: number) {
+    Object.values(this.components).forEach(component => component.update(deltaTime));
   }
 
   set isModelReady(value: boolean) {

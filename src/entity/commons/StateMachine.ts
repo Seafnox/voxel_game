@@ -14,7 +14,7 @@ export interface SimpleState {
   action: AnimationAction | undefined;
   exit(nextState: SimpleState): void;
   enter(prevState: SimpleState | undefined): void;
-  validate(timeElapsed: number, input: StateInput): void;
+  validate(deltaTime: number, input: StateInput): void;
 }
 
 export class StateMachine {
@@ -57,9 +57,9 @@ export class StateMachine {
     newState.enter(prevState);
   }
 
-  validateState(timeElapsed: number, input: StateInput) {
+  validateState(deltaTime: number, input: StateInput) {
     if (this.currentState) {
-      this.currentState.validate(timeElapsed, input);
+      this.currentState.validate(deltaTime, input);
 
       this.entity?.broadcast({
         topic: 'player.action',

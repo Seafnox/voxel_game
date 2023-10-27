@@ -10,8 +10,7 @@ import {
   AnimationMixer,
   Object3D,
   Mesh,
-  LoadingManager,
-  AnimationAction
+  LoadingManager
 } from 'three';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
 import {MeshPhongMaterial} from 'three/src/materials/MeshPhongMaterial';
@@ -32,16 +31,8 @@ export interface CustomizableModelConfig {
   visible?: boolean;
 }
 
-interface ModelConfig {
-  animation: AnimationAction;
-  animations: Record<string, AnimationAction>;
-}
-
 export class FbxModelController extends ModelController {
-  private animationMap: Record<string, ModelConfig> = {};
-  private activeAnimation: ModelConfig | undefined;
   private boundOnPositionChange = this.onPositionChange.bind(this);
-  private mixer: AnimationMixer | undefined;
   private texture: Texture | undefined;
 
   constructor(
@@ -119,25 +110,6 @@ export class FbxModelController extends ModelController {
     this.entity.isModelReady = true;
   }
 
-  setActiveAnimation(animationName: string, trusted = false) {
-    if (!trusted) {
-      const animations = this.animationMap;
-
-      if (!animations[animationName]) {
-        console.warn(`Can't find animation '${animationName}' in list [${Object.keys(animations).join(', ')}]`);
-        return;
-      }
-    }
-
-    console.log('setActiveAnimation', animationName, Object.keys(this.animationMap || {}));
-
-    this.mixer!.stopAllAction();
-
-    this.activeAnimation = this.animationMap[animationName];
-    const action = this.activeAnimation.animation;
-    action.play();
-  }
-
   loadResources() {
     if (this.params.resourceTexture) {
       const textureLoader = new TextureLoader();
@@ -156,36 +128,19 @@ export class FbxModelController extends ModelController {
     loader.setPath(path);
     loader.load(model, (fbx) => {
       this.onModelLoaded(fbx);
-      manager.onLoad = () => setTimeout(() => this.setActiveAnimation(Object.keys(this.animationMap)[0], true), 100);
+      manager.onLoad = () => setTimeout(() => this.setActiveAnimationTrusted(Object.keys(this.animationMap)[0]), 100);
       Object.entries(animations).forEach(([key, fileName]) => {
-        loader.load(fileName, (fbx) => this.onAnimationLoaded(key, fbx.animations))
+        loader.load(fileName, (fbx) => this.onAnimationLoaded(key, fbx.animations[0]))
       })
     });
   }
 
-  onAnimationLoaded(key: string, animationList: AnimationClip[]) {
+  onAnimationLoaded(key: string, animationClip: AnimationClip) {
     if (!this.entity) {
       throw new Error(`Can't find parent entity`);
     }
 
-    if (this.animationMap[key]) {
-      console.warn(`Animation with name '${key}' already exsist!`);
-      return;
-    }
-
-    const animations = animationList.reduce<Record<string, AnimationAction>>((result, animation) => {
-      console.log('Found animation', key, animation.name);
-      result[animation.name] = this.mixer!.clipAction(animation);
-
-      return result;
-    }, {});
-
-    this.animationMap[key] = { animations, animation: this.mixer!.clipAction(animationList[0]) };
-  }
-
-  update(timeElapsed: number) {
-    if (this.mixer) {
-      this.mixer.update(timeElapsed);
-    }
+    console.log('Found animation', key, animationClip.name);
+    this.animationMap[animationClip.name] = this.mixer!.clipAction(animationClip);
   }
 }

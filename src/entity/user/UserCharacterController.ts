@@ -7,7 +7,6 @@ import {IdleUser} from "./states/IdleUser";
 import {SpatialGridController} from "../../grid/SpatialGridController";
 import {LogMethod} from "../../utils/logger/LogMethod";
 import {Level} from "../../utils/logger/Level";
-import {GltfModelController} from "../models/GltfModelController";
 import {ModelController} from "../models/ModelController";
 
 export const enum UserState {
@@ -43,14 +42,14 @@ export class UserCharacterController implements Component {
   onEntityChange() {
     this.stateMachine.setEntity(this.entity!);
     this.stateMachine.setState(IdleUser.name);
-    this.modelComponent = this.entity?.getComponent(GltfModelController);
+    this.modelComponent = this.entity?.getComponent(ModelController);
   }
 
-  update(timeElapsed: number): void {
-    this.stateMachine.validateState(timeElapsed, {});
-    this.normalizeVelocity(timeElapsed);
-    this.calculateRotation(timeElapsed);
-    this.calculatePosition(timeElapsed);
+  update(deltaTime: number): void {
+    this.stateMachine.validateState(deltaTime, {});
+    this.normalizeVelocity(deltaTime);
+    this.calculateRotation(deltaTime);
+    this.calculatePosition(deltaTime);
   }
 
   findIntersections(pos: Vector3) {
@@ -82,7 +81,6 @@ export class UserCharacterController implements Component {
     return collisions;
   }
 
-  @LogMethod({level: Level.info})
   private getModel(): Object3D | undefined {
     if (!this.modelComponent) {
       console.log(this);
@@ -92,21 +90,21 @@ export class UserCharacterController implements Component {
     return this.modelComponent.getModel();
   }
 
-  private normalizeVelocity(timeElapsed: number) {
+  private normalizeVelocity(deltaTime: number) {
     const velocity = this.velocity;
     const frameDeceleration = new Vector3(
       velocity.x * this.deceleration.x,
       velocity.y * this.deceleration.y,
       velocity.z * this.deceleration.z
     );
-    frameDeceleration.multiplyScalar(timeElapsed);
+    frameDeceleration.multiplyScalar(deltaTime);
     frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(
       Math.abs(frameDeceleration.z), Math.abs(velocity.z));
 
     velocity.add(frameDeceleration);
   }
 
-  private calculateRotation(timeElapsed: number) {
+  private calculateRotation(deltaTime: number) {
     const target = this.getModel();
     if (!target) return;
 
@@ -121,19 +119,19 @@ export class UserCharacterController implements Component {
     }
 
     if (input.forward) {
-      this.velocity.z += acc.z * timeElapsed;
+      this.velocity.z += acc.z * deltaTime;
     }
     if (input.backward) {
-      this.velocity.z -= acc.z * timeElapsed;
+      this.velocity.z -= acc.z * deltaTime;
     }
     if (input.left) {
       RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, 4.0 * Math.PI * timeElapsed * this.acceleration.y);
+      rotationMultiplier.setFromAxisAngle(RotationDirection, 4.0 * Math.PI * deltaTime * this.acceleration.y);
       currentRotation.multiply(rotationMultiplier);
     }
     if (input.right) {
       RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, 4.0 * -Math.PI * timeElapsed * this.acceleration.y);
+      rotationMultiplier.setFromAxisAngle(RotationDirection, 4.0 * -Math.PI * deltaTime * this.acceleration.y);
       currentRotation.multiply(rotationMultiplier);
     }
 
@@ -141,7 +139,7 @@ export class UserCharacterController implements Component {
     target.quaternion.copy(currentRotation);
   }
 
-  private calculatePosition(timeElapsed: number) {
+  private calculatePosition(deltaTime: number) {
     const target = this.getModel();
     if (!target) return;
 
@@ -156,8 +154,8 @@ export class UserCharacterController implements Component {
     sideways.applyQuaternion(target.quaternion);
     sideways.normalize();
 
-    sideways.multiplyScalar(this.velocity.x * timeElapsed);
-    forward.multiplyScalar(this.velocity.z * timeElapsed);
+    sideways.multiplyScalar(this.velocity.x * deltaTime);
+    forward.multiplyScalar(this.velocity.z * deltaTime);
 
     const pos = target.position.clone();
     pos.add(forward);

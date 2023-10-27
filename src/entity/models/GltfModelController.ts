@@ -2,7 +2,6 @@ import {
   Vector3,
   Scene,
   Color,
-  AnimationClip,
   TextureLoader,
   sRGBEncoding,
   Texture,
@@ -10,8 +9,7 @@ import {
   AnimationMixer,
   Object3D,
   Mesh,
-  LoadingManager,
-  AnimationAction
+  LoadingManager
 } from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import {MeshPhongMaterial} from 'three/src/materials/MeshPhongMaterial';
@@ -31,17 +29,8 @@ export interface GltfModelConfig {
   visible?: boolean;
 }
 
-interface ModelConfig {
-  animation: AnimationAction;
-  animations: Record<string, AnimationAction>;
-}
-
 export class GltfModelController extends ModelController {
-  private animationMap: Record<string, ModelConfig> = {};
-  private activeAnimationName: string | undefined;
-  private activeAnimation: ModelConfig | undefined;
   private boundOnPositionChange = this.onPositionChange.bind(this);
-  private mixer: AnimationMixer | undefined;
   private texture: Texture | undefined;
 
   constructor(
@@ -68,20 +57,10 @@ export class GltfModelController extends ModelController {
   }
 
   private onModelLoaded(model: Object3D) {
-    if (!this.entity) {
-      throw new Error(`Can't find parent entity`);
-    }
-
-    this.mixer?.stopAllAction();
-
     this.model = model;
     this.params.scene.add(this.model);
 
     this.model.scale.setScalar(this.params.scale);
-    this.model.position.copy(this.entity.getPosition());
-
-    // FIXME possible it is no necessary
-    this.entity.setPosition(this.entity.getPosition());
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -113,30 +92,6 @@ export class GltfModelController extends ModelController {
         c.visible = this.params.visible;
       }
     });
-
-    this.mixer = new AnimationMixer(this.model);
-
-    this.entity.isModelReady = true;
-  }
-
-  setActiveAnimation(animationName: string, trusted = false) {
-    if (!trusted) {
-      const animations = this.animationMap;
-
-      if (!animations[animationName]) {
-        console.warn(`Can't find animation '${animationName}' in list [${Object.keys(animations).join(', ')}]`);
-        return;
-      }
-    }
-
-    console.log('setActiveAnimation', animationName, Object.keys(this.animationMap || {}));
-
-    this.mixer!.stopAllAction();
-
-    this.activeAnimationName = animationName;
-    this.activeAnimation = this.animationMap[animationName];
-    const action = this.activeAnimation.animation;
-    action.play();
   }
 
   loadResources() {
@@ -148,41 +103,33 @@ export class GltfModelController extends ModelController {
 
     const path = this.params.resourcePath;
     const model = this.params.resourceModel;
+
     if (!model.endsWith('glb') && !model.endsWith('gltf')) {
       throw new Error(`Can't find loader for such type of file: ${model}`)
     }
+
     const manager = new LoadingManager();
     const loader = new GLTFLoader(manager);
     loader.setPath(path);
     loader.load(model, (glb) => {
+      this.mixer?.stopAllAction();
+
       this.onModelLoaded(glb.scene);
-      this.onAnimationLoaded('all', glb.animations);
+
+      const entity = this.getEntityOrThrow();
+      const model = this.getModelOrThrow();
+
+      model.position.copy(entity.getPosition());
+
+      this.animationMap = {};
+      this.mixer = new AnimationMixer(model);
+
+      glb.animations.forEach(animationClip => this.addAnimation(animationClip));
+
+      // FIXME possible it is no necessary
+      entity.setPosition(entity.getPosition());
+
+      entity.isModelReady = true;
     });
-  }
-
-  onAnimationLoaded(key: string, animationList: AnimationClip[]) {
-    if (!this.entity) {
-      throw new Error(`Can't find parent entity`);
-    }
-
-    if (this.animationMap[key]) {
-      console.warn(`Animation with name '${key}' already exsist!`);
-      return;
-    }
-
-    const animations = animationList.reduce<Record<string, AnimationAction>>((result, animation) => {
-      console.log('Found animation', key, animation.name);
-      result[animation.name] = this.mixer!.clipAction(animation);
-
-      return result;
-    }, {});
-
-    this.animationMap[key] = { animations, animation: this.mixer!.clipAction(animationList[0]) };
-  }
-
-  update(timeElapsed: number) {
-    if (this.mixer) {
-      this.mixer.update(timeElapsed);
-    }
   }
 }

@@ -31,7 +31,7 @@ export class ThirdPersonCamera implements Component {
     return idealLookat;
   }
 
-  update(timeElapsed: number) {
+  update(deltaTime: number) {
     if (!this.target) return;
     if (!this.entity) return;
 
@@ -39,8 +39,8 @@ export class ThirdPersonCamera implements Component {
     const idealLookat = this.calculateIdealLookat(this.target);
 
     // const t = 0.05;
-    // const t = 4.0 * timeElapsed;
-    const t = 1.0 - Math.pow(0.01, timeElapsed);
+    // const t = 4.0 * deltaTime;
+    const t = 1.0 - Math.pow(0.01, deltaTime);
 
     this.currentPosition.lerp(idealOffset, t);
     this.currentLookAt.lerp(idealLookat, t);

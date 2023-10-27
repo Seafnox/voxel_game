@@ -1,4 +1,7 @@
 import { Entity } from './Entity';
+import {LogMethod} from "../../utils/logger/LogMethod";
+import {LogAction} from "../../utils/logger/LogAction";
+import {Level} from "../../utils/logger/Level";
 
 export type FilterPredicate<TValue, SValue extends TValue> = (value: TValue, index: number, array: TValue[]) => value is SValue;
 
@@ -39,9 +42,9 @@ export class EntityManager {
     this.activeEntities.splice(i, 1);
   }
 
-  update(timeElapsed: number) {
+  update(deltaTime: number) {
     for (const e of this.activeEntities) {
-      e.update(timeElapsed);
+      e.update(deltaTime);
     }
   }
 }

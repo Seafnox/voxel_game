@@ -4,5 +4,5 @@ export interface Component {
   entity: Entity | undefined;
   // FIXME turn into setter with onChange hook oldEntity, newEntity
   onEntityChange?(): void;
-  update(timeElapsed: number): void;
+  update(deltaTime: number): void;
 }
