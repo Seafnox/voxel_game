@@ -363,17 +363,17 @@ export class VoxelGame {
 
   private requestAnimation() {
     requestAnimationFrame((t) => {
-      if (this.prevTick === null) {
+      if (!this.prevTick) {
         this.prevTick = t;
       }
 
       this.requestAnimation();
 
-      const deltaTime = t - this.prevTick!;
+      const deltaTime = t - this.prevTick;
 
       this.threeJs.render(this.scene, this.camera);
       this.updateTick(t, deltaTime);
-      //this.entityManager.update(deltaTime);
+      this.entityManager.update(deltaTime);
       this.prevTick = t;
     });
   }

@@ -28,6 +28,7 @@ export class UserCharacterController implements Component {
   private velocity = new Vector3(0, 0, 0);
   private position = new Vector3();
   private rotation = new Quaternion();
+  private rotationMultiKoef = 0.03;
   private stateMachine = new StateMachine();
   private state = UserState.Idle;
   private userInput = new UserInputController();
@@ -97,9 +98,8 @@ export class UserCharacterController implements Component {
       velocity.y * this.deceleration.y,
       velocity.z * this.deceleration.z
     );
-    frameDeceleration.multiplyScalar(deltaTime);
-    frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(
-      Math.abs(frameDeceleration.z), Math.abs(velocity.z));
+    frameDeceleration.multiplyScalar(deltaTime/1000);
+    frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
 
     velocity.add(frameDeceleration);
   }
@@ -126,12 +126,12 @@ export class UserCharacterController implements Component {
     }
     if (input.left) {
       RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, 4.0 * Math.PI * deltaTime * this.acceleration.y);
+      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationMultiKoef * Math.PI * deltaTime * this.acceleration.y);
       currentRotation.multiply(rotationMultiplier);
     }
     if (input.right) {
       RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, 4.0 * -Math.PI * deltaTime * this.acceleration.y);
+      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationMultiKoef * -Math.PI * deltaTime * this.acceleration.y);
       currentRotation.multiply(rotationMultiplier);
     }
 
@@ -154,8 +154,8 @@ export class UserCharacterController implements Component {
     sideways.applyQuaternion(target.quaternion);
     sideways.normalize();
 
-    sideways.multiplyScalar(this.velocity.x * deltaTime);
-    forward.multiplyScalar(this.velocity.z * deltaTime);
+    sideways.multiplyScalar(this.velocity.x * deltaTime/1000);
+    forward.multiplyScalar(this.velocity.z * deltaTime/1000);
 
     const pos = target.position.clone();
     pos.add(forward);

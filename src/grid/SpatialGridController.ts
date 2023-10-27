@@ -15,8 +15,7 @@ export class SpatialGridController implements Component {
 
   entity: Entity | undefined;
 
-  update(): void {
-  }
+  update(): void {}
 
   onEntityChange() {
     if (!this.entity) {

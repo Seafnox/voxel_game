@@ -119,6 +119,5 @@ export class StaticModelController extends ModelController {
     });
   }
 
-  public update(): void {
-  }
+  public update(): void {}
 }

@@ -77,6 +77,6 @@ export abstract class ModelController implements Component {
 
   // @LogMethod({logType: [LogAction.entry], level: Level.info})
   update(deltaTime: number) {
-    this.mixer?.update(deltaTime);
+    this.mixer?.update(deltaTime/1000);
   }
 }

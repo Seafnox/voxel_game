@@ -24,6 +24,7 @@ export class EntityManager {
     return this.activeEntities.filter(predicate);
   }
 
+  @LogMethod({logType: [LogAction.entry], level: Level.info})
   add(entity: Entity, preferName?: string) {
     const name = preferName || this.generateName();
     this.entities[name] = entity;
@@ -33,6 +34,7 @@ export class EntityManager {
     entity.name = name;
   }
 
+  @LogMethod({logType: [LogAction.entry], level: Level.info})
   disactivate(entity: Entity) {
     const i = this.activeEntities.indexOf(entity);
     if (i < 0) {

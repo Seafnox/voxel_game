@@ -12,9 +12,10 @@ export class ThirdPersonCamera implements Component {
   constructor(
     private camera: PerspectiveCamera
   ) {
-
     this.currentPosition = new Vector3();
     this.currentLookAt = new Vector3();
+
+    console.error(new Error('Camera update is broken!'));
   }
 
   calculateIdealOffset(target: Entity) {
@@ -32,20 +33,20 @@ export class ThirdPersonCamera implements Component {
   }
 
   update(deltaTime: number) {
-    if (!this.target) return;
-    if (!this.entity) return;
-
-    const idealOffset = this.calculateIdealOffset(this.target);
-    const idealLookat = this.calculateIdealLookat(this.target);
-
-    // const t = 0.05;
-    // const t = 4.0 * deltaTime;
-    const t = 1.0 - Math.pow(0.01, deltaTime);
-
-    this.currentPosition.lerp(idealOffset, t);
-    this.currentLookAt.lerp(idealLookat, t);
-
-    this.camera.position.copy(this.currentPosition);
-    this.camera.lookAt(this.currentLookAt);
+    // if (!this.target) return;
+    // if (!this.entity) return;
+    //
+    // const idealOffset = this.calculateIdealOffset(this.target);
+    // const idealLookat = this.calculateIdealLookat(this.target);
+    //
+    // // const t = 0.05;
+    // // const t = 4.0 * deltaTime;
+    // const t = 1.0 - Math.pow(0.01, deltaTime);
+    //
+    // this.currentPosition.lerp(idealOffset, t);
+    // this.currentLookAt.lerp(idealLookat, t);
+    //
+    // this.camera.position.copy(this.currentPosition);
+    // this.camera.lookAt(this.currentLookAt);
   }
 }

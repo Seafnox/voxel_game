@@ -1,13 +1,10 @@
-import { Vector3, Quaternion, Object3D } from 'three';
+import { Vector3, Quaternion } from 'three';
 import { Component } from './Component';
 import { Emittable } from './Emittable';
 import { EmittedEvent } from './EmittedEvent';
 import { EntityManager } from './EntityManager';
 import {isFunction} from "../../utils/isFunction";
 import {EntityTopic} from "./EntityTopic";
-import {LogMethod} from "../../utils/logger/LogMethod";
-import {LogAction} from "../../utils/logger/LogAction";
-import {Level} from "../../utils/logger/Level";
 
 export class Entity extends Emittable {
   name?: string;
@@ -15,7 +12,6 @@ export class Entity extends Emittable {
   private components: Record<string, Component> = {}; // SET OF COMPONENTS
   private position = new Vector3();
   private rotation = new Quaternion();
-  private model?: Object3D;
   private _isModelReady = false;
 
   disactivate() {
