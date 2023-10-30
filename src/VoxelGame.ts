@@ -36,6 +36,7 @@ import {FpsController} from "./entity/hud/FpsController";
 import {EntityName} from "./entity/commons/EntityName";
 import {HtmlElementId} from "./HtmlElementId";
 import {CameraHudController} from "./entity/hud/CameraHudController";
+import {CharacterHudController} from "./entity/hud/CharacterHudController";
 
 const initialPlayerPositionX = 25;
 const initialPlayerPositionY = 10;
@@ -366,6 +367,7 @@ export class VoxelGame {
     const hud = new Entity();
     hud.AddComponent(new FpsController());
     hud.AddComponent(new CameraHudController());
+    hud.AddComponent(new CharacterHudController());
     this.entityManager.add(hud);
   }
 
