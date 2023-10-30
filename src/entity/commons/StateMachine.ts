@@ -38,7 +38,7 @@ export class StateMachine {
     }
 
     if (!(this.entity instanceof VisualEntity)) {
-      throw new Error(`Can't mace calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
+      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
     }
 
     if (!this.states[name]) {
