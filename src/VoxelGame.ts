@@ -33,16 +33,15 @@ import {GltfModelController} from "./entity/models/GltfModelController";
 import {ModelController} from "./entity/models/ModelController";
 import {VisualEntity} from "./entity/commons/VisualEntity";
 import {FpsController} from "./entity/hud/FpsController";
+import {EntityName} from "./entity/commons/EntityName";
+import {HtmlElementId} from "./HtmlElementId";
+import {CameraHudController} from "./entity/hud/CameraHudController";
 
 const initialPlayerPositionX = 25;
 const initialPlayerPositionY = 10;
 const initialPlayerPositionZ = 0;
 
 export class VoxelGame {
-  static containerId = 'container';
-  static sceneId = 'threeJs';
-  static playerEntityName = 'player';
-  static cameraEntityName = 'camera';
   private threeJs = new WebGLRenderer({
     antialias: true,
   });
@@ -79,10 +78,10 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private addWindowSizeWatcher() {
-    const container = document.getElementById(VoxelGame.containerId);
+    const container = document.getElementById(HtmlElementId.Container);
 
     if (!container) {
-      throw new Error(`Can't find DOM Element with id='${VoxelGame.containerId}'`);
+      throw new Error(`Can't find DOM Element with id='${HtmlElementId.Container}'`);
     }
 
     container.appendChild(this.threeJs.domElement);
@@ -114,9 +113,9 @@ export class VoxelGame {
   }
 
   private initCamera(): void {
-    const camera = new Entity();
+    const camera = new VisualEntity();
     camera.AddComponent(new ThirdPersonCamera(this.camera));
-    this.entityManager.add(camera, VoxelGame.cameraEntityName);
+    this.entityManager.add(camera, EntityName.Camera);
   }
 
   @LogMethod({level: Level.info})
@@ -126,7 +125,7 @@ export class VoxelGame {
     this.threeJs.shadowMap.type = PCFSoftShadowMap;
     this.threeJs.setPixelRatio(window.devicePixelRatio);
     this.threeJs.setSize(window.innerWidth, window.innerHeight);
-    this.threeJs.domElement.id = VoxelGame.sceneId;
+    this.threeJs.domElement.id = HtmlElementId.Scene;
   }
 
   @LogMethod({level: Level.info})
@@ -325,21 +324,21 @@ export class VoxelGame {
       initialPlayerPositionZ
     );
     player.setPosition(pos);
-    this.entityManager.add(player, VoxelGame.playerEntityName);
-    this.focusCameraOn(VoxelGame.playerEntityName)
+    this.entityManager.add(player, EntityName.Player);
+    this.focusCameraOn(EntityName.Player)
   }
 
   private focusCameraOn(entityName: string) {
     const target = this.entityManager.get<VisualEntity>(entityName);
-    const cameraEntity = this.entityManager.get<VisualEntity>(VoxelGame.cameraEntityName);
+    const cameraEntity = this.entityManager.get<VisualEntity>(EntityName.Camera);
     const camera = cameraEntity?.getComponent<ThirdPersonCamera>(ThirdPersonCamera);
 
     if (!camera) {
-      console.error(VoxelGame.cameraEntityName, cameraEntity, ThirdPersonCamera.constructor.name, camera);
+      console.error(EntityName.Camera, cameraEntity, ThirdPersonCamera.constructor.name, camera);
       throw new Error(`No camera detected for focus on object`);
     }
 
-    camera.target = target;
+    camera.focusCameraOn(target);
   }
 
   @LogMethod({level: Level.info})
@@ -366,6 +365,7 @@ export class VoxelGame {
   private initHud() {
     const hud = new Entity();
     hud.AddComponent(new FpsController());
+    hud.AddComponent(new CameraHudController());
     this.entityManager.add(hud);
   }
 

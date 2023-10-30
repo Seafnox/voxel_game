@@ -1,10 +1,10 @@
 import {Component} from "../commons/Component";
 import {Entity} from "../commons/Entity";
+import {HtmlElementId} from "../../HtmlElementId";
 
 export class FpsController implements Component {
   entity: Entity | undefined;
   private tickFrames: number[] = [];
-  static fpsId = 'fps';
 
   update(deltaTime: number) {
     if (this.tickFrames.length >= 1000) {
@@ -12,7 +12,7 @@ export class FpsController implements Component {
     }
 
     this.tickFrames.push(deltaTime);
-    const fpsWrapper = document.getElementById(FpsController.fpsId);
+    const fpsWrapper = document.getElementById(HtmlElementId.Fps);
     const sectionTicks = this.tickFrames.slice(this.tickFrames.length - 200);
     const totalSectionTime = sectionTicks.reduce((a, b) => a + b, 0);
     if (fpsWrapper) {

@@ -1,12 +1,11 @@
 import {Component} from "./commons/Component";
-import {PerspectiveCamera, Vector3} from "three";
+import {PerspectiveCamera, Quaternion, Vector3} from "three";
 import {VisualEntity} from "./commons/VisualEntity";
 
 export class ThirdPersonCamera implements Component {
   entity: VisualEntity | undefined;
-  target: VisualEntity | undefined;
 
-  private currentPosition: Vector3 = new Vector3();
+  private target: VisualEntity | undefined;
   private currentLookAt: Vector3 = new Vector3();
 
   constructor(
@@ -39,13 +38,22 @@ export class ThirdPersonCamera implements Component {
     // const t = 0.05;
     // const t = 4.0 * deltaTime;
     const t = 1.0 - Math.pow(0.01, deltaTime);
-    const currentPosition = this.currentPosition.clone();
+    const currentPosition = this.entity.getPosition().clone();
     const currentLookAt = this.currentLookAt.clone();
+    const currentRotation = new Quaternion();
 
     currentPosition.lerp(idealOffset, t);
     currentLookAt.lerp(idealLookat, t);
+    currentRotation.setFromUnitVectors(currentPosition, currentLookAt);
+
+    this.entity.setPosition(currentPosition);
+    this.entity.setRotation(currentRotation);
 
     // this.camera.position.copy(this.currentPosition);
     // this.camera.lookAt(this.currentLookAt);
+  }
+
+  focusCameraOn(target: VisualEntity | undefined) {
+    this.target = target;
   }
 }
