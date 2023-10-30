@@ -367,18 +367,23 @@ export class VoxelGame {
         this.prevTick = t;
       }
 
-      this.requestAnimation();
-
       const deltaTime = t - this.prevTick;
 
+      this.calculateFps(deltaTime);
+      this.requestControllerUpdate(deltaTime);
       this.threeJs.render(this.scene, this.camera);
-      this.updateTick(t, deltaTime);
-      this.entityManager.update(deltaTime);
+
       this.prevTick = t;
+
+      this.requestAnimation();
     });
   }
 
-  private updateTick(_: number, deltaTime: number) {
+  private requestControllerUpdate(deltaTime: number) {
+    this.entityManager.update(deltaTime);
+  }
+
+  private calculateFps(deltaTime: number) {
     if (this.tickFrames.length >= 1000) {
       this.tickFrames = this.tickFrames.slice(this.tickFrames.length - 200);
     }
@@ -386,8 +391,9 @@ export class VoxelGame {
     this.tickFrames.push(deltaTime);
     const fpsWrapper = document.getElementById(VoxelGame.fpsId);
     const sectionTicks = this.tickFrames.slice(this.tickFrames.length - 200);
+    const totalSectionTime = sectionTicks.reduce((a, b) => a + b, 0);
     if (fpsWrapper) {
-      fpsWrapper.innerText = Math.floor(1000 * sectionTicks.length / sectionTicks.reduce((a, b) => a + b, 0)).toString();
+      fpsWrapper.innerText = Math.floor(1000 * sectionTicks.length / totalSectionTime).toString();
     }
   }
 }
