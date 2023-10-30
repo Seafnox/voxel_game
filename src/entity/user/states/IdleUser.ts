@@ -1,10 +1,10 @@
 import {SimpleState, StateMachine} from "../../commons/StateMachine";
-import {Entity} from "../../commons/Entity";
 import {AnimationAction} from "three";
 import {LogMethod} from "../../../utils/logger/LogMethod";
 import {Level} from "../../../utils/logger/Level";
-import {EntityTopic} from "../../commons/EntityTopic";
+import {VisualEntityTopic} from "../../commons/VisualEntityTopic";
 import {ModelController} from "../../models/ModelController";
+import {VisualEntity} from "../../commons/VisualEntity";
 
 export class IdleUser implements SimpleState {
   availableNext: SimpleState[] | undefined;
@@ -13,7 +13,7 @@ export class IdleUser implements SimpleState {
 
   constructor(
     private controller: StateMachine,
-    private entity: Entity,
+    private entity: VisualEntity,
   ) {}
 
   @LogMethod({level: Level.info})
@@ -21,7 +21,7 @@ export class IdleUser implements SimpleState {
     if (this.entity.isModelReady) {
       this.getModelAndRunIdleAnimation();
     } else {
-      this.entity.on<boolean>(EntityTopic.ModelLoaded, () => {
+      this.entity.on<boolean>(VisualEntityTopic.ModelLoaded, () => {
         this.getModelAndRunIdleAnimation();
       })
     }

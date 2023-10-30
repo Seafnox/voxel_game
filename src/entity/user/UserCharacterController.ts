@@ -8,6 +8,7 @@ import {SpatialGridController} from "../../grid/SpatialGridController";
 import {LogMethod} from "../../utils/logger/LogMethod";
 import {Level} from "../../utils/logger/Level";
 import {ModelController} from "../models/ModelController";
+import {VisualEntity} from "../commons/VisualEntity";
 
 export const enum UserState {
   Idle,
@@ -30,10 +31,9 @@ export class UserCharacterController implements Component {
   private rotation = new Quaternion();
   private rotationMultiKoef = 0.03;
   private stateMachine = new StateMachine();
-  private state = UserState.Idle;
   private userInput = new UserInputController();
   private modelComponent: ModelController | undefined;
-  entity: Entity | undefined;
+  entity: VisualEntity | undefined;
 
   constructor() {
     this.stateMachine.addState(IdleUser);

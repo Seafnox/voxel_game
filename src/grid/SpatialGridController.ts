@@ -1,8 +1,8 @@
-import {Entity} from 'src/entity/commons/Entity';
 import {Vector3} from 'three';
 import {Component} from '../entity/commons/Component';
 import {EmittedEvent} from '../entity/commons/EmittedEvent';
 import {SpatialHashGrid, SpatialPoint, SpatialClient} from './SpatialHashGrid';
+import {VisualEntity} from "../entity/commons/VisualEntity";
 
 export class SpatialGridController implements Component {
   private _client?: SpatialClient;
@@ -13,7 +13,7 @@ export class SpatialGridController implements Component {
   ) {
   }
 
-  entity: Entity | undefined;
+  entity: VisualEntity | undefined;
 
   update(): void {}
 

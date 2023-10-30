@@ -1,5 +1,6 @@
 import {Entity} from "./Entity";
 import {AnimationAction} from "three";
+import {VisualEntity} from "./VisualEntity";
 
 export interface StateInput {
 
@@ -7,7 +8,7 @@ export interface StateInput {
 
 export interface SimpleStateConstructor {
   // eslint-disable-next-line @typescript-eslint/no-misused-new
-  new (controller: StateMachine, entity: Entity): SimpleState;
+  new (controller: StateMachine, entity: VisualEntity): SimpleState;
 }
 export interface SimpleState {
   availableNext: SimpleState[] | undefined;
@@ -33,8 +34,11 @@ export class StateMachine {
 
   setState(name: string) {
     if (!this.entity) {
-      console.log(this);
       throw new Error(`Can't find entity in ${this.constructor.name}`);
+    }
+
+    if (!(this.entity instanceof VisualEntity)) {
+      throw new Error(`Can't mace calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
     }
 
     if (!this.states[name]) {

@@ -31,6 +31,8 @@ import {LogMethod} from "./utils/logger/LogMethod";
 import {Level} from "./utils/logger/Level";
 import {GltfModelController} from "./entity/models/GltfModelController";
 import {ModelController} from "./entity/models/ModelController";
+import {VisualEntity} from "./entity/commons/VisualEntity";
+import {FpsController} from "./entity/hud/FpsController";
 
 const initialPlayerPositionX = 25;
 const initialPlayerPositionY = 10;
@@ -39,7 +41,6 @@ const initialPlayerPositionZ = 0;
 export class VoxelGame {
   static containerId = 'container';
   static sceneId = 'threeJs';
-  static fpsId = 'fps';
   static playerEntityName = 'player';
   static cameraEntityName = 'camera';
   private threeJs = new WebGLRenderer({
@@ -51,7 +52,6 @@ export class VoxelGame {
   private sun!: DirectionalLight;
   private surface!: Mesh;
   private prevTick: number | undefined;
-  private tickFrames: number[] = [];
   private grid = new SpatialHashGrid([[-1000, -1000], [1000, 1000]], [100, 100]);
 
   constructor() {
@@ -73,6 +73,7 @@ export class VoxelGame {
     this.initClouds();
     this.initThrees();
     this.initUnits();
+    this.initHud();
     this.requestAnimation();
   }
 
@@ -221,7 +222,7 @@ export class VoxelGame {
         100,
         (Math.random() * 2.0 - 1.0) * 500);
 
-      const cloudEntity = new Entity();
+      const cloudEntity = new VisualEntity();
       cloudEntity.AddComponent(
         new StaticModelController({
           scene: this.scene,
@@ -258,8 +259,8 @@ export class VoxelGame {
         0,
         (Math.random() * 2.0 - 1.0) * 500);
 
-      const e = new Entity();
-      e.AddComponent(
+      const tree = new VisualEntity();
+      tree.AddComponent(
         new StaticModelController({
           scene: this.scene,
           resourcePath: './resources/trees/',
@@ -272,10 +273,10 @@ export class VoxelGame {
         }),
         ModelController
       );
-      e.AddComponent(new SpatialGridController(this.grid));
-      e.setPosition(pos);
-      this.entityManager.add(e);
-      e.disactivate();
+      tree.AddComponent(new SpatialGridController(this.grid));
+      tree.setPosition(pos);
+      this.entityManager.add(tree);
+      tree.disactivate();
     }
   }
 
@@ -290,7 +291,7 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private initPlayer() {
-    const player = new Entity();
+    const player = new VisualEntity();
     player.AddComponent(
       new GltfModelController({
         scene: this.scene,
@@ -328,6 +329,19 @@ export class VoxelGame {
     this.focusCameraOn(VoxelGame.playerEntityName)
   }
 
+  private focusCameraOn(entityName: string) {
+    const target = this.entityManager.get<VisualEntity>(entityName);
+    const cameraEntity = this.entityManager.get<VisualEntity>(VoxelGame.cameraEntityName);
+    const camera = cameraEntity?.getComponent<ThirdPersonCamera>(ThirdPersonCamera);
+
+    if (!camera) {
+      console.error(VoxelGame.cameraEntityName, cameraEntity, ThirdPersonCamera.constructor.name, camera);
+      throw new Error(`No camera detected for focus on object`);
+    }
+
+    camera.target = target;
+  }
+
   @LogMethod({level: Level.info})
   private initNPC() {
     // TODO create when dynamic objects could be created
@@ -348,17 +362,11 @@ export class VoxelGame {
     // TODO create when dynamic objects could be created
   }
 
-  private focusCameraOn(entityName: string) {
-    const target = this.entityManager.get(entityName);
-    const cameraEntity = this.entityManager.get(VoxelGame.cameraEntityName);
-    const camera = cameraEntity?.getComponent<ThirdPersonCamera>(ThirdPersonCamera);
-
-    if (!camera) {
-      console.error(VoxelGame.cameraEntityName, cameraEntity, ThirdPersonCamera.constructor.name, camera);
-      throw new Error(`No camera detected for focus on object`);
-    }
-
-    camera.target = target;
+  @LogMethod({level: Level.info})
+  private initHud() {
+    const hud = new Entity();
+    hud.AddComponent(new FpsController());
+    this.entityManager.add(hud);
   }
 
   private requestAnimation() {
@@ -369,7 +377,6 @@ export class VoxelGame {
 
       const deltaTime = t - this.prevTick;
 
-      this.calculateFps(deltaTime);
       this.requestControllerUpdate(deltaTime);
       this.threeJs.render(this.scene, this.camera);
 
@@ -381,19 +388,5 @@ export class VoxelGame {
 
   private requestControllerUpdate(deltaTime: number) {
     this.entityManager.update(deltaTime);
-  }
-
-  private calculateFps(deltaTime: number) {
-    if (this.tickFrames.length >= 1000) {
-      this.tickFrames = this.tickFrames.slice(this.tickFrames.length - 200);
-    }
-
-    this.tickFrames.push(deltaTime);
-    const fpsWrapper = document.getElementById(VoxelGame.fpsId);
-    const sectionTicks = this.tickFrames.slice(this.tickFrames.length - 200);
-    const totalSectionTime = sectionTicks.reduce((a, b) => a + b, 0);
-    if (fpsWrapper) {
-      fpsWrapper.innerText = Math.floor(1000 * sectionTicks.length / totalSectionTime).toString();
-    }
   }
 }

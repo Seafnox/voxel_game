@@ -16,8 +16,8 @@ export class EntityManager {
     return '__name__' + this.idCounter;
   }
 
-  get(name: string): Entity | undefined {
-    return this.entities[name];
+  get<TEntity extends Entity>(name: string): TEntity | undefined {
+    return this.entities[name] as TEntity;
   }
 
   filter<TEntity extends Entity>(predicate: FilterPredicate<Entity, TEntity>): TEntity[] {

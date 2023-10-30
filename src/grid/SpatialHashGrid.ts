@@ -1,5 +1,5 @@
-import { Entity } from '../entity/commons/Entity';
 import { VMath } from '../VMath';
+import {VisualEntity} from "../entity/commons/VisualEntity";
 
 export type SpatialPoint = [number, number];
 export type SpatialDimension = [number, number];
@@ -20,7 +20,7 @@ export interface SpatialNode {
 export interface SpatialClient {
     position: SpatialPoint;
     dimensions: SpatialDimension;
-    entity?: Entity;
+    entity?: VisualEntity;
     _cells: SpatialCell;
     _queryId: number;
 }

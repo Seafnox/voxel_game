@@ -1,18 +1,13 @@
-import { Vector3, Quaternion } from 'three';
 import { Component } from './Component';
 import { Emittable } from './Emittable';
 import { EmittedEvent } from './EmittedEvent';
 import { EntityManager } from './EntityManager';
 import {isFunction} from "../../utils/isFunction";
-import {EntityTopic} from "./EntityTopic";
 
 export class Entity extends Emittable {
   name?: string;
   entityManager?: EntityManager;
   private components: Record<string, Component> = {}; // SET OF COMPONENTS
-  private position = new Vector3();
-  private rotation = new Quaternion();
-  private _isModelReady = false;
 
   disactivate() {
     this.entityManager?.disactivate(this);
@@ -38,45 +33,7 @@ export class Entity extends Emittable {
     this.emit(msg.topic, msg);
   }
 
-  // FIXME make getter and setter after refactoring
-  getPosition(): Vector3 {
-    return this.position;
-  }
-
-  setPosition(p: Vector3) {
-    this.position.copy(p);
-    this.broadcast({
-      topic: 'update.position',
-      value: this.position,
-    });
-  }
-
-  // FIXME make getter and setter after refactoring
-  getRotation(): Quaternion {
-    return this.rotation;
-  }
-
-  setRotation(r: Quaternion) {
-    this.rotation.copy(r);
-    this.broadcast({
-      topic: 'update.rotation',
-      value: this.rotation,
-    });
-  }
-
   update(deltaTime: number) {
     Object.values(this.components).forEach(component => component.update(deltaTime));
-  }
-
-  set isModelReady(value: boolean) {
-    this._isModelReady = value;
-    this.broadcast<boolean>({
-      topic: EntityTopic.ModelLoaded,
-      value: this._isModelReady,
-    });
-  }
-
-  get isModelReady(): boolean {
-    return this._isModelReady;
   }
 }

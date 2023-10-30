@@ -1,11 +1,11 @@
 import {Component} from "../commons/Component";
 import {AnimationAction, AnimationClip, AnimationMixer, Object3D} from "three";
-import {Entity} from "../commons/Entity";
 import {LogMethod} from "../../utils/logger/LogMethod";
 import {Level} from "../../utils/logger/Level";
+import {VisualEntity} from "../commons/VisualEntity";
 
 export abstract class ModelController implements Component {
-  entity: Entity | undefined;
+  entity: VisualEntity | undefined;
   protected model: Object3D | undefined;
   protected animationMap: Record<string, AnimationAction> = {};
   protected mixer: AnimationMixer | undefined;
@@ -24,9 +24,13 @@ export abstract class ModelController implements Component {
     return this.constructor.name;
   }
 
-  protected getEntityOrThrow(): Entity {
+  protected getEntityOrThrow(): VisualEntity {
     if (!this.entity) {
       throw new Error(`Can't find parent entity for ${this.getConstructorName()}`);
+    }
+
+    if (!(this.entity instanceof VisualEntity)) {
+      throw new Error(`Can't mace calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
     }
 
     return this.entity;
