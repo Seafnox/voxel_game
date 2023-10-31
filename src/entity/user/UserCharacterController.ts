@@ -24,12 +24,11 @@ export const enum UserTurning {
 }
 
 export class UserCharacterController implements Component {
-  private deceleration = new Vector3(-0.0005, -0.0001, -5.0);
+  private deceleration = new Vector3(-0.0005, -0.0005, -5.0);
   private acceleration = new Vector3(1, 0.125, 50.0);
-  private velocity = new Vector3(0, 0, 0);
-  private position = new Vector3();
-  private rotation = new Quaternion();
-  private rotationMultiKoef = 0.03;
+  private deltaTimeScalar = 1000;
+  private extremeAccelerationScalar = 2;
+  private rotationScalar = 0.03;
   private stateMachine = new StateMachine();
   private userInput = new UserInputController();
   private modelComponent: ModelController | undefined;
@@ -48,8 +47,8 @@ export class UserCharacterController implements Component {
 
   update(deltaTime: number): void {
     this.stateMachine.validateState(deltaTime, {});
-    this.normalizeVelocity(deltaTime);
     this.calculateRotation(deltaTime);
+    this.calculateVelocity(deltaTime);
     this.calculatePosition(deltaTime);
   }
 
@@ -92,13 +91,15 @@ export class UserCharacterController implements Component {
   }
 
   private normalizeVelocity(deltaTime: number) {
-    const velocity = this.velocity;
+    if (!this.entity) return;
+
+    const velocity = this.entity.getVelocity();
     const frameDeceleration = new Vector3(
       velocity.x * this.deceleration.x,
       velocity.y * this.deceleration.y,
       velocity.z * this.deceleration.z
     );
-    frameDeceleration.multiplyScalar(deltaTime/1000);
+    frameDeceleration.multiplyScalar(deltaTime/this.deltaTimeScalar);
     frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
 
     velocity.add(frameDeceleration);
@@ -113,35 +114,49 @@ export class UserCharacterController implements Component {
     const RotationDirection = new Vector3();
     const currentRotation = target.quaternion.clone();
 
-    const acc = this.acceleration.clone();
-    if (input.shift) {
-      acc.multiplyScalar(2.0);
-    }
-
-    if (input.forward) {
-      this.velocity.z += acc.z * deltaTime;
-    }
-    if (input.backward) {
-      this.velocity.z -= acc.z * deltaTime;
-    }
     if (input.left) {
       RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationMultiKoef * Math.PI * deltaTime * this.acceleration.y);
+      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * Math.PI * deltaTime * this.acceleration.y);
       currentRotation.multiply(rotationMultiplier);
     }
     if (input.right) {
       RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationMultiKoef * -Math.PI * deltaTime * this.acceleration.y);
+      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * -Math.PI * deltaTime * this.acceleration.y);
       currentRotation.multiply(rotationMultiplier);
     }
 
-    this.entity!.setRotation(target.quaternion);
     target.quaternion.copy(currentRotation);
+    this.entity!.setRotation(target.quaternion);
+  }
+
+  private calculateVelocity(deltaTime: number) {
+    if (!this.entity) return;
+
+    const velocity = this.entity.getVelocity();
+    const input = this.userInput;
+
+    const acc = this.acceleration.clone();
+    if (input.shift) {
+      acc.multiplyScalar(this.extremeAccelerationScalar);
+    }
+
+    if (input.forward) {
+      velocity.z += acc.z * deltaTime/this.deltaTimeScalar;
+    }
+    if (input.backward) {
+      velocity.z -= acc.z * deltaTime/this.deltaTimeScalar;
+    }
+
+    this.normalizeVelocity(deltaTime);
   }
 
   private calculatePosition(deltaTime: number) {
     const target = this.getModel();
+
     if (!target) return;
+    if (!this.entity) return;
+
+    const velocity = this.entity.getVelocity();
 
     const oldPosition = new Vector3();
     oldPosition.copy(target.position);
@@ -154,8 +169,8 @@ export class UserCharacterController implements Component {
     sideways.applyQuaternion(target.quaternion);
     sideways.normalize();
 
-    sideways.multiplyScalar(this.velocity.x * deltaTime/1000);
-    forward.multiplyScalar(this.velocity.z * deltaTime/1000);
+    sideways.multiplyScalar(velocity.x * deltaTime/this.deltaTimeScalar);
+    forward.multiplyScalar(velocity.z * deltaTime/this.deltaTimeScalar);
 
     const pos = target.position.clone();
     pos.add(forward);
@@ -165,8 +180,7 @@ export class UserCharacterController implements Component {
     if (collisions.length > 0)  return;
 
     target.position.copy(pos);
-    this.position.copy(pos);
 
-    this.entity?.setPosition(this.position);
+    this.entity?.setPosition(target.position);
   }
 }

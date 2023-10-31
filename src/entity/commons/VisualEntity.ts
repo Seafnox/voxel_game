@@ -5,6 +5,7 @@ import {Entity} from "./Entity";
 export class VisualEntity extends Entity {
   private position = new Vector3();
   private rotation = new Quaternion();
+  private velocity = new Vector3(0, 0, 0);
   private _isModelReady = false;
 
   // FIXME make getter and setter after refactoring
@@ -17,6 +18,18 @@ export class VisualEntity extends Entity {
     this.broadcast({
       topic: 'update.position',
       value: this.position,
+    });
+  }
+
+  getVelocity(): Vector3 {
+    return this.velocity;
+  }
+
+  setVelocity(p: Vector3) {
+    this.velocity.copy(p);
+    this.broadcast({
+      topic: 'update.velocity',
+      value: this.velocity,
     });
   }
 
