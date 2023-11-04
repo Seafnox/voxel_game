@@ -25,7 +25,6 @@ import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
 import {VMath} from './VMath';
 import {CameraController} from "./entity/environment/CameraController";
-// import {CustomizableModelComponent, CustomizableModelConfig} from "./entity/models/CustomizableModelComponent";
 import {UserCharacterController} from "./entity/user/UserCharacterController";
 import {LogMethod} from "./utils/logger/LogMethod";
 import {Level} from "./utils/logger/Level";
@@ -48,12 +47,12 @@ export class VoxelGame {
     antialias: true,
   });
   private entityManager = new EntityManager();
-  private camera!: PerspectiveCamera;
-  private scene!: Scene;
-  private sun!: DirectionalLight;
-  private surface!: Mesh;
-  private prevTick: number | undefined;
+  private camera = this.createCamera();
+  private scene = this.createScene();
+  private sun = this.createLightning();
+  private surface = this.createSurface();
   private grid = new SpatialHashGrid([[-1000, -1000], [1000, 1000]], [100, 100]);
+  private prevTick: number | undefined;
 
   constructor() {
     this.initialize();
@@ -63,11 +62,6 @@ export class VoxelGame {
   private initialize() {
     this.configureThreeJs();
     this.addWindowSizeWatcher();
-
-    this.scene = this.createScene();
-    this.camera = this.createCamera();
-    this.sun = this.createLightning();
-    this.surface = this.createSurface();
 
     this.initEnvironment();
     this.buildSky();
