@@ -335,7 +335,7 @@ export class VoxelGame {
     const camera = cameraEntity?.getComponent<ThirdPersonCamera>(ThirdPersonCamera);
 
     if (!camera) {
-      console.error(EntityName.Camera, cameraEntity, ThirdPersonCamera.constructor.name, camera);
+      console.warn(EntityName.Camera, cameraEntity, ThirdPersonCamera.constructor.name, camera);
       throw new Error(`No camera detected for focus on object`);
     }
 

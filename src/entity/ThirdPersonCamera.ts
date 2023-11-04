@@ -10,9 +10,7 @@ export class ThirdPersonCamera implements Controller {
 
   constructor(
     private camera: PerspectiveCamera
-  ) {
-    console.error(new Error('Camera update is broken!'));
-  }
+  ) {}
 
   calculateIdealOffset(target: VisualEntity) {
     const idealOffset = new Vector3(-0, 10, -15);
