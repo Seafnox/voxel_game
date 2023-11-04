@@ -24,7 +24,7 @@ import {SpatialHashGrid} from './grid/SpatialHashGrid';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
 import {VMath} from './VMath';
-import {ThirdPersonCamera} from "./entity/ThirdPersonCamera";
+import {CameraController} from "./entity/environment/CameraController";
 // import {CustomizableModelComponent, CustomizableModelConfig} from "./entity/models/CustomizableModelComponent";
 import {UserCharacterController} from "./entity/user/UserCharacterController";
 import {LogMethod} from "./utils/logger/LogMethod";
@@ -37,6 +37,7 @@ import {EntityName} from "./entity/commons/EntityName";
 import {HtmlElementId} from "./HtmlElementId";
 import {CameraHudController} from "./entity/hud/CameraHudController";
 import {CharacterHudController} from "./entity/hud/CharacterHudController";
+import {LightController} from "./entity/environment/LightController";
 
 const initialPlayerPositionX = 25;
 const initialPlayerPositionY = 10;
@@ -62,13 +63,13 @@ export class VoxelGame {
   private initialize() {
     this.configureThreeJs();
     this.addWindowSizeWatcher();
+
     this.scene = this.createScene();
     this.camera = this.createCamera();
-    this.initCamera();
     this.sun = this.createLightning();
-    this.putIntoScene(this.sun);
     this.surface = this.createSurface();
-    this.putIntoScene(this.surface);
+
+    this.initEnvironment();
     this.buildSky();
     this.initClouds();
     this.initThrees();
@@ -113,10 +114,15 @@ export class VoxelGame {
     return camera;
   }
 
-  private initCamera(): void {
-    const camera = new VisualEntity();
-    camera.AddComponent(new ThirdPersonCamera(this.camera));
-    this.entityManager.add(camera, EntityName.Camera);
+  private initEnvironment(): void {
+    const environment = new VisualEntity();
+    environment.AddComponent(new CameraController(this.camera));
+    environment.AddComponent(new LightController(this.sun));
+    this.entityManager.add(environment, EntityName.Environment);
+
+    this.putIntoScene(this.sun);
+    this.putIntoScene(this.sun.target);
+    this.putIntoScene(this.surface);
   }
 
   @LogMethod({level: Level.info})
@@ -149,10 +155,10 @@ export class VoxelGame {
     light.shadow.mapSize.height = 4096;
     light.shadow.camera.near = 0.1;
     light.shadow.camera.far = 1000.0;
-    light.shadow.camera.left = 100;
-    light.shadow.camera.right = -100;
-    light.shadow.camera.top = 100;
-    light.shadow.camera.bottom = -100;
+    light.shadow.camera.left = 150;
+    light.shadow.camera.right = -150;
+    light.shadow.camera.top = 150;
+    light.shadow.camera.bottom = -150;
 
     return light;
   }
@@ -326,20 +332,32 @@ export class VoxelGame {
     );
     player.setPosition(pos);
     this.entityManager.add(player, EntityName.Player);
-    this.focusCameraOn(EntityName.Player)
+    this.focusEnvironmentOn(EntityName.Player)
   }
 
-  private focusCameraOn(entityName: string) {
+  private focusEnvironmentOn(entityName: string) {
     const target = this.entityManager.get<VisualEntity>(entityName);
-    const cameraEntity = this.entityManager.get<VisualEntity>(EntityName.Camera);
-    const camera = cameraEntity?.getComponent<ThirdPersonCamera>(ThirdPersonCamera);
+    const environment = this.entityManager.get<VisualEntity>(EntityName.Environment);
+    const camera = environment?.getComponent<CameraController>(CameraController);
+    const light = environment?.getComponent<LightController>(LightController);
+
+    if (!target) {
+      console.warn(entityName, VisualEntity.name, target);
+      throw new Error(`No target object detected for focus on object`);
+    }
 
     if (!camera) {
-      console.warn(EntityName.Camera, cameraEntity, ThirdPersonCamera.constructor.name, camera);
+      console.warn(EntityName.Environment, environment, CameraController.name, camera);
       throw new Error(`No camera detected for focus on object`);
     }
 
+    if (!light) {
+      console.warn(EntityName.Environment, environment, LightController.name, light);
+      throw new Error(`No light detected for focus on object`);
+    }
+
     camera.focusCameraOn(target);
+    light.setTarget(target);
   }
 
   @LogMethod({level: Level.info})

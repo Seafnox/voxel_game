@@ -1,8 +1,8 @@
-import {Controller} from "./commons/Controller";
+import {Controller} from "../commons/Controller";
 import {PerspectiveCamera, Quaternion, Vector3} from "three";
-import {VisualEntity} from "./commons/VisualEntity";
+import {VisualEntity} from "../commons/VisualEntity";
 
-export class ThirdPersonCamera implements Controller {
+export class CameraController implements Controller {
   entity: VisualEntity | undefined;
 
   private target: VisualEntity | undefined;
@@ -52,7 +52,7 @@ export class ThirdPersonCamera implements Controller {
     this.camera.lookAt(this.currentLookAt);
   }
 
-  focusCameraOn(target: VisualEntity | undefined) {
+  focusCameraOn(target: VisualEntity) {
     this.target = target;
   }
 }

@@ -8,7 +8,7 @@ export class CameraHudController implements Controller {
   entity: Entity | undefined;
 
   update(): void {
-    const cameraEntity = this.entity?.entityManager?.get(EntityName.Camera);
+    const cameraEntity = this.entity?.entityManager?.get(EntityName.Environment);
     const cameraPositionWrapper = document.getElementById(HtmlElementId.CameraPosition);
     const cameraRotationWrapper = document.getElementById(HtmlElementId.CameraRotation);
 
