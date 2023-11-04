@@ -1,10 +1,10 @@
-import {Component} from "../commons/Component";
+import {Controller} from "../commons/Controller";
 import {AnimationAction, AnimationClip, AnimationMixer, Object3D} from "three";
 import {LogMethod} from "../../utils/logger/LogMethod";
 import {Level} from "../../utils/logger/Level";
 import {VisualEntity} from "../commons/VisualEntity";
 
-export abstract class ModelController implements Component {
+export abstract class ModelController implements Controller {
   entity: VisualEntity | undefined;
   protected model: Object3D | undefined;
   protected animationMap: Record<string, AnimationAction> = {};
@@ -68,6 +68,7 @@ export abstract class ModelController implements Component {
     this.animationMap[animationClip.name] = mixer.clipAction(animationClip);
   }
 
+  @LogMethod({level: Level.info})
   setActiveAnimation(animationName: string) {
     const animations = this.animationMap;
 

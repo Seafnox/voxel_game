@@ -1,14 +1,16 @@
 import {Object3D, Quaternion, Vector3} from "three";
-import {Component} from "../commons/Component";
+import {Controller} from "../commons/Controller";
 import {Entity} from "../commons/Entity";
-import {UserInputController} from "./UserInputController";
-import {StateMachine} from "../commons/StateMachine";
-import {IdleUser} from "./states/IdleUser";
+import {UserActivityController} from "./UserActivityController";
+import {StateMachine} from "../commons/state/StateMachine";
+import {IdleUserState} from "./states/IdleUserState";
 import {SpatialGridController} from "../../grid/SpatialGridController";
 import {LogMethod} from "../../utils/logger/LogMethod";
 import {Level} from "../../utils/logger/Level";
 import {ModelController} from "../models/ModelController";
 import {VisualEntity} from "../commons/VisualEntity";
+import {WalkUserState} from "./states/WalkUserState";
+import {RunUserState} from "./states/RunUserState";
 
 export const enum UserState {
   Idle,
@@ -23,33 +25,39 @@ export const enum UserTurning {
   Right,
 }
 
-export class UserCharacterController implements Component {
+export class UserCharacterController implements Controller {
   private deceleration = new Vector3(-0.0005, -0.0005, -5.0);
   private acceleration = new Vector3(1, 0.125, 50.0);
   private deltaTimeScalar = 1000;
   private extremeAccelerationScalar = 2;
   private rotationScalar = 0.03;
   private stateMachine = new StateMachine();
-  private userInput = new UserInputController();
-  private modelComponent: ModelController | undefined;
+  private activityController = new UserActivityController();
+  private modelController: ModelController | undefined;
   entity: VisualEntity | undefined;
 
   constructor() {
-    this.stateMachine.addState(IdleUser);
+    this.stateMachine.addState(IdleUserState);
+    this.stateMachine.addState(WalkUserState);
+    this.stateMachine.addState(RunUserState);
   }
 
   @LogMethod({level: Level.info})
   onEntityChange() {
     this.stateMachine.setEntity(this.entity!);
-    this.stateMachine.setState(IdleUser.name);
-    this.modelComponent = this.entity?.getComponent(ModelController);
+    this.stateMachine.setState(IdleUserState);
+    this.modelController = this.entity?.getComponent(ModelController);
   }
 
   update(deltaTime: number): void {
-    this.stateMachine.validateState(deltaTime, {});
+    if (!this.entity) return;
     this.calculateRotation(deltaTime);
     this.calculateVelocity(deltaTime);
     this.calculatePosition(deltaTime);
+    this.stateMachine.validateState(deltaTime, {
+      velocity: this.entity.getVelocity().clone(),
+      activityStatus: this.activityController.status,
+    });
   }
 
   findIntersections(pos: Vector3) {
@@ -82,34 +90,19 @@ export class UserCharacterController implements Component {
   }
 
   private getModel(): Object3D | undefined {
-    if (!this.modelComponent) {
+    if (!this.modelController) {
       console.log(this);
       throw new Error(`Can't find modelComponent in ${this.constructor.name}`);
     }
 
-    return this.modelComponent.getModel();
-  }
-
-  private normalizeVelocity(deltaTime: number) {
-    if (!this.entity) return;
-
-    const velocity = this.entity.getVelocity();
-    const frameDeceleration = new Vector3(
-      velocity.x * this.deceleration.x,
-      velocity.y * this.deceleration.y,
-      velocity.z * this.deceleration.z
-    );
-    frameDeceleration.multiplyScalar(deltaTime/this.deltaTimeScalar);
-    frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
-
-    velocity.add(frameDeceleration);
+    return this.modelController.getModel();
   }
 
   private calculateRotation(deltaTime: number) {
     const target = this.getModel();
     if (!target) return;
 
-    const input = this.userInput;
+    const input = this.activityController.status;
     const rotationMultiplier = new Quaternion();
     const RotationDirection = new Vector3();
     const currentRotation = target.quaternion.clone();
@@ -133,21 +126,40 @@ export class UserCharacterController implements Component {
     if (!this.entity) return;
 
     const velocity = this.entity.getVelocity();
-    const input = this.userInput;
+    const input = this.activityController.status;
 
     const acc = this.acceleration.clone();
+
     if (input.shift) {
       acc.multiplyScalar(this.extremeAccelerationScalar);
     }
 
     if (input.forward) {
       velocity.z += acc.z * deltaTime/this.deltaTimeScalar;
+      this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
     }
+
     if (input.backward) {
       velocity.z -= acc.z * deltaTime/this.deltaTimeScalar;
+      this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
     }
 
     this.normalizeVelocity(deltaTime);
+  }
+
+  private normalizeVelocity(deltaTime: number) {
+    if (!this.entity) return;
+
+    const velocity = this.entity.getVelocity();
+    const frameDeceleration = new Vector3(
+      velocity.x * this.deceleration.x,
+      velocity.y * this.deceleration.y,
+      velocity.z * this.deceleration.z
+    );
+    frameDeceleration.multiplyScalar(deltaTime/this.deltaTimeScalar);
+    frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
+
+    velocity.add(frameDeceleration);
   }
 
   private calculatePosition(deltaTime: number) {

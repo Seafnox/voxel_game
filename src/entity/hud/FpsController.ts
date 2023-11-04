@@ -1,8 +1,8 @@
-import {Component} from "../commons/Component";
+import {Controller} from "../commons/Controller";
 import {Entity} from "../commons/Entity";
 import {HtmlElementId} from "../../HtmlElementId";
 
-export class FpsController implements Component {
+export class FpsController implements Controller {
   entity: Entity | undefined;
   private tickFrames: number[] = [];
 

@@ -1,10 +1,10 @@
-import {Component} from "../commons/Component";
+import {Controller} from "../commons/Controller";
 import {Entity} from "../commons/Entity";
 import {VisualEntity} from "../commons/VisualEntity";
 import {EntityName} from "../commons/EntityName";
 import {HtmlElementId} from "../../HtmlElementId";
 
-export class CameraHudController implements Component {
+export class CameraHudController implements Controller {
   entity: Entity | undefined;
 
   update(): void {

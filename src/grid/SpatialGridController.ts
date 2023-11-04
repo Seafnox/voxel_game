@@ -1,10 +1,10 @@
 import {Vector3} from 'three';
-import {Component} from '../entity/commons/Component';
-import {EmittedEvent} from '../entity/commons/EmittedEvent';
+import {Controller} from '../entity/commons/Controller';
+import {EmittedEvent} from '../entity/commons/emitter/EmittedEvent';
 import {SpatialHashGrid, SpatialPoint, SpatialClient} from './SpatialHashGrid';
 import {VisualEntity} from "../entity/commons/VisualEntity";
 
-export class SpatialGridController implements Component {
+export class SpatialGridController implements Controller {
   private _client?: SpatialClient;
   private boundedOnPositionChange = this._OnPosition.bind(this);
 

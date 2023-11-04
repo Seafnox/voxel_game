@@ -1,20 +1,20 @@
-import { Component } from './Component';
-import { Emittable } from './Emittable';
-import { EmittedEvent } from './EmittedEvent';
+import { Controller } from './Controller';
+import { Emittable } from './emitter/Emittable';
+import { EmittedEvent } from './emitter/EmittedEvent';
 import { EntityManager } from './EntityManager';
 import {isFunction} from "../../utils/isFunction";
 
 export class Entity extends Emittable {
   name?: string;
   entityManager?: EntityManager;
-  private components: Record<string, Component> = {}; // SET OF COMPONENTS
+  private components: Record<string, Controller> = {}; // SET OF COMPONENTS
 
   disactivate() {
     this.entityManager?.disactivate(this);
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  AddComponent(component: Component, as?: Function) {
+  AddComponent(component: Controller, as?: Function) {
     component.entity = this;
     const registeredAs = as || component.constructor;
     this.components[registeredAs.name] = component;
@@ -24,7 +24,7 @@ export class Entity extends Emittable {
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  getComponent<TComponent extends Component>(constructor: Function): TComponent {
+  getComponent<TComponent extends Controller>(constructor: Function): TComponent {
     return this.components[constructor.name] as TComponent;
   }
 

@@ -1,10 +1,10 @@
-import {Component} from "../commons/Component";
+import {Controller} from "../commons/Controller";
 import {Entity} from "../commons/Entity";
 import {EntityName} from "../commons/EntityName";
 import {HtmlElementId} from "../../HtmlElementId";
 import {VisualEntity} from "../commons/VisualEntity";
 
-export class CharacterHudController implements Component {
+export class CharacterHudController implements Controller {
   entity: Entity | undefined;
 
   update(): void {

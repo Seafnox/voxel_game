@@ -1,8 +1,8 @@
-import {Component} from "./commons/Component";
+import {Controller} from "./commons/Controller";
 import {PerspectiveCamera, Quaternion, Vector3} from "three";
 import {VisualEntity} from "./commons/VisualEntity";
 
-export class ThirdPersonCamera implements Component {
+export class ThirdPersonCamera implements Controller {
   entity: VisualEntity | undefined;
 
   private target: VisualEntity | undefined;
