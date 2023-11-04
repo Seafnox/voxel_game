@@ -21,11 +21,11 @@ export class ThirdPersonCamera implements Component {
     return idealOffset;
   }
 
-  calculateIdealLookat(target: VisualEntity) {
-    const idealLookat = new Vector3(0, 5, 20);
-    idealLookat.applyQuaternion(target.getRotation());
-    idealLookat.add(target.getPosition());
-    return idealLookat;
+  calculateIdealLookAt(target: VisualEntity) {
+    const idealLookAt = new Vector3(0, 5, 20);
+    idealLookAt.applyQuaternion(target.getRotation());
+    idealLookAt.add(target.getPosition());
+    return idealLookAt;
   }
 
   update(deltaTime: number) {
@@ -33,24 +33,25 @@ export class ThirdPersonCamera implements Component {
     if (!this.entity) return;
 
     const idealOffset = this.calculateIdealOffset(this.target);
-    const idealLookat = this.calculateIdealLookat(this.target);
+    const idealLookAt = this.calculateIdealLookAt(this.target);
 
     // const t = 0.05;
     // const t = 4.0 * deltaTime;
-    const t = 1.0 - Math.pow(0.01, deltaTime);
+    const t = 1.0 - Math.pow(0.01, deltaTime/1000);
     const currentPosition = this.entity.getPosition().clone();
     const currentLookAt = this.currentLookAt.clone();
     const currentRotation = new Quaternion();
 
     currentPosition.lerp(idealOffset, t);
-    currentLookAt.lerp(idealLookat, t);
+    currentLookAt.lerp(idealLookAt, t);
     currentRotation.setFromUnitVectors(currentPosition, currentLookAt);
 
     this.entity.setPosition(currentPosition);
     this.entity.setRotation(currentRotation);
+    this.currentLookAt.copy(currentLookAt)
 
-    // this.camera.position.copy(this.currentPosition);
-    // this.camera.lookAt(this.currentLookAt);
+    this.camera.position.copy(currentPosition);
+    this.camera.lookAt(this.currentLookAt);
   }
 
   focusCameraOn(target: VisualEntity | undefined) {
