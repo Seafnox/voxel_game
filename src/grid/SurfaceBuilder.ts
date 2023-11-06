@@ -14,16 +14,16 @@ export class SurfaceBuilder {
   private simplexes: NoiseFunction3D[];
 
   constructor(
-    private mapSize: number,
+    mapSize: number,
   ) {
     this.simplexes = [
-      this.newSimplex(1 * this.mapSize, 0.5), // 2 * 10 / 10
-      this.newSimplex(2 * this.mapSize, 0.525), // 2 * 200 / 210
-      this.newSimplex(4 * this.mapSize, 1.55), // 2 * 100 / 310
-      this.newSimplex(8 * this.mapSize, 3.6), // 2 * 50 / 360
-      this.newSimplex(16 * this.mapSize, 9.5), // 2 * 20 / 380
-      this.newSimplex(32 * this.mapSize, 19.5), // 2 * 10 / 390
-      this.newSimplex(64 * this.mapSize, 39.5), // 2 * 5 / 395
+      this.newSimplex(1 * mapSize, 0.5), // 2 * 10 / 10
+      this.newSimplex(2 * mapSize, 0.525), // 2 * 200 / 210
+      this.newSimplex(4 * mapSize, 1.55), // 2 * 100 / 310
+      this.newSimplex(8 * mapSize, 3.6), // 2 * 50 / 360
+      this.newSimplex(16 * mapSize, 9.5), // 2 * 20 / 380
+      this.newSimplex(32 * mapSize, 19.5), // 2 * 10 / 390
+      this.newSimplex(64 * mapSize, 39.5), // 2 * 5 / 395
     ];
   }
 
@@ -44,7 +44,7 @@ export class SurfaceBuilder {
 
   private newSimplex(zoom: number, scalar: number): NoiseFunction3D {
     const simplex = createNoise3D();
-    return (x, y, z) => (simplex(x * zoom, y * zoom, z * zoom) + 1) * scalar;
+    return (x, y, z) => (simplex(x * zoom, y * zoom, z * zoom) + 1) * scalar / 120;
   }
 
   private getValue(...[x,y,z]: Surface3dPosition) {
