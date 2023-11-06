@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "normalize.css": "~8.0.1",
+    "simplex-noise": "^4.0.1",
     "three": "~0.153.0"
   }
 }
