@@ -1,16 +1,16 @@
-import {Object3D, Quaternion, Vector3} from "three";
-import {Controller} from "../commons/Controller";
-import {Entity} from "../commons/Entity";
-import {UserActivityController} from "./UserActivityController";
-import {StateMachine} from "../commons/state/StateMachine";
-import {IdleUserState} from "./states/IdleUserState";
-import {SpatialGridController} from "../../grid/SpatialGridController";
-import {LogMethod} from "../../utils/logger/LogMethod";
-import {Level} from "../../utils/logger/Level";
-import {ModelController} from "../models/ModelController";
-import {VisualEntity} from "../commons/VisualEntity";
-import {WalkUserState} from "./states/WalkUserState";
-import {RunUserState} from "./states/RunUserState";
+import { Object3D, Quaternion, Vector3 } from 'three';
+import { Controller } from '../commons/Controller';
+import { Entity } from '../commons/Entity';
+import { UserActivityController } from './UserActivityController';
+import { StateMachine } from '../commons/state/StateMachine';
+import { IdleUserState } from './states/IdleUserState';
+import { SpatialGridController } from '../../grid/SpatialGridController';
+import { LogMethod } from '../../utils/logger/LogMethod';
+import { Level } from '../../utils/logger/Level';
+import { ModelController } from '../models/ModelController';
+import { VisualEntity } from '../commons/VisualEntity';
+import { WalkUserState } from './states/WalkUserState';
+import { RunUserState } from './states/RunUserState';
 
 export const enum UserState {
   Idle,
@@ -135,12 +135,12 @@ export class UserCharacterController implements Controller {
     }
 
     if (input.forward) {
-      velocity.z += acc.z * deltaTime/this.deltaTimeScalar;
+      velocity.z += acc.z * deltaTime / this.deltaTimeScalar;
       this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
     }
 
     if (input.backward) {
-      velocity.z -= acc.z * deltaTime/this.deltaTimeScalar;
+      velocity.z -= acc.z * deltaTime / this.deltaTimeScalar;
       this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
     }
 
@@ -154,9 +154,9 @@ export class UserCharacterController implements Controller {
     const frameDeceleration = new Vector3(
       velocity.x * this.deceleration.x,
       velocity.y * this.deceleration.y,
-      velocity.z * this.deceleration.z
+      velocity.z * this.deceleration.z,
     );
-    frameDeceleration.multiplyScalar(deltaTime/this.deltaTimeScalar);
+    frameDeceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
     frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
 
     velocity.add(frameDeceleration);
@@ -181,15 +181,15 @@ export class UserCharacterController implements Controller {
     sideways.applyQuaternion(target.quaternion);
     sideways.normalize();
 
-    sideways.multiplyScalar(velocity.x * deltaTime/this.deltaTimeScalar);
-    forward.multiplyScalar(velocity.z * deltaTime/this.deltaTimeScalar);
+    sideways.multiplyScalar(velocity.x * deltaTime / this.deltaTimeScalar);
+    forward.multiplyScalar(velocity.z * deltaTime / this.deltaTimeScalar);
 
     const pos = target.position.clone();
     pos.add(forward);
     pos.add(sideways);
 
     const collisions = this.findIntersections(pos);
-    if (collisions.length > 0)  return;
+    if (collisions.length > 0) return;
 
     target.position.copy(pos);
 

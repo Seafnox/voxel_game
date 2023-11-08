@@ -1,9 +1,9 @@
-import {Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color} from 'three';
-import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
-import {MeshPhongMaterial} from 'three/src/materials/MeshPhongMaterial';
-import {EmittedEvent} from '../commons/emitter/EmittedEvent';
-import {ModelController} from "./ModelController";
+import { Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color } from 'three';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
+import { EmittedEvent } from '../commons/emitter/EmittedEvent';
+import { ModelController } from './ModelController';
 
 export interface StaticModelConfig {
   resourcePath: string;
@@ -119,5 +119,6 @@ export class StaticModelController extends ModelController {
     });
   }
 
-  public update(): void {}
+  public update(): void {
+  }
 }

@@ -1,7 +1,7 @@
-import {Entity} from "../Entity";
-import {VisualEntity} from "../VisualEntity";
-import {StateInput} from "./StateInput";
-import {SimpleState, SimpleStateConstructor} from "./SimpleState";
+import { Entity } from '../Entity';
+import { VisualEntity } from '../VisualEntity';
+import { StateInput } from './StateInput';
+import { SimpleState, SimpleStateConstructor } from './SimpleState';
 
 export class StateMachine {
   private states: Record<string, SimpleStateConstructor> = {};

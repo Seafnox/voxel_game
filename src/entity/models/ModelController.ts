@@ -1,8 +1,8 @@
-import {Controller} from "../commons/Controller";
-import {AnimationAction, AnimationClip, AnimationMixer, Object3D} from "three";
-import {LogMethod} from "../../utils/logger/LogMethod";
-import {Level} from "../../utils/logger/Level";
-import {VisualEntity} from "../commons/VisualEntity";
+import { Controller } from '../commons/Controller';
+import { AnimationAction, AnimationClip, AnimationMixer, Object3D } from 'three';
+import { LogMethod } from '../../utils/logger/LogMethod';
+import { Level } from '../../utils/logger/Level';
+import { VisualEntity } from '../commons/VisualEntity';
 
 export abstract class ModelController implements Controller {
   entity: VisualEntity | undefined;
@@ -43,6 +43,7 @@ export abstract class ModelController implements Controller {
 
     return this.model;
   }
+
   protected getMixerOrThrow(): AnimationMixer {
     if (!this.mixer) {
       throw new Error(`Can't find 3d model mixer for ${this.getConstructorName()}`);
@@ -82,6 +83,6 @@ export abstract class ModelController implements Controller {
 
   // @LogMethod({logType: [LogAction.entry], level: Level.info})
   update(deltaTime: number) {
-    this.mixer?.update(deltaTime/1000);
+    this.mixer?.update(deltaTime / 1000);
   }
 }

@@ -13,30 +13,31 @@ import {
   SphereGeometry,
   ShaderMaterial,
   BackSide,
-  IUniform, Vector3,
+  IUniform,
+  Vector3,
 } from 'three';
-import {SRGBColorSpace, PCFSoftShadowMap} from 'three/src/constants';
-import {Entity} from './entity/commons/Entity';
-import {EntityManager} from './entity/commons/EntityManager';
-import {StaticModelController} from './entity/models/StaticModelController';
-import {SpatialGridController} from './grid/SpatialGridController';
-import {SpatialHashGrid} from './grid/SpatialHashGrid';
+import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
+import { Entity } from './entity/commons/Entity';
+import { EntityManager } from './entity/commons/EntityManager';
+import { StaticModelController } from './entity/models/StaticModelController';
+import { SpatialGridController } from './grid/SpatialGridController';
+import { SpatialHashGrid } from './grid/SpatialHashGrid';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
-import {VMath} from './VMath';
-import {CameraController} from "./entity/environment/CameraController";
-import {UserCharacterController} from "./entity/user/UserCharacterController";
-import {LogMethod} from "./utils/logger/LogMethod";
-import {Level} from "./utils/logger/Level";
-import {GltfModelController} from "./entity/models/GltfModelController";
-import {ModelController} from "./entity/models/ModelController";
-import {VisualEntity} from "./entity/commons/VisualEntity";
-import {FpsController} from "./entity/hud/FpsController";
-import {EntityName} from "./entity/commons/EntityName";
-import {HtmlElementId} from "./HtmlElementId";
-import {CameraHudController} from "./entity/hud/CameraHudController";
-import {CharacterHudController} from "./entity/hud/CharacterHudController";
-import {LightController} from "./entity/environment/LightController";
+import { VMath } from './VMath';
+import { CameraController } from './entity/environment/CameraController';
+import { UserCharacterController } from './entity/user/UserCharacterController';
+import { LogMethod } from './utils/logger/LogMethod';
+import { Level } from './utils/logger/Level';
+import { GltfModelController } from './entity/models/GltfModelController';
+import { ModelController } from './entity/models/ModelController';
+import { VisualEntity } from './entity/commons/VisualEntity';
+import { FpsController } from './entity/hud/FpsController';
+import { EntityName } from './entity/commons/EntityName';
+import { HtmlElementId } from './HtmlElementId';
+import { CameraHudController } from './entity/hud/CameraHudController';
+import { CharacterHudController } from './entity/hud/CharacterHudController';
+import { LightController } from './entity/environment/LightController';
 
 const initialPlayerPositionX = 25;
 const initialPlayerPositionY = 10;
@@ -209,7 +210,7 @@ export class VoxelGame {
     };
     (uniforms.topColor.value as Color).copy(helio.color);
 
-    this.scene.fog?.color.copy((uniforms.bottomColor.value as Color))
+    this.scene.fog?.color.copy((uniforms.bottomColor.value as Color));
     this.putIntoScene(this.createSkyMesh(uniforms));
   }
 
@@ -231,7 +232,7 @@ export class VoxelGame {
           scale: Math.random() * 5 + 10,
           emissive: new Color(0x808080),
         }),
-        ModelController
+        ModelController,
       );
       cloudEntity.setPosition(pos);
       this.entityManager.add(cloudEntity);
@@ -271,7 +272,7 @@ export class VoxelGame {
           receiveShadow: true,
           castShadow: true,
         }),
-        ModelController
+        ModelController,
       );
       tree.AddComponent(new SpatialGridController(this.grid));
       tree.setPosition(pos);
@@ -322,11 +323,11 @@ export class VoxelGame {
     const pos = new Vector3(
       initialPlayerPositionX,
       initialPlayerPositionY,
-      initialPlayerPositionZ
+      initialPlayerPositionZ,
     );
     player.setPosition(pos);
     this.entityManager.add(player, EntityName.Player);
-    this.focusEnvironmentOn(EntityName.Player)
+    this.focusEnvironmentOn(EntityName.Player);
   }
 
   private focusEnvironmentOn(entityName: string) {

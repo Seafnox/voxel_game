@@ -28,7 +28,7 @@ export class CameraHudController implements Controller {
     const prettyRotation = cameraEntity.getRotation()
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
-    cameraRotationWrapper.innerText = `[${prettyRotation.join(', ')}]`
+    cameraRotationWrapper.innerText = `[${prettyRotation.join(', ')}]`;
   }
 
 }

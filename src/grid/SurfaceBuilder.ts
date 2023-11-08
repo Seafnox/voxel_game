@@ -1,6 +1,6 @@
-import {createNoise3D, NoiseFunction3D} from "simplex-noise";
-import {RGBPoint} from "./RGBPoint";
-import {surfaceEntries, SurfaceEntry} from "./TempSurfaceConstant";
+import { createNoise3D, NoiseFunction3D } from 'simplex-noise';
+import { RGBPoint } from './RGBPoint';
+import { surfaceEntries, SurfaceEntry } from './TempSurfaceConstant';
 
 export interface SurfacePoint {
   color: RGBPoint;
@@ -36,7 +36,7 @@ export class SurfaceBuilder {
         rgbMap[x][y] = {
           color: this.valueToColor(value),
           value,
-        }
+        };
       }
     }
     return rgbMap;
@@ -47,7 +47,7 @@ export class SurfaceBuilder {
     return (x, y, z) => (simplex(x * zoom, y * zoom, z * zoom) + 1) * scalar / 120;
   }
 
-  private getValue(...[x,y,z]: Surface3dPosition) {
+  private getValue(...[x, y, z]: Surface3dPosition) {
     return this.simplexes.map(s => s(x, y, z)).reduce((a, b) => a + b, 0);
   }
 

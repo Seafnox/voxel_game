@@ -10,12 +10,12 @@ import {
   AnimationMixer,
   Object3D,
   Mesh,
-  LoadingManager
+  LoadingManager,
 } from 'three';
-import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
-import {MeshPhongMaterial} from 'three/src/materials/MeshPhongMaterial';
-import {EmittedEvent} from '../commons/emitter/EmittedEvent';
-import {ModelController} from "./ModelController";
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
+import { EmittedEvent } from '../commons/emitter/EmittedEvent';
+import { ModelController } from './ModelController';
 
 export interface CustomizableModelConfig {
   resourcePath: string;
@@ -121,7 +121,7 @@ export class FbxModelController extends ModelController {
     const model = this.params.resourceModel;
     const animations = this.params.resourceAnimations;
     if (!model.endsWith('fbx')) {
-      throw new Error(`Can't find loader for such type of file: ${model}`)
+      throw new Error(`Can't find loader for such type of file: ${model}`);
     }
     const manager = new LoadingManager();
     const loader = new FBXLoader(manager);
@@ -130,8 +130,8 @@ export class FbxModelController extends ModelController {
       this.onModelLoaded(fbx);
       manager.onLoad = () => setTimeout(() => this.setActiveAnimationTrusted(Object.keys(this.animationMap)[0]), 100);
       Object.entries(animations).forEach(([key, fileName]) => {
-        loader.load(fileName, (fbx) => this.onAnimationLoaded(key, fbx.animations[0]))
-      })
+        loader.load(fileName, (fbx) => this.onAnimationLoaded(key, fbx.animations[0]));
+      });
     });
   }
 

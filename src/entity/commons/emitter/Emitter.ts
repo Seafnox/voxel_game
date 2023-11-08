@@ -16,7 +16,7 @@ export class Emitter<TEventData> {
   on(listener: Listener<TEventData>): Disposable {
     this.listeners.push(listener);
     return {
-      dispose: () => this.off(listener)
+      dispose: () => this.off(listener),
     };
   }
 

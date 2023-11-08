@@ -5,7 +5,7 @@ export class Emittable {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private topics: Record<string, Emitter<any>> = {};
 
-  getTopic<TEventData>(topicName: string) : Emitter<TEventData> {
+  getTopic<TEventData>(topicName: string): Emitter<TEventData> {
     if (!this.topics[topicName]) {
       this.topics[topicName] = new Emitter<TEventData>();
     }
@@ -13,6 +13,7 @@ export class Emittable {
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.topics[topicName];
   }
+
   public emit<TEventData>(topicName: string, event: EmittedEvent<TEventData>): void {
     this.getTopic<TEventData>(topicName).emit(event);
   }

@@ -1,21 +1,21 @@
-import {Vector3} from 'three';
-import {Controller} from '../entity/commons/Controller';
-import {EmittedEvent} from '../entity/commons/emitter/EmittedEvent';
-import {SpatialHashGrid, SpatialPoint, SpatialClient} from './SpatialHashGrid';
-import {VisualEntity} from "../entity/commons/VisualEntity";
+import { Vector3 } from 'three';
+import { Controller } from '../entity/commons/Controller';
+import { EmittedEvent } from '../entity/commons/emitter/EmittedEvent';
+import { SpatialHashGrid, SpatialPoint, SpatialClient } from './SpatialHashGrid';
+import { VisualEntity } from '../entity/commons/VisualEntity';
 
 export class SpatialGridController implements Controller {
   private _client?: SpatialClient;
   private boundedOnPositionChange = this._OnPosition.bind(this);
 
   constructor(
-    private grid: SpatialHashGrid
-  ) {
-  }
+    private grid: SpatialHashGrid,
+  ) {}
 
   entity: VisualEntity | undefined;
 
-  update(): void {}
+  update(): void {
+  }
 
   onEntityChange() {
     if (!this.entity) {

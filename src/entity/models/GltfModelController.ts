@@ -9,12 +9,12 @@ import {
   AnimationMixer,
   Object3D,
   Mesh,
-  LoadingManager
+  LoadingManager,
 } from 'three';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
-import {MeshPhongMaterial} from 'three/src/materials/MeshPhongMaterial';
-import {EmittedEvent} from '../commons/emitter/EmittedEvent';
-import {ModelController} from "./ModelController";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
+import { EmittedEvent } from '../commons/emitter/EmittedEvent';
+import { ModelController } from './ModelController';
 
 export interface GltfModelConfig {
   resourcePath: string;
@@ -105,7 +105,7 @@ export class GltfModelController extends ModelController {
     const model = this.params.resourceModel;
 
     if (!model.endsWith('glb') && !model.endsWith('gltf')) {
-      throw new Error(`Can't find loader for such type of file: ${model}`)
+      throw new Error(`Can't find loader for such type of file: ${model}`);
     }
 
     const manager = new LoadingManager();

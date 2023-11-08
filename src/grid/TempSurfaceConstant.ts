@@ -1,4 +1,4 @@
-import {RGBPoint} from "./RGBPoint";
+import { RGBPoint } from './RGBPoint';
 
 export type SurfaceEntry = [number, RGBPoint];
 export const surfaceEntries: SurfaceEntry[] = [

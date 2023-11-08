@@ -2,7 +2,7 @@ import { Controller } from './Controller';
 import { Emittable } from './emitter/Emittable';
 import { EmittedEvent } from './emitter/EmittedEvent';
 import { EntityManager } from './EntityManager';
-import {isFunction} from "../../utils/isFunction";
+import { isFunction } from '../../utils/isFunction';
 
 export class Entity extends Emittable {
   name?: string;

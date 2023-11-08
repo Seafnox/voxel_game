@@ -1,6 +1,6 @@
-import {LogMethod} from "../../utils/logger/LogMethod";
-import {Level} from "../../utils/logger/Level";
-import {ActivityStatus} from "../commons/state/ActivityStatus";
+import { LogMethod } from '../../utils/logger/LogMethod';
+import { Level } from '../../utils/logger/Level';
+import { ActivityStatus } from '../commons/state/ActivityStatus';
 
 export class UserActivityController {
   private boundedOnKeyDown = this.onKeyDown.bind(this);
@@ -15,7 +15,7 @@ export class UserActivityController {
     shift: false,
     push: false,
     hit: false,
-  }
+  };
 
   constructor() {
     document.addEventListener('keydown', this.boundedOnKeyDown, false);

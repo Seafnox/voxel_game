@@ -1,7 +1,7 @@
 import { Entity } from './Entity';
-import {LogMethod} from "../../utils/logger/LogMethod";
-import {LogAction} from "../../utils/logger/LogAction";
-import {Level} from "../../utils/logger/Level";
+import { LogMethod } from '../../utils/logger/LogMethod';
+import { LogAction } from '../../utils/logger/LogAction';
+import { Level } from '../../utils/logger/Level';
 
 export type FilterPredicate<TValue, SValue extends TValue> = (value: TValue, index: number, array: TValue[]) => value is SValue;
 

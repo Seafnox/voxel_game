@@ -5,13 +5,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
+const {TsconfigPathsPlugin} = require('tsconfig-paths-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-
 const stylesHandler = isProduction ? MiniCssExtractPlugin.loader : 'style-loader';
-
 
 const config = {
   entry: './src/index.ts',
@@ -19,7 +17,7 @@ const config = {
 
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-    filename: '[name].js'
+    filename: '[name].js',
   },
   devServer: {
     open: true,
@@ -40,9 +38,12 @@ const config = {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: './src/resources', to: 'resources' }
-      ]
-    })
+        {
+          from: './src/resources',
+          to: 'resources',
+        },
+      ],
+    }),
     // Add your plugins here
     // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
@@ -84,12 +85,11 @@ const config = {
   },
 };
 
-module.exports = ()=> {
+module.exports = () => {
   if (isProduction) {
     config.mode = 'production';
 
     config.plugins.push(new MiniCssExtractPlugin());
-
 
     config.plugins.push(new WorkboxWebpackPlugin.GenerateSW());
 

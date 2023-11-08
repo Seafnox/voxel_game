@@ -1,14 +1,14 @@
-import {StateMachine} from "../../commons/state/StateMachine";
-import {AnimationAction} from "three";
-import {VisualEntityTopic} from "../../commons/VisualEntityTopic";
-import {ModelController} from "../../models/ModelController";
-import {VisualEntity} from "../../commons/VisualEntity";
-import {Disposable} from "../../commons/emitter/Emitter";
-import {SimpleState} from "../../commons/state/SimpleState";
-import {StateInput} from "../../commons/state/StateInput";
-import {VMath} from "../../../VMath";
-import {IdleUserState} from "./IdleUserState";
-import {RunUserState} from "./RunUserState";
+import { StateMachine } from '../../commons/state/StateMachine';
+import { AnimationAction } from 'three';
+import { VisualEntityTopic } from '../../commons/VisualEntityTopic';
+import { ModelController } from '../../models/ModelController';
+import { VisualEntity } from '../../commons/VisualEntity';
+import { Disposable } from '../../commons/emitter/Emitter';
+import { SimpleState } from '../../commons/state/SimpleState';
+import { StateInput } from '../../commons/state/StateInput';
+import { VMath } from '../../../VMath';
+import { IdleUserState } from './IdleUserState';
+import { RunUserState } from './RunUserState';
 
 export class WalkUserState implements SimpleState {
   availableNext: SimpleState[] | undefined;
@@ -47,7 +47,7 @@ export class WalkUserState implements SimpleState {
   private getModelAndRunAnimation() {
     const modelController = this.entity.getComponent<ModelController>(ModelController);
     if (!modelController.getAnimationList().includes(this.animationName)) {
-      throw new Error(`No '${this.animationName}' animation in entity '${this.entity.name}' with animation list: [${modelController.getAnimationList().join(', ')}]`)
+      throw new Error(`No '${this.animationName}' animation in entity '${this.entity.name}' with animation list: [${modelController.getAnimationList().join(', ')}]`);
     }
 
     setTimeout(() => modelController.setActiveAnimation(this.animationName));

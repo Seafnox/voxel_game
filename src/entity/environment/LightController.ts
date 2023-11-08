@@ -1,6 +1,6 @@
-import {Controller} from "../commons/Controller";
-import {DirectionalLight} from "three";
-import {VisualEntity} from "../commons/VisualEntity";
+import { Controller } from '../commons/Controller';
+import { DirectionalLight } from 'three';
+import { VisualEntity } from '../commons/VisualEntity';
 
 export class LightController implements Controller {
   entity: VisualEntity | undefined;
@@ -8,7 +8,7 @@ export class LightController implements Controller {
   private target: VisualEntity | undefined;
 
   constructor(
-    private light: DirectionalLight
+    private light: DirectionalLight,
   ) {}
 
   setTarget(targetEntity: VisualEntity) {
