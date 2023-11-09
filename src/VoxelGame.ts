@@ -178,8 +178,8 @@ export class VoxelGame {
     const scale = 5;
     const calculatePoint = (percentX: number, percentY: number, target: Vector3): void => {
       const x = Math.floor(percentX*(this.mapSize-1) - this.mapSize/2);
-      const y = Math.random() * 2 - 1;
-      const z = Math.floor(percentY*(this.mapSize-1) - this.mapSize/2);
+      const y = Math.floor(percentY*(this.mapSize-1) - this.mapSize/2);
+      const z = Math.random() * 2 - 1;
       target.set(x,y,z);
     }
     const geometry = new ParametricGeometry(calculatePoint, this.mapSize/scale, this.mapSize/scale);
@@ -193,7 +193,7 @@ export class VoxelGame {
 
     surface.castShadow = false;
     surface.receiveShadow = true;
-    //surface.rotation.x = -Math.PI / 2;
+    surface.rotation.x = - Math.PI / 2;
 
     return surface;
   }
