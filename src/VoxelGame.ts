@@ -16,6 +16,7 @@ import {
   IUniform,
   Vector3,
 } from 'three';
+import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './entity/commons/Entity';
 import { EntityManager } from './entity/commons/EntityManager';
@@ -64,7 +65,7 @@ export class VoxelGame {
   private scene = this.createScene();
   private sun = this.createLightning();
   private surface = this.createSurface();
-  private grid = new SpatialHashGrid([[-1000, -1000], [1000, 1000]], [100, 100]);
+  private grid = new SpatialHashGrid([[-this.mapSize/2, -this.mapSize/2], [this.mapSize/2, this.mapSize/2]], [100, 100]);
   private prevTick: number | undefined;
 
   constructor() {
@@ -172,17 +173,27 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private createSurface(): Mesh {
+//    const geometry = new PlaneGeometry(this.mapSize, this.mapSize, this.mapSize/this.mapScale, this.mapSize/this.mapScale);
+
+    const scale = 5;
+    const calculatePoint = (percentX: number, percentY: number, target: Vector3): void => {
+      const x = Math.floor(percentX*(this.mapSize-1) - this.mapSize/2);
+      const y = Math.random() * 2 - 1;
+      const z = Math.floor(percentY*(this.mapSize-1) - this.mapSize/2);
+      target.set(x,y,z);
+    }
+    const geometry = new ParametricGeometry(calculatePoint, this.mapSize/scale, this.mapSize/scale);
     const surface = new Mesh(
-      new PlaneGeometry(this.mapSize, this.mapSize, this.mapSize/this.mapScale, this.mapSize/this.mapScale),
+      geometry,
       new MeshStandardMaterial({
         color: this.groundColor,
         wireframe: true,
-        wireframeLinewidth: 2,
+        wireframeLinewidth: 4,
       }));
 
     surface.castShadow = false;
     surface.receiveShadow = true;
-    surface.rotation.x = -Math.PI / 2;
+    //surface.rotation.x = -Math.PI / 2;
 
     return surface;
   }
