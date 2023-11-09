@@ -44,6 +44,18 @@ const initialPlayerPositionY = 10;
 const initialPlayerPositionZ = 0;
 
 export class VoxelGame {
+  private fogColor = 0x89b2eb;
+  private backgroundColor = 0x999999;
+  private lightColor = 0xeeffff;
+  private groundColor = 0x1e601c;
+  private hellColor = 0xFFC880;
+  private skyColor = 0x3385FF;
+  private cloudColor = 0xc0a080;
+  private lightAbsorptionMask = 0x000000;
+  private darkEmissionLight = 0x000000;
+
+  private mapSize = 5000;
+  private mapScale = 2;
   private threeJs = new WebGLRenderer({
     antialias: true,
   });
@@ -133,15 +145,15 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private createScene(): Scene {
     const scene = new Scene();
-    scene.background = new Color(0xFFFFFF);
-    scene.fog = new FogExp2(0x89b2eb, 0.002);
+    scene.background = new Color(this.backgroundColor);
+    scene.fog = new FogExp2(this.fogColor, 0.002);
 
     return scene;
   }
 
   @LogMethod({level: Level.info})
   private createLightning(): DirectionalLight {
-    const light = new DirectionalLight(0xFFFFFF, 1.0);
+    const light = new DirectionalLight(this.lightColor, 1.0);
     light.position.set(-10, 500, 10);
     light.target.position.set(0, 0, 0);
     light.castShadow = true;
@@ -161,9 +173,11 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private createSurface(): Mesh {
     const surface = new Mesh(
-      new PlaneGeometry(5000, 5000, 10, 10),
+      new PlaneGeometry(this.mapSize, this.mapSize, this.mapSize/this.mapScale, this.mapSize/this.mapScale),
       new MeshStandardMaterial({
-        color: 0x1e601c,
+        color: this.groundColor,
+        wireframe: true,
+        wireframeLinewidth: 2,
       }));
 
     surface.castShadow = false;
@@ -174,9 +188,9 @@ export class VoxelGame {
   }
 
   private createHelioSphere(): HemisphereLight {
-    const helioSphere = new HemisphereLight(0xFFFFFF, 0xFFFFFFF, 0.6);
-    helioSphere.color.setHSL(0.6, 1, 0.6);
-    helioSphere.groundColor.setHSL(0.095, 1, 0.75);
+    const helioSphere = new HemisphereLight(this.lightColor, this.lightColor, 0.6);
+    helioSphere.color.setHex(this.skyColor);
+    helioSphere.groundColor.setHex(this.hellColor);
 
     return helioSphere;
   }
@@ -185,33 +199,29 @@ export class VoxelGame {
     this.scene.add(...objects);
   }
 
-  private createSkyMesh(uniforms: Record<string, IUniform>): Mesh {
-    const skyGeo = new SphereGeometry(1000, 32, 15);
+  @LogMethod({level: Level.info})
+  private buildSky() {
+    const helio = this.createHelioSphere();
+    this.putIntoScene(helio);
+//    this.scene.fog?.color.copy((uniforms.bottomColor.value as Color));
+    this.putIntoScene(this.createSkyMesh(helio));
+  }
+
+  private createSkyMesh(helio: HemisphereLight): Mesh {
+    const skyGeo = new SphereGeometry(2000, 32, 32);
     const skyMat = new ShaderMaterial({
-      uniforms: uniforms,
+      uniforms: {
+        topColor: {value: helio.color},
+        bottomColor: {value: helio.groundColor},
+        offset: {value: 33},
+        exponent: {value: 0.6},
+      },
       vertexShader: skyVertex,
       fragmentShader: skyFragment,
       side: BackSide,
     });
 
     return new Mesh(skyGeo, skyMat);
-  }
-
-  @LogMethod({level: Level.info})
-  private buildSky() {
-    const helio = this.createHelioSphere();
-    this.putIntoScene(helio);
-    // TODO Make uniform more strict and typed
-    const uniforms: Record<string, IUniform> = {
-      topColor: {value: new Color(0x0077ff)},
-      bottomColor: {value: new Color(0xffffff)},
-      offset: {value: 33},
-      exponent: {value: 0.6},
-    };
-    (uniforms.topColor.value as Color).copy(helio.color);
-
-    this.scene.fog?.color.copy((uniforms.bottomColor.value as Color));
-    this.putIntoScene(this.createSkyMesh(uniforms));
   }
 
   @LogMethod({level: Level.info})
@@ -230,7 +240,7 @@ export class VoxelGame {
           resourcePath: './resources/clouds/',
           resourceName: 'Cloud' + index + '.glb',
           scale: Math.random() * 5 + 10,
-          emissive: new Color(0x808080),
+          emissive: new Color(this.cloudColor),
         }),
         ModelController,
       );
@@ -267,8 +277,8 @@ export class VoxelGame {
           resourcePath: './resources/trees/',
           resourceName: name + '_' + index + '.fbx',
           scale: 0.25,
-          emissive: new Color(0x000000),
-          specular: new Color(0x000000),
+          emissive: new Color(this.darkEmissionLight),
+          specular: new Color(this.lightAbsorptionMask),
           receiveShadow: true,
           castShadow: true,
         }),
