@@ -1,3 +1,5 @@
+import { WindowEventObserver } from '../../observers/WindowEventObserver';
+import { WindowTopic } from '../../observers/WindowTopic';
 import { Controller } from '../commons/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { VisualEntity } from '../commons/VisualEntity';
@@ -7,10 +9,41 @@ export class CameraController implements Controller {
 
   private target: VisualEntity | undefined;
   private currentLookAt: Vector3 = new Vector3();
+  private readonly camera: PerspectiveCamera;
 
   constructor(
-    private camera: PerspectiveCamera,
-  ) {}
+    private windowObserver: WindowEventObserver,
+  ) {
+    const window = this.windowObserver.getWindow();
+    this.camera = this.createCamera(window);
+
+    this.windowObserver.on<UIEvent>(WindowTopic.Resize, event => {
+      const window = event.value.view!;
+      this.camera.aspect = window.innerWidth / window.innerHeight;
+      this.camera.updateProjectionMatrix();
+    });
+  }
+
+  getCamera(): PerspectiveCamera {
+    return this.camera;
+  }
+
+  private createCamera(window: WindowProxy): PerspectiveCamera {
+    const fov = 60;
+    const aspect = window.innerWidth / window.innerHeight;
+    const near = 1.0;
+    const far = 10000.0;
+    const camera = new PerspectiveCamera(fov, aspect, near, far);
+    camera.position.set(
+      0,
+      5,
+      25);
+
+    camera.updateProjectionMatrix();
+
+    return camera;
+  }
+
 
   calculateIdealOffset(target: VisualEntity) {
     const idealOffset = new Vector3(-0, 10, -15);

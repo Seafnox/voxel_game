@@ -24,18 +24,27 @@ export class EntityManager {
     return this.activeEntities.filter(predicate);
   }
 
-  @LogMethod({logType: [LogAction.entry], level: Level.info})
   add(entity: Entity, preferName?: string) {
     const name = preferName || this.generateName();
+    console.log(this.constructor.name, 'add', entity.constructor.name, name);
     this.entities[name] = entity;
-    this.activeEntities.push(entity);
 
     entity.entityManager = this;
     entity.name = name;
   }
 
-  @LogMethod({logType: [LogAction.entry], level: Level.info})
+  activate(entity: Entity) {
+    console.log(this.constructor.name, 'activate', entity.constructor.name, entity.name);
+    const i = this.activeEntities.indexOf(entity);
+    if (i >= 0) {
+      return;
+    }
+
+    this.activeEntities.push(entity);
+  }
+
   disactivate(entity: Entity) {
+    console.log(this.constructor.name, 'disactivate', entity.constructor.name, entity.name);
     const i = this.activeEntities.indexOf(entity);
     if (i < 0) {
       return;

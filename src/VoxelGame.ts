@@ -19,6 +19,8 @@ import { EntityManager } from './entity/commons/EntityManager';
 import { SurfaceController } from './entity/environment/SurfaceController';
 import { StaticModelController } from './entity/models/StaticModelController';
 import { SpatialGridController } from './grid/SpatialGridController';
+import { WindowEventObserver } from './observers/WindowEventObserver';
+import { WindowTopic } from './observers/WindowTopic';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
 import { VMath } from './VMath';
@@ -53,15 +55,21 @@ export class VoxelGame {
 
   private surfaceSize = 10000;
   private mapSize = 500;
-  private surfaceController = new SurfaceController(this.mapSize, this.surfaceSize, this.groundColor);
 
   private threeJs = new WebGLRenderer({
     antialias: true,
   });
-  private entityManager = new EntityManager();
-  private camera = this.createCamera();
+
   private scene = this.createScene();
   private sun = this.createLightning();
+
+  private entityManager = new EntityManager();
+  private windowObserver = new WindowEventObserver();
+
+  private surfaceController = new SurfaceController(this.mapSize, this.surfaceSize, this.groundColor);
+  private cameraController = new CameraController(this.windowObserver);
+
+
   private prevTick: number | undefined;
 
   constructor() {
@@ -71,7 +79,6 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initialize() {
     this.configureThreeJs();
-    this.addWindowSizeWatcher();
 
     this.initEnvironment();
     this.buildSky();
@@ -82,48 +89,12 @@ export class VoxelGame {
     this.requestAnimation();
   }
 
-  @LogMethod({level: Level.info})
-  private addWindowSizeWatcher() {
-    const container = document.getElementById(HtmlElementId.Container);
-
-    if (!container) {
-      throw new Error(`Can't find DOM Element with id='${HtmlElementId.Container}'`);
-    }
-
-    container.appendChild(this.threeJs.domElement);
-
-    window.addEventListener('resize', () => {
-      this.onWindowResize();
-    }, false);
-  }
-
-  private onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.threeJs.setSize(window.innerWidth, window.innerHeight);
-  }
-
-  @LogMethod({level: Level.info})
-  private createCamera(): PerspectiveCamera {
-    const fov = 60;
-    const aspect = 1920 / 1080;
-    const near = 1.0;
-    const far = 10000.0;
-    const camera = new PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(
-      initialPlayerPositionX,
-      initialPlayerPositionY,
-      initialPlayerPositionX + 25);
-
-    return camera;
-  }
-
-
   private initEnvironment(): void {
     const environment = new VisualEntity();
-    environment.AddController(new CameraController(this.camera));
+    environment.AddController(this.cameraController);
     environment.AddController(new LightController(this.sun));
     this.entityManager.add(environment, EntityName.Environment);
+    this.entityManager.activate(environment);
 
     this.putIntoScene(this.sun);
     this.putIntoScene(this.sun.target);
@@ -138,12 +109,29 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private configureThreeJs() {
+    const window = this.windowObserver.getWindow();
+
     this.threeJs.outputColorSpace = SRGBColorSpace;
     this.threeJs.shadowMap.enabled = true;
     this.threeJs.shadowMap.type = PCFSoftShadowMap;
     this.threeJs.setPixelRatio(window.devicePixelRatio);
     this.threeJs.setSize(window.innerWidth, window.innerHeight);
     this.threeJs.domElement.id = HtmlElementId.Scene;
+
+    const container = document.getElementById(HtmlElementId.Container);
+
+    if (!container) {
+      throw new Error(`Can't find DOM Element with id='${HtmlElementId.Container}'`);
+    }
+
+    container.appendChild(this.threeJs.domElement);
+
+
+    this.windowObserver.on<UIEvent>(WindowTopic.Resize, event => {
+      const window = event.value.view!;
+      this.threeJs.setPixelRatio(window.devicePixelRatio);
+      this.threeJs.setSize(window.innerWidth, window.innerHeight);
+    })
   }
 
   @LogMethod({level: Level.info})
@@ -232,8 +220,7 @@ export class VoxelGame {
         ModelController,
       );
       cloudEntity.setPosition(pos);
-      this.entityManager.add(cloudEntity);
-      cloudEntity.disactivate();
+      this.entityManager.add(cloudEntity, `cloud_${i}`);
     }
   }
 
@@ -274,8 +261,7 @@ export class VoxelGame {
       );
       tree.AddController(new SpatialGridController(this.surfaceController));
       tree.setPosition(pos);
-      this.entityManager.add(tree);
-      tree.disactivate();
+      this.entityManager.add(tree, `tree_${i}`);
     }
   }
 
@@ -326,6 +312,7 @@ export class VoxelGame {
     );
     player.setPosition(pos);
     this.entityManager.add(player, EntityName.Player);
+    this.entityManager.activate(player);
     this.focusEnvironmentOn(EntityName.Player);
   }
 
@@ -380,7 +367,8 @@ export class VoxelGame {
     hud.AddController(new FpsController());
     hud.AddController(new CameraHudController());
     hud.AddController(new CharacterHudController());
-    this.entityManager.add(hud);
+    this.entityManager.add(hud, 'HUD');
+    this.entityManager.activate(hud);
   }
 
   private requestAnimation() {
@@ -392,7 +380,7 @@ export class VoxelGame {
       const deltaTime = t - this.prevTick;
 
       this.requestControllerUpdate(deltaTime);
-      this.threeJs.render(this.scene, this.camera);
+      this.threeJs.render(this.scene, this.cameraController.getCamera());
 
       this.prevTick = t;
 
