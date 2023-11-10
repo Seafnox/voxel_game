@@ -1,4 +1,4 @@
-import { Mesh, Vector3, MeshBasicMaterial } from 'three';
+import { Mesh, Vector3, MeshBasicMaterial, BackSide, Texture, DataTexture } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 import { SpatialHashGrid } from '../../grid/SpatialHashGrid';
 import { SurfaceBuilder, SurfacePoint } from '../../grid/SurfaceBuilder';
@@ -39,12 +39,20 @@ export class SurfaceController implements Controller {
       target.set(x, z, y);
     };
     const geometry = new ParametricGeometry(calculatePoint, this.mapSize, this.mapSize);
-    const baseMaterial = new MeshBasicMaterial({
-      color: this.groundColor,
-      wireframe: true,
+    const texture = this.createSurfaceTexture();
+//    const material = new MeshBasicMaterial({
+//      color: this.groundColor,
+//      //wireframe: true,
+//      wireframeLinewidth: 4,
+//      side: BackSide,
+//    });
+    const material = new MeshBasicMaterial({
+      map: texture,
+      side: BackSide,
+//      wireframe: true,
       wireframeLinewidth: 4,
-    });
-    const surfaceMesh = new Mesh(geometry, baseMaterial);
+    })
+    const surfaceMesh = new Mesh(geometry, material);
 
     surfaceMesh.castShadow = false;
     surfaceMesh.receiveShadow = true;
@@ -77,6 +85,28 @@ export class SurfaceController implements Controller {
   }
 
   private getZCordByPoint(point: SurfacePoint): number {
-    return VMath.lerp(point.value, -25, 25);
+    return VMath.lerp(point.value, -100, 100);
+  }
+
+  private createSurfaceTexture(): Texture {
+    const size = this.mapSize * this.mapSize;
+    const data = new Uint8Array( 4 * size );
+
+    for ( let x = 0; x < this.mapSize; x++ ) {
+      for ( let y = 0; y < this.mapSize; y++ ) {
+        const stride = (x * this.mapSize + y) * 4;
+        const color = this.surface[y][x].color;
+        data[ stride ] = color[0];
+        data[ stride + 1 ] = color[1];
+        data[ stride + 2 ] = color[2];
+        data[ stride + 3 ] = 255;
+      }
+    }
+
+    // used the buffer to create a DataTexture
+    const texture = new DataTexture( data, this.mapSize, this.mapSize );
+    texture.needsUpdate = true;
+
+    return texture;
   }
 }
