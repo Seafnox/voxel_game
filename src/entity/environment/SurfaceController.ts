@@ -35,8 +35,8 @@ export class SurfaceController implements Controller {
     const calculatePoint = (percentX: number, percentY: number, target: Vector3): void => {
       const x = Math.floor(percentX * (this.surfaceSize - 1) - this.surfaceSize / 2);
       const y = Math.floor(percentY * (this.surfaceSize - 1) - this.surfaceSize / 2);
-      const z = VMath.lerp(this.surface[surfaceX][surfaceY].value, -50, 50);
-      target.set(x, y, z);
+      const z = this.getZCord(x,y);
+      target.set(x, z, y);
     };
     const geometry = new ParametricGeometry(calculatePoint, this.mapSize, this.mapSize);
     const baseMaterial = new MeshBasicMaterial({
@@ -48,7 +48,6 @@ export class SurfaceController implements Controller {
 
     surfaceMesh.castShadow = false;
     surfaceMesh.receiveShadow = true;
-    surfaceMesh.rotation.x = -Math.PI / 2;
 
     return surfaceMesh;
   }
