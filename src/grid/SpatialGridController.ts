@@ -1,6 +1,7 @@
 import { Vector3 } from 'three';
 import { Controller } from '../entity/commons/Controller';
 import { EmittedEvent } from '../entity/commons/emitter/EmittedEvent';
+import { SurfaceController } from '../entity/environment/SurfaceController';
 import { SpatialHashGrid, SpatialPoint, SpatialClient } from './SpatialHashGrid';
 import { VisualEntity } from '../entity/commons/VisualEntity';
 
@@ -9,7 +10,7 @@ export class SpatialGridController implements Controller {
   private boundedOnPositionChange = this._OnPosition.bind(this);
 
   constructor(
-    private grid: SpatialHashGrid,
+    private surfaceController: SurfaceController,
   ) {}
 
   entity: VisualEntity | undefined;
@@ -29,7 +30,7 @@ export class SpatialGridController implements Controller {
       entityPosition.z,
     ];
 
-    this._client = this.grid.NewClient(pos, [1, 1]);
+    this._client = this.surfaceController.getGrid().NewClient(pos, [1, 1]);
     this._client.entity = this.entity;
     this.entity.on('update.position', this.boundedOnPositionChange);
   }
@@ -38,13 +39,13 @@ export class SpatialGridController implements Controller {
     if (!this._client) return;
 
     this._client.position = [msg.value.x, msg.value.z];
-    this.grid.UpdateClient(this._client);
+    this.surfaceController.getGrid().UpdateClient(this._client);
   }
 
   FindNearbyEntities(range: number): SpatialClient[] {
     if (!this.entity) return [];
 
-    const results = this.grid.FindNear(
+    const results = this.surfaceController.getGrid().FindNear(
       [this.entity.getPosition().x, this.entity.getPosition().z], [range, range]);
 
     return results.filter(c => c.entity != this.entity);

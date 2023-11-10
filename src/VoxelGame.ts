@@ -12,16 +12,13 @@ import {
   ShaderMaterial,
   BackSide,
   Vector3,
-  MeshBasicMaterial,
 } from 'three';
-import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './entity/commons/Entity';
 import { EntityManager } from './entity/commons/EntityManager';
+import { SurfaceController } from './entity/environment/SurfaceController';
 import { StaticModelController } from './entity/models/StaticModelController';
 import { SpatialGridController } from './grid/SpatialGridController';
-import { SpatialHashGrid } from './grid/SpatialHashGrid';
-import { SurfaceBuilder } from './grid/SurfaceBuilder';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
 import { VMath } from './VMath';
@@ -56,8 +53,8 @@ export class VoxelGame {
 
   private surfaceSize = 10000;
   private mapSize = 500;
-  private gridSize = this.surfaceSize / 4;
-  private gridDimension = this.surfaceSize/this.mapSize;
+  private surfaceController = new SurfaceController(this.mapSize, this.surfaceSize, this.groundColor);
+
   private threeJs = new WebGLRenderer({
     antialias: true,
   });
@@ -65,11 +62,6 @@ export class VoxelGame {
   private camera = this.createCamera();
   private scene = this.createScene();
   private sun = this.createLightning();
-  private surface = this.createSurface();
-  private grid = new SpatialHashGrid(
-    [[-this.gridSize, -this.gridSize], [this.gridSize, this.gridSize]],
-    [this.gridDimension, this.gridDimension]
-  );
   private prevTick: number | undefined;
 
   constructor() {
@@ -126,15 +118,22 @@ export class VoxelGame {
     return camera;
   }
 
+
   private initEnvironment(): void {
     const environment = new VisualEntity();
-    environment.AddComponent(new CameraController(this.camera));
-    environment.AddComponent(new LightController(this.sun));
+    environment.AddController(new CameraController(this.camera));
+    environment.AddController(new LightController(this.sun));
     this.entityManager.add(environment, EntityName.Environment);
 
     this.putIntoScene(this.sun);
     this.putIntoScene(this.sun.target);
-    this.putIntoScene(this.surface);
+    this.initSurface();
+  }
+  private initSurface() {
+    const entity = new VisualEntity();
+    entity.AddController(this.surfaceController);
+
+    this.putIntoScene(this.surfaceController.getSurfaceMesh());
   }
 
   @LogMethod({level: Level.info})
@@ -173,34 +172,6 @@ export class VoxelGame {
     light.shadow.camera.bottom = -150;
 
     return light;
-  }
-
-  @LogMethod({level: Level.info})
-  private createSurface(): Mesh {
-    const surfaceBuilder = new SurfaceBuilder(this.mapSize / this.surfaceSize);
-    const surface = surfaceBuilder.getMap(this.mapSize, this.mapSize);
-
-    const calculatePoint = (percentX: number, percentY: number, target: Vector3): void => {
-      const surfaceX = Math.floor(percentX * (this.mapSize - 1));
-      const surfaceY = Math.floor(percentY * (this.mapSize - 1));
-      const x = Math.floor(percentX * (this.surfaceSize - 1) - this.surfaceSize / 2);
-      const y = Math.floor(percentY * (this.surfaceSize - 1) - this.surfaceSize / 2);
-      const z = VMath.lerp(surface[surfaceX][surfaceY].value, -50, 50);
-      target.set(x, y, z);
-    };
-    const geometry = new ParametricGeometry(calculatePoint, this.mapSize, this.mapSize);
-    const baseMaterial = new MeshBasicMaterial({
-      color: this.groundColor,
-//      wireframe: true,
-//      wireframeLinewidth: 4,
-    });
-    const surfaceMesh = new Mesh(geometry, baseMaterial);
-
-    surfaceMesh.castShadow = false;
-    surfaceMesh.receiveShadow = true;
-    surfaceMesh.rotation.x = -Math.PI / 2;
-
-    return surfaceMesh;
   }
 
   private createHelioSphere(): HemisphereLight {
@@ -250,7 +221,7 @@ export class VoxelGame {
         (Math.random() * 2.0 - 1.0) * 500);
 
       const cloudEntity = new VisualEntity();
-      cloudEntity.AddComponent(
+      cloudEntity.AddController(
         new StaticModelController({
           scene: this.scene,
           resourcePath: './resources/clouds/',
@@ -288,7 +259,7 @@ export class VoxelGame {
         (Math.random() * 2.0 - 1.0) * 500);
 
       const tree = new VisualEntity();
-      tree.AddComponent(
+      tree.AddController(
         new StaticModelController({
           scene: this.scene,
           resourcePath: './resources/trees/',
@@ -301,7 +272,7 @@ export class VoxelGame {
         }),
         ModelController,
       );
-      tree.AddComponent(new SpatialGridController(this.grid));
+      tree.AddController(new SpatialGridController(this.surfaceController));
       tree.setPosition(pos);
       this.entityManager.add(tree);
       tree.disactivate();
@@ -320,7 +291,7 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initPlayer() {
     const player = new VisualEntity();
-    player.AddComponent(
+    player.AddController(
       new GltfModelController({
         scene: this.scene,
         resourcePath: './resources/units/',
@@ -331,7 +302,7 @@ export class VoxelGame {
       }),
       ModelController,
     );
-    player.AddComponent(new UserCharacterController());
+    player.AddController(new UserCharacterController());
     // player.AddComponent(new EquipWeapon({anchor: 'RightHandIndex1'}));
     // player.AddComponent(new InventoryController(params));
     // player.AddComponent(new AttackController({timing: 0.7}));
@@ -346,7 +317,7 @@ export class VoxelGame {
     //   experience: 0,
     //   level: 1,
     // }));
-    player.AddComponent(new SpatialGridController(this.grid));
+    player.AddController(new SpatialGridController(this.surfaceController));
     // TODO make position height (y) by surface position
     const pos = new Vector3(
       initialPlayerPositionX,
@@ -406,9 +377,9 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initHud() {
     const hud = new Entity();
-    hud.AddComponent(new FpsController());
-    hud.AddComponent(new CameraHudController());
-    hud.AddComponent(new CharacterHudController());
+    hud.AddController(new FpsController());
+    hud.AddController(new CameraHudController());
+    hud.AddController(new CharacterHudController());
     this.entityManager.add(hud);
   }
 

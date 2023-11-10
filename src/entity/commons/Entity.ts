@@ -7,25 +7,25 @@ import { isFunction } from '../../utils/isFunction';
 export class Entity extends Emittable {
   name?: string;
   entityManager?: EntityManager;
-  private components: Record<string, Controller> = {}; // SET OF COMPONENTS
+  private controllers: Record<string, Controller> = {}; // SET OF COMPONENTS
 
   disactivate() {
     this.entityManager?.disactivate(this);
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  AddComponent(component: Controller, as?: Function) {
-    component.entity = this;
-    const registeredAs = as || component.constructor;
-    this.components[registeredAs.name] = component;
+  AddController(controller: Controller, as?: Function) {
+    controller.entity = this;
+    const registeredAs = as || controller.constructor;
+    this.controllers[registeredAs.name] = controller;
 
     // eslint-disable-next-line @typescript-eslint/unbound-method
-    isFunction(component.onEntityChange) && component.onEntityChange();
+    isFunction(controller.onEntityChange) && controller.onEntityChange();
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   getComponent<TComponent extends Controller>(constructor: Function): TComponent {
-    return this.components[constructor.name] as TComponent;
+    return this.controllers[constructor.name] as TComponent;
   }
 
   // FIXME simplify event and emit only left alive
@@ -34,6 +34,6 @@ export class Entity extends Emittable {
   }
 
   update(deltaTime: number) {
-    Object.values(this.components).forEach(component => component.update(deltaTime));
+    Object.values(this.controllers).forEach(component => component.update(deltaTime));
   }
 }
