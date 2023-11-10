@@ -1,5 +1,4 @@
 import {
-  PerspectiveCamera,
   WebGLRenderer,
   Scene,
   Color,
