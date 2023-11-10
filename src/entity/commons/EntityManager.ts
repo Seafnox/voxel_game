@@ -1,9 +1,4 @@
 import { Entity } from './Entity';
-import { LogMethod } from '../../utils/logger/LogMethod';
-import { LogAction } from '../../utils/logger/LogAction';
-import { Level } from '../../utils/logger/Level';
-
-export type FilterPredicate<TValue, SValue extends TValue> = (value: TValue, index: number, array: TValue[]) => value is SValue;
 
 export class EntityManager {
   private idCounter = 0;
@@ -18,10 +13,6 @@ export class EntityManager {
 
   get<TEntity extends Entity>(name: string): TEntity | undefined {
     return this.entities[name] as TEntity;
-  }
-
-  filter<TEntity extends Entity>(predicate: FilterPredicate<Entity, TEntity>): TEntity[] {
-    return this.activeEntities.filter(predicate);
   }
 
   add(entity: Entity, preferName?: string) {
