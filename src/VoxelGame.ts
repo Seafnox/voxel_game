@@ -53,7 +53,7 @@ export class VoxelGame {
   private darkEmissionLight = 0x000000;
 
   private surfaceSize = 10000;
-  private mapSize = 500;
+  private mapSize = 1000;
 
   private threeJs = new WebGLRenderer({
     antialias: true,
