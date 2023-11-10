@@ -6,15 +6,13 @@ import {
   FogExp2,
   DirectionalLight,
   Mesh,
-  PlaneGeometry,
-  MeshStandardMaterial,
   HemisphereLight,
   Object3D,
   SphereGeometry,
   ShaderMaterial,
   BackSide,
-  IUniform,
   Vector3,
+  MeshBasicMaterial,
 } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
@@ -23,6 +21,7 @@ import { EntityManager } from './entity/commons/EntityManager';
 import { StaticModelController } from './entity/models/StaticModelController';
 import { SpatialGridController } from './grid/SpatialGridController';
 import { SpatialHashGrid } from './grid/SpatialHashGrid';
+import { SurfaceBuilder } from './grid/SurfaceBuilder';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
 import { VMath } from './VMath';
@@ -55,8 +54,10 @@ export class VoxelGame {
   private lightAbsorptionMask = 0x000000;
   private darkEmissionLight = 0x000000;
 
-  private mapSize = 5000;
-  private mapScale = 2;
+  private surfaceSize = 10000;
+  private mapSize = 500;
+  private gridSize = this.surfaceSize / 4;
+  private gridDimension = this.surfaceSize/this.mapSize;
   private threeJs = new WebGLRenderer({
     antialias: true,
   });
@@ -65,7 +66,10 @@ export class VoxelGame {
   private scene = this.createScene();
   private sun = this.createLightning();
   private surface = this.createSurface();
-  private grid = new SpatialHashGrid([[-this.mapSize/2, -this.mapSize/2], [this.mapSize/2, this.mapSize/2]], [100, 100]);
+  private grid = new SpatialHashGrid(
+    [[-this.gridSize, -this.gridSize], [this.gridSize, this.gridSize]],
+    [this.gridDimension, this.gridDimension]
+  );
   private prevTick: number | undefined;
 
   constructor() {
@@ -173,29 +177,30 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private createSurface(): Mesh {
-//    const geometry = new PlaneGeometry(this.mapSize, this.mapSize, this.mapSize/this.mapScale, this.mapSize/this.mapScale);
+    const surfaceBuilder = new SurfaceBuilder(this.mapSize / this.surfaceSize);
+    const surface = surfaceBuilder.getMap(this.mapSize, this.mapSize);
 
-    const scale = 5;
     const calculatePoint = (percentX: number, percentY: number, target: Vector3): void => {
-      const x = Math.floor(percentX*(this.mapSize-1) - this.mapSize/2);
-      const y = Math.floor(percentY*(this.mapSize-1) - this.mapSize/2);
-      const z = Math.random() * 2 - 1;
-      target.set(x,y,z);
-    }
-    const geometry = new ParametricGeometry(calculatePoint, this.mapSize/scale, this.mapSize/scale);
-    const surface = new Mesh(
-      geometry,
-      new MeshStandardMaterial({
-        color: this.groundColor,
-        wireframe: true,
-        wireframeLinewidth: 4,
-      }));
+      const surfaceX = Math.floor(percentX * (this.mapSize - 1));
+      const surfaceY = Math.floor(percentY * (this.mapSize - 1));
+      const x = Math.floor(percentX * (this.surfaceSize - 1) - this.surfaceSize / 2);
+      const y = Math.floor(percentY * (this.surfaceSize - 1) - this.surfaceSize / 2);
+      const z = VMath.lerp(surface[surfaceX][surfaceY].value, -50, 50);
+      target.set(x, y, z);
+    };
+    const geometry = new ParametricGeometry(calculatePoint, this.mapSize, this.mapSize);
+    const baseMaterial = new MeshBasicMaterial({
+      color: this.groundColor,
+//      wireframe: true,
+//      wireframeLinewidth: 4,
+    });
+    const surfaceMesh = new Mesh(geometry, baseMaterial);
 
-    surface.castShadow = false;
-    surface.receiveShadow = true;
-    surface.rotation.x = - Math.PI / 2;
+    surfaceMesh.castShadow = false;
+    surfaceMesh.receiveShadow = true;
+    surfaceMesh.rotation.x = -Math.PI / 2;
 
-    return surface;
+    return surfaceMesh;
   }
 
   private createHelioSphere(): HemisphereLight {
