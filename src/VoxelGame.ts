@@ -236,13 +236,12 @@ export class VoxelGame {
     ];
     for (let i = 0; i < 100; ++i) {
       const name = names[VMath.rand_int(0, names.length - 1)];
-      const index = VMath.rand_int(1, 5);
+      const index = VMath.rand_int(1, 1);
+      const x = (Math.random() * 2.0 - 1.0) * 500;
+      const z = (Math.random() * 2.0 - 1.0) * 500;
+      const y = this.surfaceController.getZCord(x,z);
 
-      // TODO make position height (y) by surface position
-      const pos = new Vector3(
-        (Math.random() * 2.0 - 1.0) * 500,
-        0,
-        (Math.random() * 2.0 - 1.0) * 500);
+      const pos = new Vector3(x,y,z);
 
       const tree = new VisualEntity();
       tree.AddController(
