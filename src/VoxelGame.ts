@@ -281,6 +281,7 @@ export class VoxelGame {
       const name = names[VMath.rand_int(0, names.length - 1)];
       const index = VMath.rand_int(1, 5);
 
+      // TODO make position height (y) by surface position
       const pos = new Vector3(
         (Math.random() * 2.0 - 1.0) * 500,
         0,
@@ -346,6 +347,7 @@ export class VoxelGame {
     //   level: 1,
     // }));
     player.AddComponent(new SpatialGridController(this.grid));
+    // TODO make position height (y) by surface position
     const pos = new Vector3(
       initialPlayerPositionX,
       initialPlayerPositionY,
