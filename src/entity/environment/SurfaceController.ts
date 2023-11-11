@@ -1,4 +1,4 @@
-import { Mesh, Vector3, MeshBasicMaterial, BackSide, Texture, DataTexture, Scene } from 'three';
+import { Mesh, Vector3, BackSide, Texture, DataTexture, Scene, MeshStandardMaterial } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 import { BufferGeometry } from 'three/src/core/BufferGeometry';
 import { SpatialHashGrid } from '../../grid/SpatialHashGrid';
@@ -57,9 +57,10 @@ export class SurfaceController implements Controller {
   private createSurfaceMesh(): Mesh {
     const geometry = this.createSurfaceGeometry();
     const texture = this.createSurfaceTexture();
-    const material = new MeshBasicMaterial({
+    const material = new MeshStandardMaterial({
       map: texture,
       side: BackSide,
+      shadowSide: BackSide,
     });
     const surfaceMesh = new Mesh(geometry, material);
 
@@ -71,7 +72,7 @@ export class SurfaceController implements Controller {
 
   private createSurfaceWireframeMesh(): Mesh {
     const geometry = this.createSurfaceGeometry();
-    const material = new MeshBasicMaterial({
+    const material = new MeshStandardMaterial({
       wireframe: true,
       wireframeLinewidth: 4,
     });
@@ -91,12 +92,8 @@ export class SurfaceController implements Controller {
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
       const x = Math.floor((percentX - 0.5) * (this.mapSize-1) * this.surfaceScale);
       const y = Math.floor((percentY - 0.5) * (this.mapSize-1) * this.surfaceScale);
-      try {
-        const z = this.getZCord(x,y);
-        target.set(x, z, y);
-      } catch (e) {
-        debugger;
-      }
+      const z = this.getZCord(x,y);
+      target.set(x, z, y);
     };
     return new ParametricGeometry(calculatePoint, this.mapSize-1, this.mapSize-1);
   }
