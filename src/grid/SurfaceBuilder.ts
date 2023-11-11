@@ -27,7 +27,7 @@ export class SurfaceBuilder {
     ];
   }
 
-  getMap(mapWidth: number, mapHeight: number): SurfacePoint[][] {
+  getSurfaceMap(mapWidth: number, mapHeight: number): SurfacePoint[][] {
     const rgbMap: SurfacePoint[][] = [];
     for (let x = 0; x < mapWidth; x++) {
       rgbMap[x] = [];

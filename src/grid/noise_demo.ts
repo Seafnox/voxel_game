@@ -1,7 +1,7 @@
 import { SurfaceBuilder } from './SurfaceBuilder';
 
 const surfaceBuilder = new SurfaceBuilder(0.04);
-const map = surfaceBuilder.getMap(100, 200);
+const map = surfaceBuilder.getSurfaceMap(100, 200);
 
 const colorMap: Record<string, string> = {
   '000': '\x1b[40m\x1b[30m_\x1b[0m', // бездна

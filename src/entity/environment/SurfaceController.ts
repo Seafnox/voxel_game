@@ -14,7 +14,7 @@ export class SurfaceController implements Controller {
   private gridSize: number;
   private gridDimension: number;
   private grid: SpatialHashGrid;
-  private surface: SurfacePoint[][];
+  private surfaceMap: SurfacePoint[][];
 
   constructor(
     private scene: Scene,
@@ -29,7 +29,7 @@ export class SurfaceController implements Controller {
       [this.gridDimension, this.gridDimension]
     );
     const surfaceBuilder = new SurfaceBuilder(0.003 * this.surfaceScale);
-    this.surface = surfaceBuilder.getMap(this.mapSize, this.mapSize);
+    this.surfaceMap = surfaceBuilder.getSurfaceMap(this.mapSize, this.mapSize);
     this.scene.add(this.createSurfaceWireframeMesh());
     this.scene.add(this.createSurfaceMesh());
   }
@@ -51,7 +51,7 @@ export class SurfaceController implements Controller {
   getSurfacePoint(xCord: number, yCord: number): SurfacePoint {
     const x = this.getMapIndex(xCord);
     const y = this.getMapIndex(yCord);
-    return this.surface[x][y];
+    return this.surfaceMap[x][y];
   }
 
   private createSurfaceMesh(): Mesh {
@@ -105,7 +105,7 @@ export class SurfaceController implements Controller {
     for ( let x = 0; x < this.mapSize; x++ ) {
       for ( let y = 0; y < this.mapSize; y++ ) {
         const stride = (x * this.mapSize + y) * 4;
-        const color = this.surface[y][x].color;
+        const color = this.surfaceMap[y][x].color;
         data[ stride ] = color[0];
         data[ stride + 1 ] = color[1];
         data[ stride + 2 ] = color[2];
