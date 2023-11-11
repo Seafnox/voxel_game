@@ -1,6 +1,7 @@
 import { Object3D, Quaternion, Vector3 } from 'three';
 import { Controller } from '../commons/Controller';
 import { Entity } from '../commons/Entity';
+import { ActivityStatus } from '../commons/state/ActivityStatus';
 import { UserActivityController } from './UserActivityController';
 import { StateMachine } from '../commons/state/StateMachine';
 import { IdleUserState } from './states/IdleUserState';
@@ -12,28 +13,14 @@ import { VisualEntity } from '../commons/VisualEntity';
 import { WalkUserState } from './states/WalkUserState';
 import { RunUserState } from './states/RunUserState';
 
-export const enum UserState {
-  Idle,
-  Move,
-  Run,
-  Slash,
-  Dead,
-}
-
-export const enum UserTurning {
-  Left,
-  Right,
-}
-
 export class UserCharacterController implements Controller {
-  private deceleration = new Vector3(-0.0005, -0.0005, -5.0);
-  private acceleration = new Vector3(1, 0.125, 50.0);
+  private deceleration = new Vector3(-5.0, -5.0, -5.0);
+  private acceleration = new Vector3(10.0, 20.0, 50.0);
   private deltaTimeScalar = 1000;
-  private extremeAccelerationScalar = 2;
+  private extremeAccelerationScalar = 10;
   private rotationScalar = 0.03;
   private stateMachine = new StateMachine();
   private activityController = new UserActivityController();
-  private modelController: ModelController | undefined;
   entity: VisualEntity | undefined;
 
   constructor() {
@@ -46,7 +33,6 @@ export class UserCharacterController implements Controller {
   onEntityChange() {
     this.stateMachine.setEntity(this.entity!);
     this.stateMachine.setState(IdleUserState);
-    this.modelController = this.entity?.getComponent(ModelController);
   }
 
   update(deltaTime: number): void {
@@ -89,23 +75,13 @@ export class UserCharacterController implements Controller {
     return collisions;
   }
 
-  private getModel(): Object3D | undefined {
-    if (!this.modelController) {
-      console.log(this);
-      throw new Error(`Can't find modelComponent in ${this.constructor.name}`);
-    }
-
-    return this.modelController.getModel();
-  }
-
   private calculateRotation(deltaTime: number) {
-    const target = this.getModel();
-    if (!target) return;
+    if (!this.entity) return;
 
     const input = this.activityController.status;
     const rotationMultiplier = new Quaternion();
     const RotationDirection = new Vector3();
-    const currentRotation = target.quaternion.clone();
+    const currentRotation = this.entity.getRotation().clone();
 
     if (input.left) {
       RotationDirection.set(0, 1, 0);
@@ -118,8 +94,7 @@ export class UserCharacterController implements Controller {
       currentRotation.multiply(rotationMultiplier);
     }
 
-    target.quaternion.copy(currentRotation);
-    this.entity!.setRotation(target.quaternion);
+    this.entity!.setRotation(currentRotation);
   }
 
   private calculateVelocity(deltaTime: number) {
@@ -144,55 +119,65 @@ export class UserCharacterController implements Controller {
       this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
     }
 
-    this.normalizeVelocity(deltaTime);
+    if (input.top) {
+      velocity.y += acc.y * deltaTime / this.deltaTimeScalar;
+      this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
+    }
+
+    if (input.down) {
+      velocity.y -= acc.y * deltaTime / this.deltaTimeScalar;
+      this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
+    }
+
+    this.normalizeVelocity(velocity, deltaTime, input);
   }
 
-  private normalizeVelocity(deltaTime: number) {
+  private normalizeVelocity(velocity: Vector3, deltaTime: number, input: ActivityStatus) {
     if (!this.entity) return;
 
-    const velocity = this.entity.getVelocity();
     const frameDeceleration = new Vector3(
       velocity.x * this.deceleration.x,
-      velocity.y * this.deceleration.y,
-      velocity.z * this.deceleration.z,
+      velocity.y * (input.top || input.down ? this.deceleration.y : this.deceleration.y * 100),
+      velocity.z * (input.forward || input.backward ? this.deceleration.z : this.deceleration.z * 100),
     );
     frameDeceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
     frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
+    frameDeceleration.y = Math.sign(frameDeceleration.y) * Math.min(Math.abs(frameDeceleration.y), Math.abs(velocity.y));
 
     velocity.add(frameDeceleration);
   }
 
   private calculatePosition(deltaTime: number) {
-    const target = this.getModel();
-
-    if (!target) return;
     if (!this.entity) return;
 
     const velocity = this.entity.getVelocity();
-
-    const oldPosition = new Vector3();
-    oldPosition.copy(target.position);
+    const position = this.entity.getPosition();
+    const rotation = this.entity.getRotation();
 
     const forward = new Vector3(0, 0, 1);
-    forward.applyQuaternion(target.quaternion);
+    forward.applyQuaternion(rotation);
     forward.normalize();
 
     const sideways = new Vector3(1, 0, 0);
-    sideways.applyQuaternion(target.quaternion);
+    sideways.applyQuaternion(rotation);
+    sideways.normalize();
+
+    const verticalWays = new Vector3(0, 1, 0);
+    sideways.applyQuaternion(rotation);
     sideways.normalize();
 
     sideways.multiplyScalar(velocity.x * deltaTime / this.deltaTimeScalar);
+    verticalWays.multiplyScalar(velocity.y * deltaTime / this.deltaTimeScalar);
     forward.multiplyScalar(velocity.z * deltaTime / this.deltaTimeScalar);
 
-    const pos = target.position.clone();
-    pos.add(forward);
-    pos.add(sideways);
+    const resultPosition = position.clone();
+    resultPosition.add(forward);
+    resultPosition.add(verticalWays);
+    resultPosition.add(sideways);
 
-    const collisions = this.findIntersections(pos);
+    const collisions = this.findIntersections(resultPosition);
     if (collisions.length > 0) return;
 
-    target.position.copy(pos);
-
-    this.entity?.setPosition(target.position);
+    this.entity?.setPosition(resultPosition);
   }
 }

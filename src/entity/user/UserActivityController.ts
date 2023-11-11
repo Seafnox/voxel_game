@@ -8,9 +8,11 @@ export class UserActivityController {
   private boundedOnMouseUp = this.onMouseUp.bind(this);
   status: ActivityStatus = {
     forward: false,
-    left: false,
     backward: false,
+    left: false,
     right: false,
+    top: false,
+    down: false,
     jump: false,
     shift: false,
     push: false,
@@ -46,6 +48,12 @@ export class UserActivityController {
         break;
       case 68: // d
         this.status.right = value;
+        break;
+      case 81: // q
+        this.status.top = value;
+        break;
+      case 69: // e
+        this.status.down = value;
         break;
       case 32: // SPACE
         this.status.jump = value;

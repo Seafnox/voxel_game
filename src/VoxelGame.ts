@@ -12,7 +12,7 @@ import {
   BackSide,
   Vector3,
 } from 'three';
-import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
+import { SRGBColorSpace, PCFSoftShadowMap, VSMShadowMap } from 'three/src/constants';
 import { Entity } from './entity/commons/Entity';
 import { EntityManager } from './entity/commons/EntityManager';
 import { SurfaceController } from './entity/environment/SurfaceController';
@@ -45,7 +45,6 @@ export class VoxelGame {
   private fogColor = 0x89b2eb;
   private backgroundColor = 0x999999;
   private lightColor = 0xeeffff;
-  private groundColor = 0x1e601c;
   private hellColor = 0xFFC880;
   private skyColor = 0x3385FF;
   private cloudColor = 0xc0a080;
@@ -65,7 +64,7 @@ export class VoxelGame {
   private entityManager = new EntityManager();
   private windowObserver = new WindowEventObserver();
 
-  private surfaceController = new SurfaceController(this.mapSize, this.surfaceSize, this.groundColor);
+  private surfaceController = new SurfaceController(this.scene, this.mapSize, this.surfaceSize);
   private cameraController = new CameraController(this.windowObserver);
 
 
@@ -102,8 +101,6 @@ export class VoxelGame {
   private initSurface() {
     const entity = new VisualEntity();
     entity.AddController(this.surfaceController);
-
-    this.putIntoScene(this.surfaceController.getSurfaceMesh());
   }
 
   @LogMethod({level: Level.info})
@@ -112,7 +109,7 @@ export class VoxelGame {
 
     this.threeJs.outputColorSpace = SRGBColorSpace;
     this.threeJs.shadowMap.enabled = true;
-    this.threeJs.shadowMap.type = PCFSoftShadowMap;
+    this.threeJs.shadowMap.type = VSMShadowMap;
     this.threeJs.setPixelRatio(window.devicePixelRatio);
     this.threeJs.setSize(window.innerWidth, window.innerHeight);
     this.threeJs.domElement.id = HtmlElementId.Scene;
@@ -146,7 +143,6 @@ export class VoxelGame {
   private createLightning(): DirectionalLight {
     const light = new DirectionalLight(this.lightColor, 1.0);
     light.position.set(-10, 500, 10);
-    light.target.position.set(0, 0, 0);
     light.castShadow = true;
     light.shadow.bias = -0.001;
     light.shadow.mapSize.width = 4096;
@@ -157,6 +153,8 @@ export class VoxelGame {
     light.shadow.camera.right = -150;
     light.shadow.camera.top = 150;
     light.shadow.camera.bottom = -150;
+    light.shadow.radius = 5;
+    light.shadow.blurSamples = 25;
 
     return light;
   }
@@ -215,6 +213,8 @@ export class VoxelGame {
           resourceName: 'Cloud' + index + '.glb',
           scale: Math.random() * 5 + 10,
           emissive: new Color(this.cloudColor),
+          castShadow: true,
+          receiveShadow: true,
         }),
         ModelController,
       );
@@ -236,7 +236,7 @@ export class VoxelGame {
     ];
     for (let i = 0; i < 100; ++i) {
       const name = names[VMath.rand_int(0, names.length - 1)];
-      const index = VMath.rand_int(1, 1);
+      const index = VMath.rand_int(1, 5);
       const x = (Math.random() * 2.0 - 1.0) * 500;
       const z = (Math.random() * 2.0 - 1.0) * 500;
       const y = this.surfaceController.getZCord(x,z);
@@ -377,16 +377,12 @@ export class VoxelGame {
 
       const deltaTime = t - this.prevTick;
 
-      this.requestControllerUpdate(deltaTime);
+      this.entityManager.update(deltaTime);
       this.threeJs.render(this.scene, this.cameraController.getCamera());
 
       this.prevTick = t;
 
       this.requestAnimation();
     });
-  }
-
-  private requestControllerUpdate(deltaTime: number) {
-    this.entityManager.update(deltaTime);
   }
 }

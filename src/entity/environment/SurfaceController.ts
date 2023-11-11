@@ -1,5 +1,6 @@
-import { Mesh, Vector3, MeshBasicMaterial, BackSide, Texture, DataTexture } from 'three';
+import { Mesh, Vector3, MeshBasicMaterial, BackSide, Texture, DataTexture, Scene } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
+import { BufferGeometry } from 'three/src/core/BufferGeometry';
 import { SpatialHashGrid } from '../../grid/SpatialHashGrid';
 import { SurfaceBuilder, SurfacePoint } from '../../grid/SurfaceBuilder';
 import { VMath } from '../../VMath';
@@ -9,59 +10,28 @@ import { Entity } from '../commons/Entity';
 export class SurfaceController implements Controller {
   public entity: Entity | undefined;
 
+  private surfaceScale: number;
   private gridSize: number;
   private gridDimension: number;
   private grid: SpatialHashGrid;
   private surface: SurfacePoint[][];
-  private surfaceMesh: Mesh;
 
   constructor(
+    private scene: Scene,
     private mapSize: number,
     private surfaceSize: number,
-    private groundColor: number,
   ) {
     this.gridSize = this.surfaceSize / 4;
     this.gridDimension = this.surfaceSize / this.mapSize;
+    this.surfaceScale = this.surfaceSize / this.mapSize;
     this.grid = new SpatialHashGrid(
       [[-this.gridSize, -this.gridSize], [this.gridSize, this.gridSize]],
       [this.gridDimension, this.gridDimension]
     );
-    const surfaceBuilder = new SurfaceBuilder(0.005 * this.surfaceSize / this.mapSize);
+    const surfaceBuilder = new SurfaceBuilder(0.003 * this.surfaceScale);
     this.surface = surfaceBuilder.getMap(this.mapSize, this.mapSize);
-    this.surfaceMesh = this.createSurfaceMesh();
-  }
-
-  private createSurfaceMesh(): Mesh {
-    const calculatePoint = (percentX: number, percentY: number, target: Vector3): void => {
-      const x = Math.floor(percentX * (this.surfaceSize - 1) - this.surfaceSize / 2);
-      const y = Math.floor(percentY * (this.surfaceSize - 1) - this.surfaceSize / 2);
-      const z = this.getZCord(x,y);
-      target.set(x, z, y);
-    };
-    const geometry = new ParametricGeometry(calculatePoint, this.mapSize, this.mapSize);
-    const texture = this.createSurfaceTexture();
-//    const material = new MeshBasicMaterial({
-//      color: this.groundColor,
-//      //wireframe: true,
-//      wireframeLinewidth: 4,
-//      side: BackSide,
-//    });
-    const material = new MeshBasicMaterial({
-      map: texture,
-      side: BackSide,
-//      wireframe: true,
-      wireframeLinewidth: 4,
-    })
-    const surfaceMesh = new Mesh(geometry, material);
-
-    surfaceMesh.castShadow = false;
-    surfaceMesh.receiveShadow = true;
-
-    return surfaceMesh;
-  }
-
-  getSurfaceMesh(): Mesh {
-    return this.surfaceMesh;
+    this.scene.add(this.createSurfaceWireframeMesh());
+    this.scene.add(this.createSurfaceMesh());
   }
 
   getGrid(): SpatialHashGrid {
@@ -84,8 +54,51 @@ export class SurfaceController implements Controller {
     return this.surface[x][y];
   }
 
+  private createSurfaceMesh(): Mesh {
+    const geometry = this.createSurfaceGeometry();
+    const texture = this.createSurfaceTexture();
+    const material = new MeshBasicMaterial({
+      map: texture,
+      side: BackSide,
+    });
+    const surfaceMesh = new Mesh(geometry, material);
+
+    surfaceMesh.castShadow = false;
+    surfaceMesh.receiveShadow = true;
+
+    return surfaceMesh;
+  }
+
+  private createSurfaceWireframeMesh(): Mesh {
+    const geometry = this.createSurfaceGeometry();
+    const material = new MeshBasicMaterial({
+      wireframe: true,
+      wireframeLinewidth: 4,
+    });
+    const surfaceMesh = new Mesh(geometry, material);
+
+    surfaceMesh.castShadow = false;
+    surfaceMesh.receiveShadow = true;
+
+    return surfaceMesh;
+  }
+
   private getZCordByPoint(point: SurfacePoint): number {
     return VMath.lerp(point.value, -100, 100);
+  }
+
+  private createSurfaceGeometry(): BufferGeometry {
+    const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
+      const x = Math.floor((percentX - 0.5) * (this.mapSize-1) * this.surfaceScale);
+      const y = Math.floor((percentY - 0.5) * (this.mapSize-1) * this.surfaceScale);
+      try {
+        const z = this.getZCord(x,y);
+        target.set(x, z, y);
+      } catch (e) {
+        debugger;
+      }
+    };
+    return new ParametricGeometry(calculatePoint, this.mapSize-1, this.mapSize-1);
   }
 
   private createSurfaceTexture(): Texture {

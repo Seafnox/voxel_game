@@ -16,7 +16,7 @@ export class VisualEntity extends Entity {
   setPosition(p: Vector3) {
     this.position.copy(p);
     this.broadcast({
-      topic: 'update.position',
+      topic: VisualEntityTopic.UpdatePosition,
       value: this.position,
     });
   }
@@ -28,7 +28,7 @@ export class VisualEntity extends Entity {
   setVelocity(p: Vector3) {
     this.velocity.copy(p);
     this.broadcast({
-      topic: 'update.velocity',
+      topic: VisualEntityTopic.UpdateVelocity,
       value: this.velocity,
     });
   }
@@ -41,7 +41,7 @@ export class VisualEntity extends Entity {
   setRotation(r: Quaternion) {
     this.rotation.copy(r);
     this.broadcast({
-      topic: 'update.rotation',
+      topic: VisualEntityTopic.UpdateRotation,
       value: this.rotation,
     });
   }

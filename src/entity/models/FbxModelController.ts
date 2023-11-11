@@ -10,11 +10,13 @@ import {
   AnimationMixer,
   Object3D,
   Mesh,
-  LoadingManager,
+  LoadingManager, Quaternion,
 } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 import { EmittedEvent } from '../commons/emitter/EmittedEvent';
+import { Disposable } from '../commons/emitter/Emitter';
+import { VisualEntityTopic } from '../commons/VisualEntityTopic';
 import { ModelController } from './ModelController';
 
 export interface CustomizableModelConfig {
@@ -32,7 +34,8 @@ export interface CustomizableModelConfig {
 }
 
 export class FbxModelController extends ModelController {
-  private boundOnPositionChange = this.onPositionChange.bind(this);
+  private positionSubscription?: Disposable;
+  private rotationSubscription?: Disposable;
   private texture: Texture | undefined;
 
   constructor(
@@ -48,14 +51,19 @@ export class FbxModelController extends ModelController {
       throw new Error(`Can't find entity in ${this.constructor.name}`);
     }
 
-    this.entity.on('update.position', this.boundOnPositionChange);
+    this.positionSubscription?.dispose();
+    this.positionSubscription = this.entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+
+    this.rotationSubscription?.dispose();
+    this.rotationSubscription = this.entity.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));
   }
 
   onPositionChange(m: EmittedEvent<Vector3>) {
-    if (this.model) {
-      this.model.position.copy(m.value);
-      this.model.position.y = 0.35;
-    }
+    this.model?.position.copy(m.value);
+  }
+
+  onRotationChange(m: EmittedEvent<Quaternion>) {
+    this.model?.quaternion.copy(m.value);
   }
 
   private onModelLoaded(model: Object3D) {
