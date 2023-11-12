@@ -1,4 +1,4 @@
-import { Mesh, Vector3, BackSide, Texture, DataTexture, Scene, MeshStandardMaterial } from 'three';
+import { Mesh, Vector3, BackSide, Texture, DataTexture, Scene, MeshStandardMaterial, MeshBasicMaterial } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 import { BufferGeometry } from 'three/src/core/BufferGeometry';
 import { SpatialHashGrid } from '../../grid/SpatialHashGrid';
@@ -58,9 +58,9 @@ export class SurfaceController implements Controller {
     const geometry = this.createSurfaceGeometry();
     const texture = this.createSurfaceTexture();
     const material = new MeshStandardMaterial({
+      color: 0xFFFFFF,
       map: texture,
       side: BackSide,
-      shadowSide: BackSide,
     });
     const surfaceMesh = new Mesh(geometry, material);
 
@@ -72,7 +72,7 @@ export class SurfaceController implements Controller {
 
   private createSurfaceWireframeMesh(): Mesh {
     const geometry = this.createSurfaceGeometry();
-    const material = new MeshStandardMaterial({
+    const material = new MeshBasicMaterial({
       wireframe: true,
       wireframeLinewidth: 4,
     });
@@ -85,17 +85,19 @@ export class SurfaceController implements Controller {
   }
 
   private getZCordByPoint(point: SurfacePoint): number {
-    return VMath.lerp(point.value, -100, 100);
+    return VMath.lerp(point.value, -20, 20);
   }
 
   private createSurfaceGeometry(): BufferGeometry {
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
-      const x = Math.floor((percentX - 0.5) * (this.mapSize-1) * this.surfaceScale);
-      const y = Math.floor((percentY - 0.5) * (this.mapSize-1) * this.surfaceScale);
+      const x = (percentX - 0.5) * (this.mapSize-1) * this.surfaceScale;
+      const y = (percentY - 0.5) * (this.mapSize-1) * this.surfaceScale;
       const z = this.getZCord(x,y);
       target.set(x, z, y);
     };
-    return new ParametricGeometry(calculatePoint, this.mapSize-1, this.mapSize-1);
+    const geometry = new ParametricGeometry(calculatePoint, this.mapSize, this.mapSize);
+
+    return geometry;
   }
 
   private createSurfaceTexture(): Texture {
