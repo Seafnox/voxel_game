@@ -139,7 +139,7 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private createLightning(): DirectionalLight {
     const light = new DirectionalLight(this.lightColor, 1.0);
-    light.position.set(-10, 500, 10);
+    light.position.set(0, 800, 0);
     light.castShadow = true;
     light.shadow.bias = -0.001;
     light.shadow.mapSize.width = 4096;
@@ -157,9 +157,9 @@ export class VoxelGame {
   }
 
   private createHelioSphere(): HemisphereLight {
-    const helioSphere = new HemisphereLight(this.lightColor, this.lightColor, 0.6);
+    const helioSphere = new HemisphereLight(this.skyColor, this.backgroundColor, 0.6);
     helioSphere.color.setHex(this.skyColor);
-    helioSphere.groundColor.setHex(this.hellColor);
+    helioSphere.groundColor.setHex(this.backgroundColor);
 
     return helioSphere;
   }
@@ -172,7 +172,6 @@ export class VoxelGame {
   private buildSky() {
     const helio = this.createHelioSphere();
     this.putIntoScene(helio);
-//    this.scene.fog?.color.copy((uniforms.bottomColor.value as Color));
     this.putIntoScene(this.createSkyMesh(helio));
   }
 
@@ -199,7 +198,7 @@ export class VoxelGame {
       const index = VMath.rand_int(1, 3);
       const pos = new Vector3(
         (Math.random() * 2.0 - 1.0) * 500,
-        100,
+        250,
         (Math.random() * 2.0 - 1.0) * 500);
 
       const cloudEntity = new VisualEntity();
