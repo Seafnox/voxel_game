@@ -1,4 +1,4 @@
-import { Emittable } from '../entity/commons/emitter/Emittable';
+import { Emittable } from '../emitter/Emittable';
 import { WindowTopic } from './WindowTopic';
 
 export class WindowEventObserver extends Emittable {

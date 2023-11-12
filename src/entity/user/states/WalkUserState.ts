@@ -3,7 +3,7 @@ import { AnimationAction } from 'three';
 import { VisualEntityTopic } from '../../commons/VisualEntityTopic';
 import { ModelController } from '../../models/ModelController';
 import { VisualEntity } from '../../commons/VisualEntity';
-import { Disposable } from '../../commons/emitter/Emitter';
+import { Disposable } from '../../../emitter/Emitter';
 import { SimpleState } from '../../commons/state/SimpleState';
 import { StateInput } from '../../commons/state/StateInput';
 import { VMath } from '../../../VMath';

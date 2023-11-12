@@ -2,7 +2,7 @@ import { Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { EmittedEvent } from '../commons/emitter/EmittedEvent';
+import { EmittedEvent } from '../../emitter/EmittedEvent';
 import { ModelController } from './ModelController';
 
 export interface StaticModelConfig {

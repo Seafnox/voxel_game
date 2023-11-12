@@ -1,8 +1,8 @@
 import { Vector3 } from 'three';
 import { Controller } from '../entity/commons/Controller';
-import { EmittedEvent } from '../entity/commons/emitter/EmittedEvent';
+import { EmittedEvent } from '../emitter/EmittedEvent';
 import { SurfaceController } from '../entity/environment/SurfaceController';
-import { SpatialHashGrid, SpatialPoint, SpatialClient } from './SpatialHashGrid';
+import { SpatialPoint, SpatialClient } from './SpatialHashGrid';
 import { VisualEntity } from '../entity/commons/VisualEntity';
 
 export class SpatialGridController implements Controller {

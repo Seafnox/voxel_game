@@ -13,8 +13,8 @@ import {
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { EmittedEvent } from '../commons/emitter/EmittedEvent';
-import { Disposable } from '../commons/emitter/Emitter';
+import { EmittedEvent } from '../../emitter/EmittedEvent';
+import { Disposable } from '../../emitter/Emitter';
 import { VisualEntityTopic } from '../commons/VisualEntityTopic';
 import { ModelController } from './ModelController';
 
