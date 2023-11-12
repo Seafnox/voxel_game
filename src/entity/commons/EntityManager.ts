@@ -2,21 +2,15 @@ import { Entity } from './Entity';
 
 export class EntityManager {
   private idCounter = 0;
-  entities: Record<string, Entity> = {};
-  activeEntities: Entity[] = [];
-
-  generateName() {
-    this.idCounter += 1;
-
-    return '__name__' + this.idCounter;
-  }
+  private entities: Record<string, Entity> = {};
+  private activeEntities: Entity[] = [];
 
   get<TEntity extends Entity>(name: string): TEntity | undefined {
     return this.entities[name] as TEntity;
   }
 
   add(entity: Entity, preferName?: string) {
-    const name = preferName || this.generateName();
+    const name = preferName || this.generateName(entity.constructor.name);
     console.log(this.constructor.name, 'add', entity.constructor.name, name);
     this.entities[name] = entity;
 
@@ -42,6 +36,12 @@ export class EntityManager {
     }
 
     this.activeEntities.splice(i, 1);
+  }
+
+  private generateName(prefix: string) {
+    this.idCounter += 1;
+
+    return `${prefix}__${this.idCounter}`;
   }
 
   update(deltaTime: number) {
