@@ -44,16 +44,16 @@ const initialPlayerPositionY = 10;
 const initialPlayerPositionZ = 0;
 
 export class VoxelGame {
-  private fogColor = 0x89b2eb;
-  private backgroundColor = 0x999999;
+  private fogColor = 0x6982ab;
+  private backgroundColor = 0xeeffff;
   private lightColor = 0xeeffff;
-  private hellColor = 0xFFC880;
+  private hellColor = 0xFFC8c8;
   private skyColor = 0x3385FF;
-  private cloudColor = 0xc0a080;
+  private cloudColor = 0xaecfff;
   private lightAbsorptionMask = 0x000000;
   private darkEmissionLight = 0x000000;
 
-  private surfaceSize = 10000;
+  private surfaceSize = 5000;
   private mapSize = 1000;
 
   private threeJs = new WebGLRenderer({
