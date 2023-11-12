@@ -1,16 +1,31 @@
+import { EmittedEvent } from '../../emitter/EmittedEvent';
+import { Disposable } from '../../emitter/Emitter';
 import { Controller } from '../commons/Controller';
-import { AnimationAction, AnimationClip, AnimationMixer, Object3D } from 'three';
+import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from '../../utils/logger/LogMethod';
 import { Level } from '../../utils/logger/Level';
+import { Entity } from '../commons/Entity';
+import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
 import { VisualEntity } from '../commons/VisualEntity';
+import { VisualEntityTopic } from '../commons/VisualEntityTopic';
 
 export abstract class ModelController implements Controller {
-  entity: VisualEntity | undefined;
+  entity: Entity | undefined;
   protected model: Object3D | undefined;
   protected animationMap: Record<string, AnimationAction> = {};
   protected mixer: AnimationMixer | undefined;
   protected activeAnimationName: string | undefined;
   protected activeAnimation: AnimationAction | undefined;
+  private positionSubscription?: Disposable;
+  private rotationSubscription?: Disposable;
+
+  onEntityChange() {
+    this.positionSubscription?.dispose();
+    this.positionSubscription = this.entity?.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+
+    this.rotationSubscription?.dispose();
+    this.rotationSubscription = this.entity?.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));
+  }
 
   getModel(): Object3D | undefined {
     return this.model;
@@ -24,16 +39,11 @@ export abstract class ModelController implements Controller {
     return this.constructor.name;
   }
 
-  protected getEntityOrThrow(): VisualEntity {
-    if (!this.entity) {
-      throw new Error(`Can't find parent entity for ${this.getConstructorName()}`);
-    }
+  protected abstract onPositionChange(m: EmittedEvent<Vector3>): void;
+  protected abstract onRotationChange(m: EmittedEvent<Quaternion>): void;
 
-    if (!(this.entity instanceof VisualEntity)) {
-      throw new Error(`Can't mace calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
-
-    return this.entity;
+  protected getVisualEntityOrThrow(): VisualEntity {
+    return getVisualEntityOrThrow(this, this.entity);
   }
 
   protected getModelOrThrow(): Object3D {

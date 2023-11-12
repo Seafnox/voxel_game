@@ -1,4 +1,4 @@
-import { Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color } from 'three';
+import { Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color, Quaternion } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
@@ -28,21 +28,17 @@ export class StaticModelController extends ModelController {
     this.loadModels();
   }
 
-  onEntityChange() {
-    if (!this.entity) {
-      console.log(this);
-      throw new Error(`Can't find entity in ${this.constructor.name}`);
-    }
-
-    this.entity.on<Vector3>('update.position', this.boundOnPositionChange);
-  }
-
   onPositionChange(m: EmittedEvent<Vector3>) {
     if (this.model) {
       this.model.position.copy(m.value);
     }
   }
 
+  onRotationChange(m: EmittedEvent<Quaternion>) {
+      if (this.model) {
+          this.model.quaternion.copy(m.value);
+      }
+  }
   loadModels() {
     if (this.params.resourceName.endsWith('glb') || this.params.resourceName.endsWith('gltf')) {
       this.loadAsGLTF();
@@ -52,15 +48,13 @@ export class StaticModelController extends ModelController {
   }
 
   onTargetLoaded(obj: Group) {
-    if (!this.entity) {
-      throw new Error(`Can't find parent entity`);
-    }
+    const entity = this.getVisualEntityOrThrow()
 
     this.model = obj;
     this.params.scene.add(this.model);
 
     this.model.scale.setScalar(this.params.scale);
-    this.entity && this.model.position.copy(this.entity.getPosition());
+    this.entity && this.model.position.copy(entity.getPosition());
 
     let texture: Texture | null = null;
     if (this.params.resourceTexture) {
@@ -100,7 +94,7 @@ export class StaticModelController extends ModelController {
       }
     });
 
-    this.entity.isModelReady = true;
+    entity.isModelReady = true;
   }
 
   loadAsGLTF() {
@@ -119,6 +113,5 @@ export class StaticModelController extends ModelController {
     });
   }
 
-  public update(): void {
-  }
+  public update(): void {}
 }

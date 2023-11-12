@@ -9,13 +9,12 @@ import {
   AnimationMixer,
   Object3D,
   Mesh,
-  LoadingManager, Quaternion,
+  LoadingManager,
+  Quaternion,
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 import { EmittedEvent } from '../../emitter/EmittedEvent';
-import { Disposable } from '../../emitter/Emitter';
-import { VisualEntityTopic } from '../commons/VisualEntityTopic';
 import { ModelController } from './ModelController';
 
 export interface GltfModelConfig {
@@ -32,8 +31,6 @@ export interface GltfModelConfig {
 }
 
 export class GltfModelController extends ModelController {
-  private positionSubscription?: Disposable;
-  private rotationSubscription?: Disposable;
   private texture: Texture | undefined;
 
   constructor(
@@ -41,19 +38,6 @@ export class GltfModelController extends ModelController {
   ) {
     super();
     this.loadResources();
-  }
-
-  onEntityChange() {
-    if (!this.entity) {
-      console.log(this);
-      throw new Error(`Can't find entity in ${this.constructor.name}`);
-    }
-
-    this.positionSubscription?.dispose();
-    this.positionSubscription = this.entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
-
-    this.rotationSubscription?.dispose();
-    this.rotationSubscription = this.entity.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));
   }
 
   onPositionChange(m: EmittedEvent<Vector3>) {
@@ -124,7 +108,7 @@ export class GltfModelController extends ModelController {
 
       this.onModelLoaded(glb.scene);
 
-      const entity = this.getEntityOrThrow();
+      const entity = this.getVisualEntityOrThrow();
       const model = this.getModelOrThrow();
 
       model.position.copy(entity.getPosition());

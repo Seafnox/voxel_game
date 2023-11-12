@@ -15,8 +15,6 @@ import {
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 import { EmittedEvent } from '../../emitter/EmittedEvent';
-import { Disposable } from '../../emitter/Emitter';
-import { VisualEntityTopic } from '../commons/VisualEntityTopic';
 import { ModelController } from './ModelController';
 
 export interface CustomizableModelConfig {
@@ -34,8 +32,6 @@ export interface CustomizableModelConfig {
 }
 
 export class FbxModelController extends ModelController {
-  private positionSubscription?: Disposable;
-  private rotationSubscription?: Disposable;
   private texture: Texture | undefined;
 
   constructor(
@@ -43,19 +39,6 @@ export class FbxModelController extends ModelController {
   ) {
     super();
     this.loadResources();
-  }
-
-  onEntityChange() {
-    if (!this.entity) {
-      console.log(this);
-      throw new Error(`Can't find entity in ${this.constructor.name}`);
-    }
-
-    this.positionSubscription?.dispose();
-    this.positionSubscription = this.entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
-
-    this.rotationSubscription?.dispose();
-    this.rotationSubscription = this.entity.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));
   }
 
   onPositionChange(m: EmittedEvent<Vector3>) {
@@ -67,20 +50,16 @@ export class FbxModelController extends ModelController {
   }
 
   private onModelLoaded(model: Object3D) {
-    if (!this.entity) {
-      throw new Error(`Can't find parent entity`);
-    }
+    const entity = this.getVisualEntityOrThrow();
+    const mixer = this.getMixerOrThrow();
 
-    this.mixer?.stopAllAction();
+    mixer.stopAllAction();
 
     this.model = model;
     this.params.scene.add(this.model);
 
     this.model.scale.setScalar(this.params.scale);
-    this.model.position.copy(this.entity.getPosition());
-
-    // FIXME possible it is no necessary
-    this.entity.setPosition(this.entity.getPosition());
+    this.model.position.copy(entity.getPosition());
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -115,7 +94,7 @@ export class FbxModelController extends ModelController {
 
     this.mixer = new AnimationMixer(this.model);
 
-    this.entity.isModelReady = true;
+    entity.isModelReady = true;
   }
 
   loadResources() {
