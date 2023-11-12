@@ -12,7 +12,7 @@ import {
   BackSide,
   Vector3,
 } from 'three';
-import { SRGBColorSpace, VSMShadowMap } from 'three/src/constants';
+import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './entity/commons/Entity';
 import { EntityManager } from './entity/commons/EntityManager';
 import { SurfaceController } from './entity/environment/SurfaceController';
@@ -109,7 +109,7 @@ export class VoxelGame {
 
     this.threeJs.outputColorSpace = SRGBColorSpace;
     this.threeJs.shadowMap.enabled = true;
-    this.threeJs.shadowMap.type = VSMShadowMap;
+    this.threeJs.shadowMap.type = PCFSoftShadowMap;
     this.threeJs.setPixelRatio(window.devicePixelRatio);
     this.threeJs.setSize(window.innerWidth, window.innerHeight);
     this.threeJs.domElement.id = HtmlElementId.Scene;
