@@ -1,41 +1,41 @@
 import { Vector3 } from 'three';
+import { Disposable } from '../emitter/Emitter';
 import { Controller } from '../entity/commons/Controller';
 import { EmittedEvent } from '../emitter/EmittedEvent';
+import { Entity } from '../entity/commons/Entity';
+import { getVisualEntityOrThrow } from '../entity/commons/utils/getVisualEntityOrThrow';
+import { VisualEntityTopic } from '../entity/commons/VisualEntityTopic';
 import { SurfaceController } from '../entity/environment/SurfaceController';
-import { SpatialPoint, SpatialClient } from './SpatialHashGrid';
-import { VisualEntity } from '../entity/commons/VisualEntity';
+import { SpatialClient, SpatialPoint } from './SpatialTyping';
 
 export class SpatialGridController implements Controller {
   private _client?: SpatialClient;
-  private boundedOnPositionChange = this._OnPosition.bind(this);
+  private positionSubscription?: Disposable;
 
   constructor(
     private surfaceController: SurfaceController,
   ) {}
 
-  entity: VisualEntity | undefined;
+  entity: Entity | undefined;
 
   update(): void {
   }
 
   onEntityChange() {
-    if (!this.entity) {
-      console.log(this);
-      throw new Error(`Can't find entity in ${this.constructor.name}`);
-    }
-
-    const entityPosition = this.entity.getPosition();
+    const entity = getVisualEntityOrThrow(this, this.entity);
+    const entityPosition = entity.getPosition();
     const pos: SpatialPoint = [
       entityPosition.x,
       entityPosition.z,
     ];
 
-    this._client = this.surfaceController.getGrid().NewClient(pos, [1, 1]);
-    this._client.entity = this.entity;
-    this.entity.on('update.position', this.boundedOnPositionChange);
+    this.positionSubscription?.dispose();
+    this._client = this.surfaceController.getGrid().NewClient(entity, pos, [1, 1]);
+    this._client.entity = entity;
+    this.positionSubscription = entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
   }
 
-  _OnPosition(msg: EmittedEvent<Vector3>) {
+  onPositionChange(msg: EmittedEvent<Vector3>) {
     if (!this._client) return;
 
     this._client.position = [msg.value.x, msg.value.z];
@@ -43,10 +43,12 @@ export class SpatialGridController implements Controller {
   }
 
   FindNearbyEntities(range: number): SpatialClient[] {
-    if (!this.entity) return [];
+    const entity = getVisualEntityOrThrow(this, this.entity);
 
     const results = this.surfaceController.getGrid().FindNear(
-      [this.entity.getPosition().x, this.entity.getPosition().z], [range, range]);
+      [entity.getPosition().x, entity.getPosition().z],
+        [range, range]
+    );
 
     return results.filter(c => c.entity != this.entity);
   }

@@ -1,5 +1,5 @@
 import { Entity } from '../Entity';
-import { VisualEntity } from '../VisualEntity';
+import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
 import { StateInput } from './StateInput';
 import { SimpleState, SimpleStateConstructor } from './SimpleState';
 
@@ -17,13 +17,7 @@ export class StateMachine {
   }
 
   setState(constructor: SimpleStateConstructor) {
-    if (!this.entity) {
-      throw new Error(`Can't find entity in ${this.constructor.name}`);
-    }
-
-    if (!(this.entity instanceof VisualEntity)) {
-      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
+    const entity = getVisualEntityOrThrow(this, this.entity);
 
     if (!this.states[constructor.name]) {
       console.log(this.states);
@@ -31,7 +25,7 @@ export class StateMachine {
     }
 
     const lastState = this.currentState;
-    const newState = new this.states[constructor.name](this, this.entity);
+    const newState = new this.states[constructor.name](this, entity);
 
     if (lastState) {
       if (lastState.constructor.name == constructor.name) {

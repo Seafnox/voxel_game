@@ -1,15 +1,15 @@
-import { Object3D, Quaternion, Vector3 } from 'three';
+import { Quaternion, Vector3 } from 'three';
 import { Controller } from '../commons/Controller';
 import { Entity } from '../commons/Entity';
 import { ActivityStatus } from '../commons/state/ActivityStatus';
+import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
+import { VisualEntity } from '../commons/VisualEntity';
 import { UserActivityController } from './UserActivityController';
 import { StateMachine } from '../commons/state/StateMachine';
 import { IdleUserState } from './states/IdleUserState';
 import { SpatialGridController } from '../../grid/SpatialGridController';
 import { LogMethod } from '../../utils/logger/LogMethod';
 import { Level } from '../../utils/logger/Level';
-import { ModelController } from '../models/ModelController';
-import { VisualEntity } from '../commons/VisualEntity';
 import { WalkUserState } from './states/WalkUserState';
 import { RunUserState } from './states/RunUserState';
 
@@ -21,7 +21,7 @@ export class UserCharacterController implements Controller {
   private rotationScalar = 0.03;
   private stateMachine = new StateMachine();
   private activityController = new UserActivityController();
-  entity: VisualEntity | undefined;
+  entity: Entity | undefined;
 
   constructor() {
     this.stateMachine.addState(IdleUserState);
@@ -36,12 +36,12 @@ export class UserCharacterController implements Controller {
   }
 
   update(deltaTime: number): void {
-    if (!this.entity) return;
-    this.calculateRotation(deltaTime);
-    this.calculateVelocity(deltaTime);
-    this.calculatePosition(deltaTime);
+    const entity = getVisualEntityOrThrow(this, this.entity);
+    this.calculateRotation(deltaTime, entity);
+    this.calculateVelocity(deltaTime, entity);
+    this.calculatePosition(deltaTime, entity);
     this.stateMachine.validateState(deltaTime, {
-      velocity: this.entity.getVelocity().clone(),
+      velocity: entity.getVelocity().clone(),
       activityStatus: this.activityController.status,
     });
   }
@@ -63,25 +63,25 @@ export class UserCharacterController implements Controller {
     const collisions = [];
 
     for (let i = 0; i < nearby.length; ++i) {
-      const nearbyEntity = nearby[i].entity!;
+      const nearbyEntity = nearby[i].entity;
       const nearbyPosition = nearbyEntity.getPosition();
       const d = ((pos.x - nearbyPosition.x) ** 2 + (pos.z - nearbyPosition.z) ** 2) ** 0.5;
 
       // HARDCODED
       if (d <= 4) {
-        collisions.push(nearby[i].entity);
+        collisions.push(nearbyEntity);
       }
     }
     return collisions;
   }
 
-  private calculateRotation(deltaTime: number) {
+  private calculateRotation(deltaTime: number, entity: VisualEntity) {
     if (!this.entity) return;
 
     const input = this.activityController.status;
     const rotationMultiplier = new Quaternion();
     const RotationDirection = new Vector3();
-    const currentRotation = this.entity.getRotation().clone();
+    const currentRotation = entity.getRotation().clone();
 
     if (input.left) {
       RotationDirection.set(0, 1, 0);
@@ -94,13 +94,13 @@ export class UserCharacterController implements Controller {
       currentRotation.multiply(rotationMultiplier);
     }
 
-    this.entity.setRotation(currentRotation);
+    entity.setRotation(currentRotation);
   }
 
-  private calculateVelocity(deltaTime: number) {
+  private calculateVelocity(deltaTime: number, entity: VisualEntity) {
     if (!this.entity) return;
 
-    const velocity = this.entity.getVelocity();
+    const velocity = entity.getVelocity();
     const input = this.activityController.status;
 
     const acc = this.acceleration.clone();
@@ -147,12 +147,12 @@ export class UserCharacterController implements Controller {
     velocity.add(frameDeceleration);
   }
 
-  private calculatePosition(deltaTime: number) {
+  private calculatePosition(deltaTime: number, entity: VisualEntity) {
     if (!this.entity) return;
 
-    const velocity = this.entity.getVelocity();
-    const position = this.entity.getPosition();
-    const rotation = this.entity.getRotation();
+    const velocity = entity.getVelocity();
+    const position = entity.getPosition();
+    const rotation = entity.getRotation();
 
     const forward = new Vector3(0, 0, 1);
     forward.applyQuaternion(rotation);
@@ -178,6 +178,6 @@ export class UserCharacterController implements Controller {
     const collisions = this.findIntersections(resultPosition);
     if (collisions.length > 0) return;
 
-    this.entity?.setPosition(resultPosition);
+    entity?.setPosition(resultPosition);
   }
 }

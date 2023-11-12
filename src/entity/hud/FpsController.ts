@@ -1,3 +1,4 @@
+import { getHtmlElementByIdOrThrow } from '../../utils/getHtmlElementOrThrow';
 import {Controller} from "../commons/Controller";
 import {Entity} from "../commons/Entity";
 import {HtmlElementId} from "../../HtmlElementId";
@@ -12,11 +13,9 @@ export class FpsController implements Controller {
     }
 
     this.tickFrames.push(deltaTime);
-    const fpsWrapper = document.getElementById(HtmlElementId.Fps);
+    const fpsWrapper = getHtmlElementByIdOrThrow(HtmlElementId.Fps);
     const sectionTicks = this.tickFrames.slice(this.tickFrames.length - 200);
     const totalSectionTime = sectionTicks.reduce((a, b) => a + b, 0);
-    if (fpsWrapper) {
-      fpsWrapper.innerText = Math.floor(1000 * sectionTicks.length / totalSectionTime).toString();
-    }
+    fpsWrapper.innerText = Math.floor(1000 * sectionTicks.length / totalSectionTime).toString();
   }
 }

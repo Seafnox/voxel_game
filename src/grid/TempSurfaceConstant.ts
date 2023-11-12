@@ -1,6 +1,6 @@
-import { RGBPoint } from './RGBPoint';
+import { RGBColor } from './RGBColor';
 
-export type SurfaceEntry = [number, RGBPoint];
+export type SurfaceEntry = [number, RGBColor];
 export const surfaceEntries: SurfaceEntry[] = [
   [0.30, [0, 0, 139]], // впадины
   [0.42, [0, 0, 255]], // океаны

@@ -1,9 +1,9 @@
 import { createNoise3D, NoiseFunction3D } from 'simplex-noise';
-import { RGBPoint } from './RGBPoint';
+import { RGBColor } from './RGBColor';
 import { surfaceEntries, SurfaceEntry } from './TempSurfaceConstant';
 
 export interface SurfacePoint {
-  color: RGBPoint;
+  color: RGBColor;
   value: number;
 }
 
@@ -51,7 +51,7 @@ export class SurfaceBuilder {
     return this.simplexes.map(s => s(x, y, z)).reduce((a, b) => a + b, 0);
   }
 
-  private valueToColor(value: number): RGBPoint {
+  private valueToColor(value: number): RGBColor {
     // return [value * 255, value * 255, value * 255]
     const surfaceEntry: SurfaceEntry | undefined = surfaceEntries.find(surfaceKV => surfaceKV[0] > value);
     return surfaceEntry?.[1] || [0, 0, 0]; // бездна;

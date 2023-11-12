@@ -2,10 +2,12 @@ import { WindowEventObserver } from '../../observers/WindowEventObserver';
 import { WindowTopic } from '../../observers/WindowTopic';
 import { Controller } from '../commons/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
+import { Entity } from '../commons/Entity';
 import { VisualEntity } from '../commons/VisualEntity';
+import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
 
 export class CameraController implements Controller {
-  entity: VisualEntity | undefined;
+  entity: Entity | undefined;
 
   private target: VisualEntity | undefined;
   private currentLookAt: Vector3 = new Vector3();
@@ -28,22 +30,9 @@ export class CameraController implements Controller {
     return this.camera;
   }
 
-  private createCamera(window: WindowProxy): PerspectiveCamera {
-    const fov = 60;
-    const aspect = window.innerWidth / window.innerHeight;
-    const near = 1.0;
-    const far = 10000.0;
-    const camera = new PerspectiveCamera(fov, aspect, near, far);
-    camera.position.set(
-      0,
-      5,
-      25);
-
-    camera.updateProjectionMatrix();
-
-    return camera;
+  setTarget(targetEntity: VisualEntity) {
+    this.target = targetEntity;
   }
-
 
   calculateIdealOffset(target: VisualEntity) {
     const idealOffset = new Vector3(-0, 10, -15);
@@ -61,7 +50,7 @@ export class CameraController implements Controller {
 
   update(deltaTime: number) {
     if (!this.target) return;
-    if (!this.entity) return;
+    const entity = getVisualEntityOrThrow(this, this.entity);
 
     const idealOffset = this.calculateIdealOffset(this.target);
     const idealLookAt = this.calculateIdealLookAt(this.target);
@@ -69,7 +58,7 @@ export class CameraController implements Controller {
     // const t = 0.05;
     // const t = 4.0 * deltaTime;
     const t = 1.0 - Math.pow(0.01, deltaTime / 1000);
-    const currentPosition = this.entity.getPosition().clone();
+    const currentPosition = entity.getPosition().clone();
     const currentLookAt = this.currentLookAt.clone();
     const currentRotation = new Quaternion();
 
@@ -77,15 +66,27 @@ export class CameraController implements Controller {
     currentLookAt.lerp(idealLookAt, t);
     currentRotation.setFromUnitVectors(currentPosition, currentLookAt);
 
-    this.entity.setPosition(currentPosition);
-    this.entity.setRotation(currentRotation);
+    entity.setPosition(currentPosition);
+    entity.setRotation(currentRotation);
     this.currentLookAt.copy(currentLookAt);
 
     this.camera.position.copy(currentPosition);
     this.camera.lookAt(this.currentLookAt);
   }
 
-  focusCameraOn(target: VisualEntity) {
-    this.target = target;
+  private createCamera(window: WindowProxy): PerspectiveCamera {
+    const fov = 60;
+    const aspect = window.innerWidth / window.innerHeight;
+    const near = 1.0;
+    const far = 10000.0;
+    const camera = new PerspectiveCamera(fov, aspect, near, far);
+    camera.position.set(
+        0,
+        5,
+        25);
+
+    camera.updateProjectionMatrix();
+
+    return camera;
   }
 }

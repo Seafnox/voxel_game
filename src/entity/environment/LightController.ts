@@ -1,9 +1,10 @@
 import { Controller } from '../commons/Controller';
 import { DirectionalLight } from 'three';
+import { Entity } from '../commons/Entity';
 import { VisualEntity } from '../commons/VisualEntity';
 
 export class LightController implements Controller {
-  entity: VisualEntity | undefined;
+  entity: Entity | undefined;
 
   private target: VisualEntity | undefined;
 

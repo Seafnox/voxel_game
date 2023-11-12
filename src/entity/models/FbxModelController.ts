@@ -107,9 +107,11 @@ export class FbxModelController extends ModelController {
     const path = this.params.resourcePath;
     const model = this.params.resourceModel;
     const animations = this.params.resourceAnimations;
+
     if (!model.endsWith('fbx')) {
       throw new Error(`Can't find loader for such type of file: ${model}`);
     }
+
     const manager = new LoadingManager();
     const loader = new FBXLoader(manager);
     loader.setPath(path);
@@ -123,10 +125,6 @@ export class FbxModelController extends ModelController {
   }
 
   onAnimationLoaded(key: string, animationClip: AnimationClip) {
-    if (!this.entity) {
-      throw new Error(`Can't find parent entity`);
-    }
-
     console.log('Found animation', key, animationClip.name);
     this.animationMap[animationClip.name] = this.mixer!.clipAction(animationClip);
   }

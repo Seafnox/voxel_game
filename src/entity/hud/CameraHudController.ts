@@ -1,5 +1,7 @@
+import { getHtmlElementByIdOrThrow } from '../../utils/getHtmlElementOrThrow';
 import {Controller} from "../commons/Controller";
 import {Entity} from "../commons/Entity";
+import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
 import {VisualEntity} from "../commons/VisualEntity";
 import {EntityName} from "../commons/EntityName";
 import {HtmlElementId} from "../../HtmlElementId";
@@ -8,17 +10,10 @@ export class CameraHudController implements Controller {
   entity: Entity | undefined;
 
   update(): void {
-    const cameraEntity = this.entity?.entityManager?.get(EntityName.Environment);
-    const cameraPositionWrapper = document.getElementById(HtmlElementId.CameraPosition);
-    const cameraRotationWrapper = document.getElementById(HtmlElementId.CameraRotation);
-
-    if (!cameraEntity) return;
-    if (!cameraPositionWrapper) return;
-    if (!cameraRotationWrapper) return;
-
-    if (!(cameraEntity instanceof VisualEntity)) {
-      throw new Error(`Can't mace calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
+    const cameraPossibleEntity = this.entity?.entityManager?.get(EntityName.Environment);
+    const cameraPositionWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CameraPosition);
+    const cameraRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CameraRotation);
+    const cameraEntity = getVisualEntityOrThrow(this, cameraPossibleEntity);
 
     const prettyPosition = cameraEntity.getPosition()
       .toArray()

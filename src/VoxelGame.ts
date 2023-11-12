@@ -15,6 +15,7 @@ import {
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './entity/commons/Entity';
 import { EntityManager } from './entity/commons/EntityManager';
+import { getVisualEntityOrThrow } from './entity/commons/utils/getVisualEntityOrThrow';
 import { SurfaceController } from './entity/environment/SurfaceController';
 import { StaticModelController } from './entity/models/StaticModelController';
 import { SpatialGridController } from './grid/SpatialGridController';
@@ -22,6 +23,7 @@ import { WindowEventObserver } from './observers/WindowEventObserver';
 import { WindowTopic } from './observers/WindowTopic';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
+import { getHtmlElementByIdOrThrow } from './utils/getHtmlElementOrThrow';
 import { VMath } from './VMath';
 import { CameraController } from './entity/environment/CameraController';
 import { UserCharacterController } from './entity/user/UserCharacterController';
@@ -114,12 +116,7 @@ export class VoxelGame {
     this.threeJs.setSize(window.innerWidth, window.innerHeight);
     this.threeJs.domElement.id = HtmlElementId.Scene;
 
-    const container = document.getElementById(HtmlElementId.Container);
-
-    if (!container) {
-      throw new Error(`Can't find DOM Element with id='${HtmlElementId.Container}'`);
-    }
-
+    const container = getHtmlElementByIdOrThrow(HtmlElementId.Container);
     container.appendChild(this.threeJs.domElement);
 
 
@@ -315,15 +312,10 @@ export class VoxelGame {
   }
 
   private focusEnvironmentOn(entityName: string) {
-    const target = this.entityManager.get<VisualEntity>(entityName);
-    const environment = this.entityManager.get<VisualEntity>(EntityName.Environment);
+    const target = getVisualEntityOrThrow(this, this.entityManager.get(entityName));
+    const environment = getVisualEntityOrThrow(this, this.entityManager.get(EntityName.Environment));
     const camera = environment?.get<CameraController>(CameraController);
     const light = environment?.get<LightController>(LightController);
-
-    if (!target) {
-      console.warn(entityName, VisualEntity.name, target);
-      throw new Error(`No target object detected for focus on object`);
-    }
 
     if (!camera) {
       console.warn(EntityName.Environment, environment, CameraController.name, camera);
@@ -335,7 +327,7 @@ export class VoxelGame {
       throw new Error(`No light detected for focus on object`);
     }
 
-    camera.focusCameraOn(target);
+    camera.setTarget(target);
     light.setTarget(target);
   }
 

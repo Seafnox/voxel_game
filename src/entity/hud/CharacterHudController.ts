@@ -1,26 +1,19 @@
+import { getHtmlElementByIdOrThrow } from '../../utils/getHtmlElementOrThrow';
 import {Controller} from "../commons/Controller";
 import {Entity} from "../commons/Entity";
 import {EntityName} from "../commons/EntityName";
 import {HtmlElementId} from "../../HtmlElementId";
+import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
 import {VisualEntity} from "../commons/VisualEntity";
 
 export class CharacterHudController implements Controller {
   entity: Entity | undefined;
 
   update(): void {
-    const characterEntity = this.entity?.entityManager?.get(EntityName.Player);
-    const characterPositionWrapper = document.getElementById(HtmlElementId.CharacterPosition);
-    const characterRotationWrapper = document.getElementById(HtmlElementId.CharacterRotation);
-    const characterVelocityWrapper = document.getElementById(HtmlElementId.CharacterVelocity);
-
-    if (!characterEntity) return;
-    if (!characterPositionWrapper) return;
-    if (!characterRotationWrapper) return;
-    if (!characterVelocityWrapper) return;
-
-    if (!(characterEntity instanceof VisualEntity)) {
-      throw new Error(`Can't mace calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
+    const characterEntity = getVisualEntityOrThrow(this, this.entity?.entityManager.get(EntityName.Player));
+    const characterPositionWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterPosition);
+    const characterRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterRotation);
+    const characterVelocityWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterVelocity);
 
     const prettyPosition = characterEntity.getPosition()
       .toArray()

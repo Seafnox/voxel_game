@@ -1,29 +1,6 @@
-import { VMath } from '../VMath';
 import { VisualEntity } from '../entity/commons/VisualEntity';
-
-export type SpatialPoint = [number, number];
-export type SpatialDimension = [number, number];
-export type CellPosition = [number, number];
-
-export interface SpatialCell {
-  min?: CellPosition;
-  max?: CellPosition;
-  nodes: SpatialNode[][];
-}
-
-export interface SpatialNode {
-  next?: SpatialNode;
-  prev?: SpatialNode;
-  client?: SpatialClient;
-}
-
-export interface SpatialClient {
-  position: SpatialPoint;
-  dimensions: SpatialDimension;
-  entity?: VisualEntity;
-  _cells: SpatialCell;
-  _queryId: number;
-}
+import { VMath } from '../VMath';
+import { SpatialClient, SpatialNode, CellPosition, SpatialDimension, SpatialPoint } from './SpatialTyping';
 
 export class SpatialHashGrid {
   private _bounds: SpatialPoint[] = [];
@@ -49,10 +26,11 @@ export class SpatialHashGrid {
     return [xIndex, yIndex];
   }
 
-  NewClient(position: SpatialPoint, dimensions: SpatialDimension): SpatialClient {
+  NewClient(entity: VisualEntity, position: SpatialPoint, dimensions: SpatialDimension): SpatialClient {
     const client: SpatialClient = {
-      position: position,
-      dimensions: dimensions,
+      entity,
+      position,
+      dimensions,
       _cells: {
         nodes: [],
       },
