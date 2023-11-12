@@ -19,12 +19,12 @@ export class SystemManager {
 
   activate(system: System) {
     console.log(this.constructor.name, 'activate', system.constructor.name, system.name);
-    system.setActive(true);
+    system.isActive = true;
   }
 
   disactivate(system: System) {
     console.log(this.constructor.name, 'disactivate', system.constructor.name, system.name);
-    system.setActive(false);
+    system.isActive = false;
   }
 
   private generateName(prefix: string) {
