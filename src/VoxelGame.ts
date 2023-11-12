@@ -12,7 +12,7 @@ import {
   BackSide,
   Vector3,
 } from 'three';
-import { SRGBColorSpace, PCFSoftShadowMap, VSMShadowMap } from 'three/src/constants';
+import { SRGBColorSpace, VSMShadowMap } from 'three/src/constants';
 import { Entity } from './entity/commons/Entity';
 import { EntityManager } from './entity/commons/EntityManager';
 import { SurfaceController } from './entity/environment/SurfaceController';
@@ -89,8 +89,8 @@ export class VoxelGame {
 
   private initEnvironment(): void {
     const environment = new VisualEntity();
-    environment.AddController(this.cameraController);
-    environment.AddController(new LightController(this.sun));
+    environment.add(this.cameraController);
+    environment.add(new LightController(this.sun));
     this.entityManager.add(environment, EntityName.Environment);
     this.entityManager.activate(environment);
 
@@ -100,7 +100,7 @@ export class VoxelGame {
   }
   private initSurface() {
     const entity = new VisualEntity();
-    entity.AddController(this.surfaceController);
+    entity.add(this.surfaceController);
   }
 
   @LogMethod({level: Level.info})
@@ -206,7 +206,7 @@ export class VoxelGame {
         (Math.random() * 2.0 - 1.0) * 500);
 
       const cloudEntity = new VisualEntity();
-      cloudEntity.AddController(
+      cloudEntity.add(
         new StaticModelController({
           scene: this.scene,
           resourcePath: './resources/clouds/',
@@ -244,7 +244,7 @@ export class VoxelGame {
       const pos = new Vector3(x,y,z);
 
       const tree = new VisualEntity();
-      tree.AddController(
+      tree.add(
         new StaticModelController({
           scene: this.scene,
           resourcePath: './resources/trees/',
@@ -257,7 +257,7 @@ export class VoxelGame {
         }),
         ModelController,
       );
-      tree.AddController(new SpatialGridController(this.surfaceController));
+      tree.add(new SpatialGridController(this.surfaceController));
       tree.setPosition(pos);
       this.entityManager.add(tree, `tree_${i}`);
     }
@@ -275,7 +275,7 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initPlayer() {
     const player = new VisualEntity();
-    player.AddController(
+    player.add(
       new GltfModelController({
         scene: this.scene,
         resourcePath: './resources/units/',
@@ -286,7 +286,7 @@ export class VoxelGame {
       }),
       ModelController,
     );
-    player.AddController(new UserCharacterController());
+    player.add(new UserCharacterController());
     // player.AddComponent(new EquipWeapon({anchor: 'RightHandIndex1'}));
     // player.AddComponent(new InventoryController(params));
     // player.AddComponent(new AttackController({timing: 0.7}));
@@ -301,7 +301,7 @@ export class VoxelGame {
     //   experience: 0,
     //   level: 1,
     // }));
-    player.AddController(new SpatialGridController(this.surfaceController));
+    player.add(new SpatialGridController(this.surfaceController));
     // TODO make position height (y) by surface position
     const pos = new Vector3(
       initialPlayerPositionX,
@@ -317,8 +317,8 @@ export class VoxelGame {
   private focusEnvironmentOn(entityName: string) {
     const target = this.entityManager.get<VisualEntity>(entityName);
     const environment = this.entityManager.get<VisualEntity>(EntityName.Environment);
-    const camera = environment?.getComponent<CameraController>(CameraController);
-    const light = environment?.getComponent<LightController>(LightController);
+    const camera = environment?.get<CameraController>(CameraController);
+    const light = environment?.get<LightController>(LightController);
 
     if (!target) {
       console.warn(entityName, VisualEntity.name, target);
@@ -362,9 +362,9 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initHud() {
     const hud = new Entity();
-    hud.AddController(new FpsController());
-    hud.AddController(new CameraHudController());
-    hud.AddController(new CharacterHudController());
+    hud.add(new FpsController());
+    hud.add(new CameraHudController());
+    hud.add(new CharacterHudController());
     this.entityManager.add(hud, 'HUD');
     this.entityManager.activate(hud);
   }

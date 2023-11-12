@@ -33,7 +33,7 @@ export class IdleUserState implements SimpleState {
   }
 
   private getModelAndRunAnimation() {
-    const modelController = this.entity.getComponent<ModelController>(ModelController);
+    const modelController = this.entity.get<ModelController>(ModelController);
     if (!modelController.getAnimationList().includes(this.animationName)) {
       throw new Error(`No '${this.animationName}' animation in entity '${this.entity.name}' with animation list: [${modelController.getAnimationList().join(', ')}]`);
     }

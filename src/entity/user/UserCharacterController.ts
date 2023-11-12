@@ -58,7 +58,7 @@ export class UserCharacterController implements Controller {
       return !!entity && false;
     };
 
-    const grid = this.entity?.getComponent<SpatialGridController>(SpatialGridController);
+    const grid = this.entity?.get<SpatialGridController>(SpatialGridController);
     const nearby = grid?.FindNearbyEntities(5).filter(client => isAlive(client.entity)) || [];
     const collisions = [];
 
@@ -94,7 +94,7 @@ export class UserCharacterController implements Controller {
       currentRotation.multiply(rotationMultiplier);
     }
 
-    this.entity!.setRotation(currentRotation);
+    this.entity.setRotation(currentRotation);
   }
 
   private calculateVelocity(deltaTime: number) {

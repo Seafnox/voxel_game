@@ -5,16 +5,12 @@ import { EntityManager } from './EntityManager';
 import { isFunction } from '../../utils/isFunction';
 
 export class Entity extends Emittable {
-  name?: string;
-  entityManager?: EntityManager;
-  private controllers: Record<string, Controller> = {}; // SET OF COMPONENTS
-
-  disactivate() {
-    this.entityManager?.disactivate(this);
-  }
+  name!: string;
+  entityManager!: EntityManager;
+  private controllers: Record<string, Controller> = {};
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  AddController(controller: Controller, as?: Function) {
+  add(controller: Controller, as?: Function) {
     controller.entity = this;
     const registeredAs = as || controller.constructor;
     this.controllers[registeredAs.name] = controller;
@@ -24,8 +20,8 @@ export class Entity extends Emittable {
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  getComponent<TComponent extends Controller>(constructor: Function): TComponent {
-    return this.controllers[constructor.name] as TComponent;
+  get<TController extends Controller>(constructor: Function): TController {
+    return this.controllers[constructor.name] as TController;
   }
 
   // FIXME simplify event and emit only left alive
