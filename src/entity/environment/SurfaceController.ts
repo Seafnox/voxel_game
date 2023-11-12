@@ -85,7 +85,7 @@ export class SurfaceController implements Controller {
   }
 
   private getZCordByPoint(point: SurfacePoint): number {
-    return VMath.lerp(point.value, -20, 20);
+    return VMath.lerp(point.value, -150, 150);
   }
 
   private createSurfaceGeometry(): BufferGeometry {
