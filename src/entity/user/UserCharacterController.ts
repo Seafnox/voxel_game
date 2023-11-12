@@ -18,7 +18,7 @@ export class UserCharacterController implements Controller {
   private acceleration = new Vector3(10.0, 20.0, 50.0);
   private deltaTimeScalar = 1000;
   private extremeAccelerationScalar = 10;
-  private rotationScalar = 0.03;
+  private rotationScalar = 1;
   private stateMachine = new StateMachine();
   private activityController = new UserActivityController();
   entity: Entity | undefined;
@@ -85,12 +85,12 @@ export class UserCharacterController implements Controller {
 
     if (input.left) {
       RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * Math.PI * deltaTime * this.acceleration.y);
+      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * Math.PI * deltaTime / this.deltaTimeScalar);
       currentRotation.multiply(rotationMultiplier);
     }
     if (input.right) {
       RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * -Math.PI * deltaTime * this.acceleration.y);
+      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * -Math.PI * deltaTime / this.deltaTimeScalar);
       currentRotation.multiply(rotationMultiplier);
     }
 
