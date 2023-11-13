@@ -4,10 +4,27 @@ import { EmittedEvent } from '../../emitter/EmittedEvent';
 import { EntityManager } from './EntityManager';
 import { isFunction } from '../../utils/isFunction';
 
+export interface EntityConstructor<TEntity extends Entity> {
+  new(entityManager: EntityManager, name: string): TEntity;
+}
+
 export class Entity extends Emittable {
-  name!: string;
-  entityManager!: EntityManager;
   private controllers: Record<string, Controller> = {};
+
+  constructor(
+    protected _entityManager: EntityManager,
+    protected _name: string,
+  ) {
+    super();
+  }
+
+  get entityManager(): EntityManager {
+    return this._entityManager;
+  }
+
+  get name(): string {
+    return this._name;
+  }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   add(controller: Controller, as?: Function) {

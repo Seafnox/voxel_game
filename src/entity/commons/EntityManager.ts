@@ -1,21 +1,45 @@
-import { Entity } from './Entity';
+import { Entity, EntityConstructor } from './Entity';
 
 export class EntityManager {
   private idCounter = 0;
   private entities: Record<string, Entity> = {};
   private activeEntities: Entity[] = [];
 
-  get<TEntity extends Entity>(name: string): TEntity | undefined {
+  constructor(
+    private name: string,
+  ) {}
+
+  get<TEntity extends Entity>(name: string): TEntity {
+    if (!this.entities[name]) {
+      throw new Error(`Can't find ${Entity.name} '${name}' in ${this.constructor.name} '${this.name}'`);
+    }
+
     return this.entities[name] as TEntity;
   }
 
-  add(entity: Entity, preferName?: string) {
-    const name = preferName || this.generateName(entity.constructor.name);
-    console.log(this.constructor.name, 'add', entity.constructor.name, name);
-    this.entities[name] = entity;
+  find<TEntity extends Entity>(constructor: EntityConstructor<Entity>): TEntity[] {
+    return Object.values(this.entities).filter(entity => entity instanceof constructor) as TEntity[];
+  }
 
-    entity.entityManager = this;
-    entity.name = name;
+  findOne<TEntity extends Entity>(constructor: EntityConstructor<Entity>): TEntity {
+    const entities = this.find<TEntity>(constructor);
+    const first = entities[0];
+
+    if (!first) {
+      throw new Error(`Can't find ${constructor.name} in ${this.constructor.name} '${this.name}'`);
+    }
+
+    return first;
+  }
+
+  create<TEntity extends Entity>(constructor: EntityConstructor<TEntity>, preferName?: string): TEntity {
+    const name = preferName || this.generateName(constructor.name);
+    const entity = new constructor(this, name);
+    console.log(this.constructor.name, 'create', constructor.name, name);
+
+    this.entities[name] = entity
+
+    return entity;
   }
 
   activate(entity: Entity) {

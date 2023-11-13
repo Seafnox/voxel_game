@@ -4,7 +4,6 @@ import {Entity} from "../commons/Entity";
 import {EntityName} from "../commons/EntityName";
 import {HtmlElementId} from "../../HtmlElementId";
 import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
-import {VisualEntity} from "../commons/VisualEntity";
 
 export class CharacterHudController implements Controller {
   entity: Entity | undefined;

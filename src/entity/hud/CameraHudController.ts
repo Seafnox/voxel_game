@@ -2,7 +2,6 @@ import { getHtmlElementByIdOrThrow } from '../../utils/getHtmlElementOrThrow';
 import {Controller} from "../commons/Controller";
 import {Entity} from "../commons/Entity";
 import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
-import {VisualEntity} from "../commons/VisualEntity";
 import {EntityName} from "../commons/EntityName";
 import {HtmlElementId} from "../../HtmlElementId";
 
@@ -10,7 +9,7 @@ export class CameraHudController implements Controller {
   entity: Entity | undefined;
 
   update(): void {
-    const cameraPossibleEntity = this.entity?.entityManager?.get(EntityName.Environment);
+    const cameraPossibleEntity = this.entity?.entityManager.get(EntityName.Environment);
     const cameraPositionWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CameraPosition);
     const cameraRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CameraRotation);
     const cameraEntity = getVisualEntityOrThrow(this, cameraPossibleEntity);

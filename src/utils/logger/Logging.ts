@@ -1,4 +1,4 @@
-import { Level, LevelFromText } from './Level'
+import { LevelFromText } from './Level'
 import { Logger } from './Logger'
 
 export class Logging {

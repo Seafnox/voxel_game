@@ -47,7 +47,6 @@ export class VoxelGame {
   private fogColor = 0x6982ab;
   private backgroundColor = 0xeeffff;
   private lightColor = 0xeeffff;
-  private hellColor = 0xFFC8c8;
   private skyColor = 0x3385FF;
   private cloudColor = 0xaecfff;
   private lightAbsorptionMask = 0x000000;
@@ -63,7 +62,7 @@ export class VoxelGame {
   private scene = this.createScene();
   private sun = this.createLightning();
 
-  private entityManager = new EntityManager();
+  private entityManager = new EntityManager('world');
   private windowObserver = new WindowEventObserver();
 
   private surfaceController = new SurfaceController(this.scene, this.mapSize, this.surfaceSize);
@@ -85,15 +84,16 @@ export class VoxelGame {
     this.initClouds();
     this.initThrees();
     this.initUnits();
-    this.initHud();
+    this.initGui();
     this.requestAnimation();
   }
 
   private initEnvironment(): void {
-    const environment = new VisualEntity();
+    const environment = this.entityManager.create(VisualEntity, EntityName.Environment);
     environment.add(this.cameraController);
     environment.add(new LightController(this.sun));
-    this.entityManager.add(environment, EntityName.Environment);
+    environment.add(this.surfaceController);
+
     this.entityManager.activate(environment);
 
     this.putIntoScene(this.sun);
@@ -101,8 +101,7 @@ export class VoxelGame {
     this.initSurface();
   }
   private initSurface() {
-    const entity = new VisualEntity();
-    entity.add(this.surfaceController);
+    // TODO think about surface
   }
 
   @LogMethod({level: Level.info})
@@ -201,7 +200,8 @@ export class VoxelGame {
         250,
         (Math.random() * 2.0 - 1.0) * 500);
 
-      const cloudEntity = new VisualEntity();
+      const cloudEntity = this.entityManager.create(VisualEntity, `cloud_${i}`);
+
       cloudEntity.add(
         new StaticModelController({
           scene: this.scene,
@@ -215,7 +215,6 @@ export class VoxelGame {
         ModelController,
       );
       cloudEntity.setPosition(pos);
-      this.entityManager.add(cloudEntity, `cloud_${i}`);
     }
   }
 
@@ -239,7 +238,8 @@ export class VoxelGame {
 
       const pos = new Vector3(x,y,z);
 
-      const tree = new VisualEntity();
+      const tree = this.entityManager.create(VisualEntity, `tree_${i}`);
+
       tree.add(
         new StaticModelController({
           scene: this.scene,
@@ -255,7 +255,6 @@ export class VoxelGame {
       );
       tree.add(new SpatialGridController(this.surfaceController));
       tree.setPosition(pos);
-      this.entityManager.add(tree, `tree_${i}`);
     }
   }
 
@@ -270,7 +269,7 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private initPlayer() {
-    const player = new VisualEntity();
+    const player = this.entityManager.create(VisualEntity, EntityName.Player);
     player.add(
       new GltfModelController({
         scene: this.scene,
@@ -305,7 +304,6 @@ export class VoxelGame {
       initialPlayerPositionZ,
     );
     player.setPosition(pos);
-    this.entityManager.add(player, EntityName.Player);
     this.entityManager.activate(player);
     this.focusEnvironmentOn(EntityName.Player);
   }
@@ -351,13 +349,13 @@ export class VoxelGame {
   }
 
   @LogMethod({level: Level.info})
-  private initHud() {
-    const hud = new Entity();
-    hud.add(new FpsController());
-    hud.add(new CameraHudController());
-    hud.add(new CharacterHudController());
-    this.entityManager.add(hud, 'HUD');
-    this.entityManager.activate(hud);
+  private initGui() {
+    const gui = this.entityManager.create(Entity, EntityName.Gui);
+
+    gui.add(new FpsController());
+    gui.add(new CameraHudController());
+    gui.add(new CharacterHudController());
+    this.entityManager.activate(gui);
   }
 
   private requestAnimation() {
