@@ -1,3 +1,4 @@
+import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import {
   WebGLRenderer,
   Scene,
@@ -62,14 +63,11 @@ export class VoxelGame {
   private scene = this.createScene();
   private sun = this.createLightning();
 
-  private gameEngine = new GameEngine('world');
+  private gameEngine = new GameEngine();
   private windowObserver = new WindowEventObserver();
 
   private surfaceController = new SurfaceController(this.scene, this.mapSize, this.surfaceSize);
   private cameraController = new CameraController(this.windowObserver);
-
-
-  private prevTick: number | undefined;
 
   constructor() {
     this.initialize();
@@ -77,6 +75,8 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private initialize() {
+    this.initSystems();
+
     this.configureThreeJs();
 
     this.initEnvironment();
@@ -85,16 +85,31 @@ export class VoxelGame {
     this.initThrees();
     this.initUnits();
     this.initGui();
-    this.requestAnimation();
+
+    this.subscribeRender();
+  }
+
+  private initSystems() {
+    this.gameEngine.systems.create(TickSystem);
+  }
+
+  // TODO MOVE into some Entity i think
+  private subscribeRender() {
+    const tickSystem = this.gameEngine.systems.findOne(TickSystem);
+    tickSystem.on<number>(TickSystemEvent.Tick, event =>{
+      this.threeJs.render(this.scene, this.cameraController.getCamera());
+      // TODO change to Watching system
+      this.gameEngine.update(event.value);
+    })
   }
 
   private initEnvironment(): void {
-    const environment = this.gameEngine.create(VisualEntity, EntityName.Environment);
+    const environment = this.gameEngine.entities.create(VisualEntity, EntityName.Environment);
     environment.add(this.cameraController);
     environment.add(new LightController(this.sun));
     environment.add(this.surfaceController);
 
-    this.gameEngine.activate(environment);
+    this.gameEngine.entities.activate(environment);
 
     this.putIntoScene(this.sun);
     this.putIntoScene(this.sun.target);
@@ -200,7 +215,7 @@ export class VoxelGame {
         250,
         (Math.random() * 2.0 - 1.0) * 500);
 
-      const cloudEntity = this.gameEngine.create(VisualEntity, `cloud_${i}`);
+      const cloudEntity = this.gameEngine.entities.create(VisualEntity, `cloud_${i}`);
 
       cloudEntity.add(
         new StaticModelController({
@@ -238,7 +253,7 @@ export class VoxelGame {
 
       const pos = new Vector3(x,y,z);
 
-      const tree = this.gameEngine.create(VisualEntity, `tree_${i}`);
+      const tree = this.gameEngine.entities.create(VisualEntity, `tree_${i}`);
 
       tree.add(
         new StaticModelController({
@@ -269,7 +284,7 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private initPlayer() {
-    const player = this.gameEngine.create(VisualEntity, EntityName.Player);
+    const player = this.gameEngine.entities.create(VisualEntity, EntityName.Player);
     player.add(
       new GltfModelController({
         scene: this.scene,
@@ -304,13 +319,13 @@ export class VoxelGame {
       initialPlayerPositionZ,
     );
     player.setPosition(pos);
-    this.gameEngine.activate(player);
+    this.gameEngine.entities.activate(player);
     this.focusEnvironmentOn(EntityName.Player);
   }
 
   private focusEnvironmentOn(entityName: string) {
-    const target = getVisualEntityOrThrow(this, this.gameEngine.get(entityName));
-    const environment = getVisualEntityOrThrow(this, this.gameEngine.get(EntityName.Environment));
+    const target = getVisualEntityOrThrow(this, this.gameEngine.entities.get(entityName));
+    const environment = getVisualEntityOrThrow(this, this.gameEngine.entities.get(EntityName.Environment));
     const camera = environment?.get<CameraController>(CameraController);
     const light = environment?.get<LightController>(LightController);
 
@@ -350,28 +365,11 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private initGui() {
-    const gui = this.gameEngine.create(Entity, EntityName.Gui);
+    const gui = this.gameEngine.entities.create(Entity, EntityName.Gui);
 
     gui.add(new FpsController());
     gui.add(new CameraHudController());
     gui.add(new CharacterHudController());
-    this.gameEngine.activate(gui);
-  }
-
-  private requestAnimation() {
-    requestAnimationFrame((t) => {
-      if (!this.prevTick) {
-        this.prevTick = t;
-      }
-
-      const deltaTime = t - this.prevTick;
-
-      this.gameEngine.update(deltaTime);
-      this.threeJs.render(this.scene, this.cameraController.getCamera());
-
-      this.prevTick = t;
-
-      this.requestAnimation();
-    });
+    this.gameEngine.entities.activate(gui);
   }
 }

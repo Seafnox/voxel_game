@@ -1,8 +1,8 @@
 import { Controller } from './Controller';
-import { Emittable } from '../../emitter/Emittable';
-import { EmittedEvent } from '../../emitter/EmittedEvent';
+import { Emittable } from 'src/emitter/Emittable';
+import { EmittedEvent } from 'src/emitter/EmittedEvent';
 import { GameEngine } from './GameEngine';
-import { isFunction } from '../../utils/isFunction';
+import { isFunction } from 'src/utils/isFunction';
 
 export interface EntityConstructor<TEntity extends Entity> {
   new(gameEngine: GameEngine, name: string): TEntity;
@@ -10,6 +10,7 @@ export interface EntityConstructor<TEntity extends Entity> {
 
 export class Entity extends Emittable {
   private controllers: Record<string, Controller> = {};
+  private _isActive = false;
 
   constructor(
     protected _gameEngine: GameEngine,
@@ -18,7 +19,15 @@ export class Entity extends Emittable {
     super();
   }
 
-  get gameEngine(): GameEngine {
+  get isActive(): boolean {
+    return this._isActive;
+  }
+
+  set isActive(value: boolean) {
+    this._isActive = value;
+  }
+
+  get engine(): GameEngine {
     return this._gameEngine;
   }
 

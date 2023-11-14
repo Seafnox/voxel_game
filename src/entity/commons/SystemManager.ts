@@ -1,0 +1,60 @@
+import { GameEngine } from 'src/entity/commons/GameEngine';
+import { System, SystemConstructor } from 'src/entity/commons/System';
+
+export class SystemManager {
+  private systems: Record<string, System> = {};
+  private idCounter = 0;
+
+  constructor(
+    private gameEngine: GameEngine,
+  ) {}
+
+  get<TSystem extends System>(name: string): TSystem {
+    if (!this.systems[name]) {
+      throw new Error(`Can't find ${System.name} '${name}' in ${this.constructor.name} '${SystemManager.name}'`);
+    }
+
+    return this.systems[name] as TSystem;
+  }
+
+  find<TSystem extends System>(constructor: SystemConstructor<System>): TSystem[] {
+    return Object.values(this.systems).filter(system => system instanceof constructor) as TSystem[];
+  }
+
+  findOne<TSystem extends System>(constructor: SystemConstructor<System>): TSystem {
+    const systems = this.find<TSystem>(constructor);
+    const first = systems[0];
+
+    if (!first) {
+      throw new Error(`Can't find ${constructor.name} in ${this.constructor.name} '${SystemManager.name}'`);
+    }
+
+    return first;
+  }
+
+  create<TSystem extends System>(constructor: SystemConstructor<TSystem>, preferName?: string): TSystem {
+    const name = preferName || this.generateName(constructor.name);
+    const system = new constructor(this.gameEngine, name);
+    console.log(this.constructor.name, 'create', constructor.name, name);
+
+    this.systems[name] = system
+
+    return system;
+  }
+
+  activate(system: System) {
+    console.log(this.constructor.name, 'activate', system.constructor.name, system.name);
+    system.isActive = true;
+  }
+
+  disactivate(system: System) {
+    console.log(this.constructor.name, 'disactivate', system.constructor.name, system.name);
+    system.isActive = false;
+  }
+
+  private generateName(prefix: string) {
+    this.idCounter += 1;
+
+    return `${prefix}__${this.idCounter}`;
+  }
+}
