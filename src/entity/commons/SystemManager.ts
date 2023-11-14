@@ -33,6 +33,7 @@ export class SystemManager {
   }
 
   create<TSystem extends System>(constructor: SystemConstructor<TSystem>, preferName?: string): TSystem {
+    // FIXME is system in engine is unique? i think so. should use only constructor name?
     const name = preferName || this.generateName(constructor.name);
     const system = new constructor(this.gameEngine, name);
     console.log(this.constructor.name, 'create', constructor.name, name);
