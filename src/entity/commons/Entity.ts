@@ -1,25 +1,25 @@
 import { Controller } from './Controller';
 import { Emittable } from '../../emitter/Emittable';
 import { EmittedEvent } from '../../emitter/EmittedEvent';
-import { EntityManager } from './EntityManager';
+import { GameEngine } from './GameEngine';
 import { isFunction } from '../../utils/isFunction';
 
 export interface EntityConstructor<TEntity extends Entity> {
-  new(entityManager: EntityManager, name: string): TEntity;
+  new(gameEngine: GameEngine, name: string): TEntity;
 }
 
 export class Entity extends Emittable {
   private controllers: Record<string, Controller> = {};
 
   constructor(
-    protected _entityManager: EntityManager,
+    protected _gameEngine: GameEngine,
     protected _name: string,
   ) {
     super();
   }
 
-  get entityManager(): EntityManager {
-    return this._entityManager;
+  get gameEngine(): GameEngine {
+    return this._gameEngine;
   }
 
   get name(): string {

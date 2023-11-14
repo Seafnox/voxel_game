@@ -1,6 +1,6 @@
 import { Entity, EntityConstructor } from './Entity';
 
-export class EntityManager {
+export class GameEngine {
   private idCounter = 0;
   private entities: Record<string, Entity> = {};
   private activeEntities: Entity[] = [];
@@ -62,15 +62,13 @@ export class EntityManager {
     this.activeEntities.splice(i, 1);
   }
 
+  update(deltaTime: number) {
+    this.activeEntities.forEach(entity => entity.update(deltaTime));
+  }
+
   private generateName(prefix: string) {
     this.idCounter += 1;
 
     return `${prefix}__${this.idCounter}`;
-  }
-
-  update(deltaTime: number) {
-    for (const e of this.activeEntities) {
-      e.update(deltaTime);
-    }
   }
 }

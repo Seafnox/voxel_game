@@ -9,7 +9,7 @@ export class CharacterHudController implements Controller {
   entity: Entity | undefined;
 
   update(): void {
-    const characterEntity = getVisualEntityOrThrow(this, this.entity?.entityManager.get(EntityName.Player));
+    const characterEntity = getVisualEntityOrThrow(this, this.entity?.gameEngine.get(EntityName.Player));
     const characterPositionWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterPosition);
     const characterRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterRotation);
     const characterVelocityWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterVelocity);
