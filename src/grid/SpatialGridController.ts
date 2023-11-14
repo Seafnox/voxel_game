@@ -1,7 +1,6 @@
 import { Vector3 } from 'three';
-import { Disposable } from '../emitter/Emitter';
+import { Disposable } from 'src/emitter/SimpleEmitter';
 import { Controller } from '../entity/commons/Controller';
-import { EmittedEvent } from '../emitter/EmittedEvent';
 import { Entity } from '../entity/commons/Entity';
 import { getVisualEntityOrThrow } from '../entity/commons/utils/getVisualEntityOrThrow';
 import { VisualEntityTopic } from '../entity/commons/VisualEntityTopic';
@@ -35,10 +34,10 @@ export class SpatialGridController implements Controller {
     this.positionSubscription = entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
   }
 
-  onPositionChange(msg: EmittedEvent<Vector3>) {
+  onPositionChange(msg: Vector3) {
     if (!this._client) return;
 
-    this._client.position = [msg.value.x, msg.value.z];
+    this._client.position = [msg.x, msg.z];
     this.surfaceController.getGrid().UpdateClient(this._client);
   }
 

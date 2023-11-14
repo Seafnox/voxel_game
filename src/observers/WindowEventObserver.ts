@@ -1,7 +1,7 @@
-import { Emittable } from '../emitter/Emittable';
+import { TopicEmitter } from 'src/emitter/TopicEmitter';
 import { WindowTopic } from './WindowTopic';
 
-export class WindowEventObserver extends Emittable {
+export class WindowEventObserver extends TopicEmitter {
   constructor() {
     super();
 

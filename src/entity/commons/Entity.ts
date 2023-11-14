@@ -1,6 +1,5 @@
 import { Controller } from './Controller';
-import { Emittable } from 'src/emitter/Emittable';
-import { EmittedEvent } from 'src/emitter/EmittedEvent';
+import { TopicEmitter } from 'src/emitter/TopicEmitter';
 import { GameEngine } from './GameEngine';
 import { isFunction } from 'src/utils/isFunction';
 
@@ -8,7 +7,7 @@ export interface EntityConstructor<TEntity extends Entity> {
   new(gameEngine: GameEngine, name: string): TEntity;
 }
 
-export class Entity extends Emittable {
+export class Entity extends TopicEmitter {
   private controllers: Record<string, Controller> = {};
   private _isActive = false;
 
@@ -50,9 +49,8 @@ export class Entity extends Emittable {
     return this.controllers[constructor.name] as TController;
   }
 
-  // FIXME simplify event and emit only left alive
-  broadcast<TEventData>(msg: EmittedEvent<TEventData>) {
-    this.emit(msg.topic, msg);
+  broadcast<TEventData>(topic: string, msg: TEventData) {
+    this.emit(topic, msg);
   }
 
   update(deltaTime: number) {

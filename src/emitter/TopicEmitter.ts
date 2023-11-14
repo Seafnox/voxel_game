@@ -1,20 +1,19 @@
-import { EmittedEvent } from './EmittedEvent';
-import { Emitter, Listener, Disposable } from './Emitter';
+import { SimpleEmitter, Listener, Disposable } from 'src/emitter/SimpleEmitter';
 
-export class Emittable {
+export class TopicEmitter {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private topics: Record<string, Emitter<any>> = {};
+  private topics: Record<string, SimpleEmitter<any>> = {};
 
-  getTopic<TEventData>(topicName: string): Emitter<TEventData> {
+  getTopic<TEventData>(topicName: string): SimpleEmitter<TEventData> {
     if (!this.topics[topicName]) {
-      this.topics[topicName] = new Emitter<TEventData>();
+      this.topics[topicName] = new SimpleEmitter<TEventData>();
     }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.topics[topicName];
   }
 
-  public emit<TEventData>(topicName: string, event: EmittedEvent<TEventData>): void {
+  public emit<TEventData>(topicName: string, event: TEventData): void {
     this.getTopic<TEventData>(topicName).emit(event);
   }
 

@@ -2,7 +2,6 @@ import { Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { EmittedEvent } from '../../emitter/EmittedEvent';
 import { ModelController } from './ModelController';
 
 export interface StaticModelConfig {
@@ -28,15 +27,15 @@ export class StaticModelController extends ModelController {
     this.loadModels();
   }
 
-  onPositionChange(m: EmittedEvent<Vector3>) {
+  onPositionChange(m: Vector3) {
     if (this.model) {
-      this.model.position.copy(m.value);
+      this.model.position.copy(m);
     }
   }
 
-  onRotationChange(m: EmittedEvent<Quaternion>) {
+  onRotationChange(m: Quaternion) {
       if (this.model) {
-          this.model.quaternion.copy(m.value);
+          this.model.quaternion.copy(m);
       }
   }
   loadModels() {

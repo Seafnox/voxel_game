@@ -1,3 +1,4 @@
+import { StateMachineEvent } from 'src/entity/commons/state/StateMachineEvent';
 import { Entity } from '../Entity';
 import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
 import { StateInput } from './StateInput';
@@ -42,12 +43,9 @@ export class StateMachine {
     if (this.currentState) {
       this.currentState.validate(deltaTime, input);
 
-      this.entity?.broadcast({
-        topic: 'player.action',
-        value: {
-          action: this.currentState.constructor.name,
-          time: this.currentState.action?.time || 0,
-        },
+      this.entity?.broadcast(StateMachineEvent.PlayerAction, {
+        action: this.currentState.constructor.name,
+        time: this.currentState.action?.time || 0,
       });
     }
   }

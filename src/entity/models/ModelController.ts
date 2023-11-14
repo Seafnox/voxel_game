@@ -1,5 +1,4 @@
-import { EmittedEvent } from '../../emitter/EmittedEvent';
-import { Disposable } from '../../emitter/Emitter';
+import { Disposable } from 'src/emitter/SimpleEmitter';
 import { Controller } from '../commons/Controller';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from '../../utils/logger/LogMethod';
@@ -39,8 +38,8 @@ export abstract class ModelController implements Controller {
     return this.constructor.name;
   }
 
-  protected abstract onPositionChange(m: EmittedEvent<Vector3>): void;
-  protected abstract onRotationChange(m: EmittedEvent<Quaternion>): void;
+  protected abstract onPositionChange(m: Vector3): void;
+  protected abstract onRotationChange(m: Quaternion): void;
 
   protected getVisualEntityOrThrow(): VisualEntity {
     return getVisualEntityOrThrow(this, this.entity);

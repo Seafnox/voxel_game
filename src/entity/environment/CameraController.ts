@@ -20,7 +20,7 @@ export class CameraController implements Controller {
     this.camera = this.createCamera(window);
 
     this.windowObserver.on<UIEvent>(WindowTopic.Resize, event => {
-      const window = event.value.view!;
+      const window = event.view!;
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
     });

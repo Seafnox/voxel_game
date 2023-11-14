@@ -99,7 +99,7 @@ export class VoxelGame {
     tickSystem.on<number>(TickSystemEvent.Tick, event =>{
       this.threeJs.render(this.scene, this.cameraController.getCamera());
       // TODO change to Watching system
-      this.gameEngine.update(event.value);
+      this.gameEngine.update(event);
     })
   }
 
@@ -135,7 +135,7 @@ export class VoxelGame {
 
 
     this.windowObserver.on<UIEvent>(WindowTopic.Resize, event => {
-      const window = event.value.view!;
+      const window = event.view!;
       this.threeJs.setPixelRatio(window.devicePixelRatio);
       this.threeJs.setSize(window.innerWidth, window.innerHeight);
     })

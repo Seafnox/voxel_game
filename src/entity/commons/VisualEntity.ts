@@ -15,10 +15,7 @@ export class VisualEntity extends Entity {
 
   setPosition(p: Vector3) {
     this.position.copy(p);
-    this.broadcast({
-      topic: VisualEntityTopic.UpdatePosition,
-      value: this.position,
-    });
+    this.broadcast(VisualEntityTopic.UpdatePosition, this.position);
   }
 
   getVelocity(): Vector3 {
@@ -27,10 +24,7 @@ export class VisualEntity extends Entity {
 
   setVelocity(p: Vector3) {
     this.velocity.copy(p);
-    this.broadcast({
-      topic: VisualEntityTopic.UpdateVelocity,
-      value: this.velocity,
-    });
+    this.broadcast(VisualEntityTopic.UpdateVelocity, this.velocity);
   }
 
   // FIXME make getter and setter after refactoring
@@ -40,18 +34,12 @@ export class VisualEntity extends Entity {
 
   setRotation(r: Quaternion) {
     this.rotation.copy(r);
-    this.broadcast({
-      topic: VisualEntityTopic.UpdateRotation,
-      value: this.rotation,
-    });
+    this.broadcast(VisualEntityTopic.UpdateRotation, this.rotation);
   }
 
   set isModelReady(value: boolean) {
     this._isModelReady = value;
-    this.broadcast<boolean>({
-      topic: VisualEntityTopic.ModelLoaded,
-      value: this._isModelReady,
-    });
+    this.broadcast<boolean>(VisualEntityTopic.ModelLoaded, this._isModelReady);
   }
 
   get isModelReady(): boolean {

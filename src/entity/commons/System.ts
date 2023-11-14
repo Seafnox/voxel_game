@@ -1,11 +1,11 @@
-import { Emittable } from 'src/emitter/Emittable';
+import { TopicEmitter } from 'src/emitter/TopicEmitter';
 import { GameEngine } from 'src/entity/commons/GameEngine';
 
 export interface SystemConstructor<TSystem extends System> {
   new(gameEngine: GameEngine, name: string): TSystem
 }
 
-export class System extends Emittable {
+export class System extends TopicEmitter {
   protected _isActive = true;
   constructor(
     protected _gameEngine: GameEngine,

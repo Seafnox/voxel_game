@@ -1,7 +1,5 @@
-import { EmittedEvent } from './EmittedEvent';
-
 export interface Listener<TEventData> {
-  (event: EmittedEvent<TEventData>): unknown;
+  (event: TEventData): unknown;
 }
 
 export interface Disposable {
@@ -9,7 +7,7 @@ export interface Disposable {
 }
 
 /** passes through events as they happen. You will not get events from before you start listening */
-export class Emitter<TEventData> {
+export class SimpleEmitter<TEventData> {
   private listeners: Listener<TEventData>[] = [];
   private oneTimeListeners: Listener<TEventData>[] = [];
 
@@ -29,7 +27,7 @@ export class Emitter<TEventData> {
     if (callbackIndex > -1) this.listeners.splice(callbackIndex, 1);
   }
 
-  emit(event: EmittedEvent<TEventData>) {
+  emit(event: TEventData) {
     /** Update any general listeners */
     this.listeners.forEach((listener) => listener(event));
 

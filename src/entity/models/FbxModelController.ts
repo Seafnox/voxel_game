@@ -14,7 +14,6 @@ import {
 } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { EmittedEvent } from '../../emitter/EmittedEvent';
 import { ModelController } from './ModelController';
 
 export interface CustomizableModelConfig {
@@ -41,12 +40,12 @@ export class FbxModelController extends ModelController {
     this.loadResources();
   }
 
-  onPositionChange(m: EmittedEvent<Vector3>) {
-    this.model?.position.copy(m.value);
+  onPositionChange(m: Vector3) {
+    this.model?.position.copy(m);
   }
 
-  onRotationChange(m: EmittedEvent<Quaternion>) {
-    this.model?.quaternion.copy(m.value);
+  onRotationChange(m: Quaternion) {
+    this.model?.quaternion.copy(m);
   }
 
   private onModelLoaded(model: Object3D) {

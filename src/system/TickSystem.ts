@@ -22,12 +22,12 @@ export class TickSystem extends System {
     requestAnimationFrame((t) => {
       if (!this.prevTick) {
         this.prevTick = t;
-        this.emit<number>(TickSystemEvent.Init, {topic: TickSystemEvent.Init, value: t});
+        this.emit<number>(TickSystemEvent.Init, t);
       }
 
       const deltaTime = t - this.prevTick;
 
-      this.emit<number>(TickSystemEvent.Tick, {topic: TickSystemEvent.Tick, value: deltaTime});
+      this.emit<number>(TickSystemEvent.Tick, deltaTime);
 
       this.prevTick = t;
 
