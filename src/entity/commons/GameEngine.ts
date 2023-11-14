@@ -4,6 +4,11 @@ export class GameEngine {
   private idCounter = 0;
   private entities: Record<string, Entity> = {};
   private activeEntities: Entity[] = [];
+  // TODO make systems with events
+
+  // TODO make segments for engine. Like Surface, Gravity
+
+  // TODo split controllers to components and actions. Combine Actions with engine Segments and Systems
 
   constructor(
     private name: string,
