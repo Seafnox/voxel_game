@@ -1,5 +1,5 @@
-import { StateMachineEvent } from 'src/entity/commons/state/StateMachineEvent';
-import { Entity } from '../Entity';
+import { StateMachineEvent } from 'src/entity/state/StateMachineEvent';
+import { Entity } from '../../engine/Entity';
 import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
 import { StateInput } from './StateInput';
 import { SimpleState, SimpleStateConstructor } from './SimpleState';

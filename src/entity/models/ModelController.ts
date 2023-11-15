@@ -1,11 +1,11 @@
 import { Disposable } from 'src/emitter/SimpleEmitter';
-import { Controller } from '../commons/Controller';
+import { Controller } from '../../engine/Controller';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from '../../utils/logger/LogMethod';
 import { Level } from '../../utils/logger/Level';
-import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
-import { VisualEntity } from '../commons/VisualEntity';
-import { VisualEntityTopic } from '../commons/VisualEntityTopic';
+import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
+import { VisualEntity } from '../VisualEntity';
+import { VisualEntityTopic } from '../VisualEntityTopic';
 
 export abstract class ModelController extends Controller {
   protected model: Object3D | undefined;

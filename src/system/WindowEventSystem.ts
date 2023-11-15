@@ -1,5 +1,5 @@
-import { GameEngine } from '../entity/commons/GameEngine';
-import { System } from '../entity/commons/System';
+import { GameEngine } from '../engine/GameEngine';
+import { System } from '../engine/System';
 
 export const enum WindowEvent {
     Resize = 'resize',

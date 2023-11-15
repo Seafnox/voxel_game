@@ -1,5 +1,5 @@
-import { GameEngine } from 'src/entity/commons/GameEngine';
-import { System } from 'src/entity/commons/System';
+import { GameEngine } from 'src/engine/GameEngine';
+import { System } from 'src/engine/System';
 
 export const enum TickSystemEvent {
   Init = 'init',

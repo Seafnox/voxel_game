@@ -1,10 +1,10 @@
 import { WindowEventSystem, WindowEvent } from '../../system/WindowEventSystem';
-import { Controller } from '../commons/Controller';
+import { Controller } from '../../engine/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
-import { Entity } from '../commons/Entity';
-import { GameEngine } from '../commons/GameEngine';
-import { VisualEntity } from '../commons/VisualEntity';
-import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
+import { Entity } from '../../engine/Entity';
+import { GameEngine } from '../../engine/GameEngine';
+import { VisualEntity } from '../VisualEntity';
+import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
 
 export class CameraController extends Controller {
   private target: VisualEntity | undefined;

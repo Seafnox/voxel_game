@@ -1,8 +1,8 @@
-import { Controller } from '../commons/Controller';
+import { Controller } from '../../engine/Controller';
 import { DirectionalLight } from 'three';
-import { Entity } from '../commons/Entity';
-import { GameEngine } from '../commons/GameEngine';
-import { VisualEntity } from '../commons/VisualEntity';
+import { Entity } from '../../engine/Entity';
+import { GameEngine } from '../../engine/GameEngine';
+import { VisualEntity } from '../VisualEntity';
 
 export class LightController extends Controller {
   private target: VisualEntity | undefined;

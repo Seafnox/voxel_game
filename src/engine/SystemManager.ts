@@ -1,5 +1,5 @@
-import { GameEngine } from 'src/entity/commons/GameEngine';
-import { System, SystemConstructor } from 'src/entity/commons/System';
+import { GameEngine } from 'src/engine/GameEngine';
+import { System, SystemConstructor } from 'src/engine/System';
 import { FilterPredicate } from './FilterPredicate';
 
 export class SystemManager {

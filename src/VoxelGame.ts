@@ -14,9 +14,9 @@ import {
   Vector3,
 } from 'three';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
-import { Entity } from './entity/commons/Entity';
-import { GameEngine } from './entity/commons/GameEngine';
-import { getVisualEntityOrThrow } from './entity/commons/utils/getVisualEntityOrThrow';
+import { Entity } from './engine/Entity';
+import { GameEngine } from './engine/GameEngine';
+import { getVisualEntityOrThrow } from './entity/utils/getVisualEntityOrThrow';
 import { SurfaceController } from './entity/environment/SurfaceController';
 import { StaticModelController, StaticModelConfig } from './entity/models/StaticModelController';
 import { GravityFactor } from './factor/GravityFactor';
@@ -33,9 +33,9 @@ import { LogMethod } from './utils/logger/LogMethod';
 import { Level } from './utils/logger/Level';
 import { GltfModelController, GltfModelConfig } from './entity/models/GltfModelController';
 import { ModelController } from './entity/models/ModelController';
-import { VisualEntity } from './entity/commons/VisualEntity';
+import { VisualEntity } from './entity/VisualEntity';
 import { FpsController } from './entity/hud/FpsController';
-import { EntityName } from './entity/commons/EntityName';
+import { EntityName } from './engine/EntityName';
 import { HtmlElementId } from './HtmlElementId';
 import { CameraHudController } from './entity/hud/CameraHudController';
 import { CharacterHudController } from './entity/hud/CharacterHudController';

@@ -1,4 +1,4 @@
-import { Entity } from '../Entity';
+import { Entity } from '../../engine/Entity';
 import { VisualEntity } from '../VisualEntity';
 
 export function getVisualEntityOrThrow<

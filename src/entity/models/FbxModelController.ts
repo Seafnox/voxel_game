@@ -14,8 +14,8 @@ import {
 } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { Entity } from '../commons/Entity';
-import { GameEngine } from '../commons/GameEngine';
+import { Entity } from '../../engine/Entity';
+import { GameEngine } from '../../engine/GameEngine';
 import { ModelController } from './ModelController';
 
 export interface CustomizableModelConfig {

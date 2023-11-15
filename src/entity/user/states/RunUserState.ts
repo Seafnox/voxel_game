@@ -1,11 +1,11 @@
-import { StateMachine } from '../../commons/state/StateMachine';
+import { StateMachine } from '../../state/StateMachine';
 import { AnimationAction } from 'three';
-import { VisualEntityTopic } from '../../commons/VisualEntityTopic';
+import { VisualEntityTopic } from '../../VisualEntityTopic';
 import { ModelController } from '../../models/ModelController';
-import { VisualEntity } from '../../commons/VisualEntity';
+import { VisualEntity } from '../../VisualEntity';
 import { Disposable } from 'src/emitter/SimpleEmitter';
-import { StateInput } from '../../commons/state/StateInput';
-import { SimpleState } from '../../commons/state/SimpleState';
+import { StateInput } from '../../state/StateInput';
+import { SimpleState } from '../../state/SimpleState';
 import { VMath } from '../../../VMath';
 import { IdleUserState } from './IdleUserState';
 import { WalkUserState } from './WalkUserState';

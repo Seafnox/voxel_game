@@ -1,10 +1,10 @@
 import { getHtmlElementByIdOrThrow } from '../../utils/getHtmlElementOrThrow';
-import {Controller} from "../commons/Controller";
-import {Entity} from "../commons/Entity";
-import {EntityName} from "../commons/EntityName";
+import {Controller} from "../../engine/Controller";
+import {Entity} from "../../engine/Entity";
+import {EntityName} from "../../engine/EntityName";
 import {HtmlElementId} from "../../HtmlElementId";
-import { GameEngine } from '../commons/GameEngine';
-import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
+import { GameEngine } from '../../engine/GameEngine';
+import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
 
 export class CharacterHudController extends Controller {
   constructor(

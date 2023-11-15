@@ -1,5 +1,5 @@
-import { EntityManager } from 'src/entity/commons/EntityManager';
-import { SystemManager } from 'src/entity/commons/SystemManager';
+import { EntityManager } from 'src/engine/EntityManager';
+import { SystemManager } from 'src/engine/SystemManager';
 import { FactorManager } from './FactorManager';
 
 export class GameEngine {

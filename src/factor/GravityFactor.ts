@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import { Factor } from '../entity/commons/Factor';
+import { Factor } from '../engine/Factor';
 
 export class GravityFactor implements Factor<Vector3> {
   private _gravity = new Vector3(0, 10, 0);

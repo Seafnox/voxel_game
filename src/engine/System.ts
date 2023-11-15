@@ -1,5 +1,5 @@
 import { TopicEmitter } from 'src/emitter/TopicEmitter';
-import { GameEngine } from 'src/entity/commons/GameEngine';
+import { GameEngine } from 'src/engine/GameEngine';
 
 export interface SystemConstructor<TSystem extends System> {
   new(gameEngine: GameEngine, name: string): TSystem

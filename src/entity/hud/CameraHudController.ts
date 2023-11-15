@@ -1,9 +1,9 @@
 import { getHtmlElementByIdOrThrow } from '../../utils/getHtmlElementOrThrow';
-import {Controller} from "../commons/Controller";
-import {Entity} from "../commons/Entity";
-import { GameEngine } from '../commons/GameEngine';
-import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
-import {EntityName} from "../commons/EntityName";
+import {Controller} from "../../engine/Controller";
+import {Entity} from "../../engine/Entity";
+import { GameEngine } from '../../engine/GameEngine';
+import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
+import {EntityName} from "../../engine/EntityName";
 import {HtmlElementId} from "../../HtmlElementId";
 
 export class CameraHudController extends Controller {

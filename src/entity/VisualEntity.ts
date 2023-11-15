@@ -1,6 +1,6 @@
 import { Vector3, Quaternion } from 'three';
 import {VisualEntityTopic} from "./VisualEntityTopic";
-import {Entity} from "./Entity";
+import {Entity} from "../engine/Entity";
 
 export class VisualEntity extends Entity {
   private position = new Vector3();

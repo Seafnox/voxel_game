@@ -1,8 +1,8 @@
 import { getHtmlElementByIdOrThrow } from '../../utils/getHtmlElementOrThrow';
-import {Controller} from "../commons/Controller";
-import {Entity} from "../commons/Entity";
+import {Controller} from "../../engine/Controller";
+import {Entity} from "../../engine/Entity";
 import {HtmlElementId} from "../../HtmlElementId";
-import { GameEngine } from '../commons/GameEngine';
+import { GameEngine } from '../../engine/GameEngine';
 
 export class FpsController extends Controller {
   private tickFrames: number[] = [];

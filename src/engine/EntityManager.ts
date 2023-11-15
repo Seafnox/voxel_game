@@ -1,6 +1,6 @@
-import { Entity, EntityConstructor } from 'src/entity/commons/Entity';
-import { FilterPredicate } from 'src/entity/commons/FilterPredicate';
-import { GameEngine } from 'src/entity/commons/GameEngine';
+import { Entity, EntityConstructor } from 'src/engine/Entity';
+import { FilterPredicate } from 'src/engine/FilterPredicate';
+import { GameEngine } from 'src/engine/GameEngine';
 
 export class EntityManager {
   private idCounter = 0;

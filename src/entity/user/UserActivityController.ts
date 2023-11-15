@@ -1,6 +1,6 @@
 import { LogMethod } from '../../utils/logger/LogMethod';
 import { Level } from '../../utils/logger/Level';
-import { ActivityStatus } from '../commons/state/ActivityStatus';
+import { ActivityStatus } from '../state/ActivityStatus';
 
 export class UserActivityController {
   private boundedOnKeyDown = this.onKeyDown.bind(this);

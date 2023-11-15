@@ -1,4 +1,4 @@
-import { VisualEntity } from '../entity/commons/VisualEntity';
+import { VisualEntity } from '../entity/VisualEntity';
 
 export type SpatialPoint = [number, number];
 export type SpatialDimension = [number, number];

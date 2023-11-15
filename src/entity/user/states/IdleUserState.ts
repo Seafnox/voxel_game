@@ -1,10 +1,10 @@
 import { AnimationAction } from 'three';
-import { VisualEntityTopic } from '../../commons/VisualEntityTopic';
+import { VisualEntityTopic } from '../../VisualEntityTopic';
 import { ModelController } from '../../models/ModelController';
-import { VisualEntity } from '../../commons/VisualEntity';
+import { VisualEntity } from '../../VisualEntity';
 import { Disposable } from 'src/emitter/SimpleEmitter';
-import { SimpleState } from '../../commons/state/SimpleState';
-import { StateMachine } from '../../commons/state/StateMachine';
+import { SimpleState } from '../../state/SimpleState';
+import { StateMachine } from '../../state/StateMachine';
 
 export class IdleUserState implements SimpleState {
   availableNext: SimpleState[] | undefined;

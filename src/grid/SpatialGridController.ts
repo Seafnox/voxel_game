@@ -1,10 +1,10 @@
 import { Vector3 } from 'three';
 import { Disposable } from 'src/emitter/SimpleEmitter';
-import { Controller } from '../entity/commons/Controller';
-import { Entity } from '../entity/commons/Entity';
-import { GameEngine } from '../entity/commons/GameEngine';
-import { getVisualEntityOrThrow } from '../entity/commons/utils/getVisualEntityOrThrow';
-import { VisualEntityTopic } from '../entity/commons/VisualEntityTopic';
+import { Controller } from '../engine/Controller';
+import { Entity } from '../engine/Entity';
+import { GameEngine } from '../engine/GameEngine';
+import { getVisualEntityOrThrow } from '../entity/utils/getVisualEntityOrThrow';
+import { VisualEntityTopic } from '../entity/VisualEntityTopic';
 import { SurfaceFactor } from '../factor/surface/SurfaceFactor';
 import { SpatialClient, SpatialPoint } from './SpatialTyping';
 

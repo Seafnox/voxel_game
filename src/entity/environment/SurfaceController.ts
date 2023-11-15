@@ -3,9 +3,9 @@ import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeom
 import { BufferGeometry } from 'three/src/core/BufferGeometry';
 import { SurfaceFactor } from '../../factor/surface/SurfaceFactor';
 import { SpatialHashGrid } from '../../grid/SpatialHashGrid';
-import { Controller } from '../commons/Controller';
-import { Entity } from '../commons/Entity';
-import { GameEngine } from '../commons/GameEngine';
+import { Controller } from '../../engine/Controller';
+import { Entity } from '../../engine/Entity';
+import { GameEngine } from '../../engine/GameEngine';
 
 export class SurfaceController extends Controller {
   private surfaceFactor: SurfaceFactor;
