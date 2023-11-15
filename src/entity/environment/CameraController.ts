@@ -4,9 +4,8 @@ import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { VisualEntity } from '../VisualEntity';
-import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
 
-export class CameraController extends Controller {
+export class CameraController extends Controller<VisualEntity> {
   private target: VisualEntity | undefined;
   private currentLookAt: Vector3 = new Vector3();
   private readonly camera: PerspectiveCamera;
@@ -16,6 +15,10 @@ export class CameraController extends Controller {
     entity: Entity,
     name: string,
   ) {
+    if (!(entity instanceof VisualEntity)) {
+      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
+    }
+
     super(engine, entity, name);
 
     const window = this.windowEventSystem.getWindow();
@@ -56,7 +59,7 @@ export class CameraController extends Controller {
 
   update(deltaTime: number) {
     if (!this.target) return;
-    const entity = getVisualEntityOrThrow(this, this.entity);
+    const entity = this.entity;
 
     const idealOffset = this.calculateIdealOffset(this.target);
     const idealLookAt = this.calculateIdealLookAt(this.target);

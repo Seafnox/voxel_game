@@ -5,7 +5,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { VisualEntity } from '../VisualEntity';
 
-export class LightController extends Controller {
+export class LightController extends Controller<VisualEntity> {
   private lightColor = 0xeeffff;
   private target: VisualEntity | undefined;
   private light: DirectionalLight;
@@ -15,6 +15,10 @@ export class LightController extends Controller {
     entity: Entity,
     name: string,
   ) {
+    if (!(entity instanceof VisualEntity)) {
+      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
+    }
+
     super(engine, entity, name);
 
     this.light = this.createLight();

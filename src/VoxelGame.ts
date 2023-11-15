@@ -1,14 +1,9 @@
+import { SkyController } from 'src/entity/environment/SkyController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import {
   WebGLRenderer,
   Color,
-  Mesh,
-  HemisphereLight,
-  Object3D,
-  SphereGeometry,
-  ShaderMaterial,
-  BackSide,
   Vector3,
 } from 'three';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
@@ -20,8 +15,6 @@ import { StaticModelController } from './entity/models/StaticModelController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
 import { SpatialGridController } from './grid/SpatialGridController';
-import skyFragment from './resources/sky.fs';
-import skyVertex from './resources/sky.vs';
 import { WindowEventSystem, WindowEvent } from './system/WindowEventSystem';
 import { getHtmlElementByIdOrThrow } from './utils/getHtmlElementOrThrow';
 import { VMath } from './VMath';
@@ -44,14 +37,9 @@ const initialPlayerPositionY = 10;
 const initialPlayerPositionZ = 0;
 
 export class VoxelGame {
-  private backgroundColor = 0xeeffff;
-  private skyColor = 0x3385FF;
   private cloudColor = 0xaecfff;
   private lightAbsorptionMask = 0x000000;
   private darkEmissionLight = 0x000000;
-
-  private surfaceSize = 5000;
-  private mapSize = 1000;
 
   private renderer = new WebGLRenderer({
     antialias: true,
@@ -66,7 +54,7 @@ export class VoxelGame {
     this.configureThreeJs();
 
     this.initEnvironment();
-    this.buildSky();
+
     this.initClouds();
     this.initThrees();
     this.initUnits();
@@ -79,7 +67,7 @@ export class VoxelGame {
     this.gameEngine.factors.create(SceneFactor);
     this.gameEngine.factors.create(GravityFactor);
     this.gameEngine.factors.create(SurfaceFactor)
-      .generateSurface(this.mapSize, this.surfaceSize);
+      .generateSurface(1000, 5000);
   }
 
   private initSystems() {
@@ -106,6 +94,7 @@ export class VoxelGame {
     environment.create(CameraController);
     environment.create(LightController);
     environment.create(SurfaceController);
+    environment.create(SkyController);
 
     this.gameEngine.entities.activate(environment);
   }
@@ -130,42 +119,6 @@ export class VoxelGame {
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(window.innerWidth, window.innerHeight);
     })
-  }
-
-  private createHelioSphere(): HemisphereLight {
-    const helioSphere = new HemisphereLight(this.skyColor, this.backgroundColor, 0.6);
-    helioSphere.color.setHex(this.skyColor);
-    helioSphere.groundColor.setHex(this.backgroundColor);
-
-    return helioSphere;
-  }
-
-  private putIntoScene(...objects: Object3D[]) {
-    this.gameEngine.factors.findOne(SceneFactor).add(...objects);
-  }
-
-  @LogMethod({level: Level.info})
-  private buildSky() {
-    const helio = this.createHelioSphere();
-    this.putIntoScene(helio);
-    this.putIntoScene(this.createSkyMesh(helio));
-  }
-
-  private createSkyMesh(helio: HemisphereLight): Mesh {
-    const skyGeo = new SphereGeometry(2000, 32, 32);
-    const skyMat = new ShaderMaterial({
-      uniforms: {
-        topColor: {value: helio.color},
-        bottomColor: {value: helio.groundColor},
-        offset: {value: 33},
-        exponent: {value: 0.6},
-      },
-      vertexShader: skyVertex,
-      fragmentShader: skyFragment,
-      side: BackSide,
-    });
-
-    return new Mesh(skyGeo, skyMat);
   }
 
   @LogMethod({level: Level.info})
@@ -287,6 +240,7 @@ export class VoxelGame {
     const environment = getVisualEntityOrThrow(this, this.gameEngine.entities.get(EntityName.Environment));
     environment.get<CameraController>(CameraController).setTarget(target);
     environment.get<LightController>(LightController).setTarget(target);
+    environment.get<SkyController>(SkyController).setTarget(target);
   }
 
   @LogMethod({level: Level.info})
