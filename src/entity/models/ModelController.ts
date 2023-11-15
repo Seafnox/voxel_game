@@ -1,3 +1,4 @@
+import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { Controller } from 'src/engine/Controller';
 import { SceneFactor } from 'src/factor/SceneFactor';
@@ -16,7 +17,7 @@ export abstract class ModelController extends Controller<VisualEntity> {
 
   constructor(
     engine: GameEngine,
-    entity: VisualEntity,
+    entity: Entity,
     name: string,
   ) {
     if (!(entity instanceof VisualEntity)) {

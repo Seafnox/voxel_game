@@ -1,4 +1,4 @@
-import { VisualEntity } from 'src/entity/VisualEntity';
+import { Entity } from 'src/engine/Entity';
 import {
   Vector3,
   Color,
@@ -37,7 +37,7 @@ export class FbxModelController extends ModelController {
   constructor(
     private params: CustomizableModelConfig,
     engine: GameEngine,
-    entity: VisualEntity,
+    entity: Entity,
     name: string,
   ) {
     super(engine, entity, name);

@@ -1,4 +1,4 @@
-import { VisualEntity } from 'src/entity/VisualEntity';
+import { Entity } from 'src/engine/Entity';
 import {
   Vector3,
   Color,
@@ -33,13 +33,15 @@ export class GltfModelController extends ModelController {
   private texture: Texture | undefined;
 
   constructor(
-    private params: GltfModelConfig,
     engine: GameEngine,
-    entity: VisualEntity,
+    entity: Entity,
     name: string,
   ) {
     super(engine, entity, name);
-    this.loadResources();
+  }
+
+  set modelConfig(config: GltfModelConfig) {
+    this.loadResources(config);
   }
 
   onPositionChange(m: Vector3) {
@@ -50,11 +52,11 @@ export class GltfModelController extends ModelController {
     this.model?.quaternion.copy(m);
   }
 
-  private onModelLoaded(model: Object3D) {
+  private onModelLoaded(model: Object3D, config: GltfModelConfig) {
     this.model = model;
     this.sceneFactor.add(this.model);
 
-    this.model.scale.setScalar(this.params.scale);
+    this.model.scale.setScalar(config.scale);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -67,36 +69,36 @@ export class GltfModelController extends ModelController {
           if (this.texture) {
             m.map = this.texture;
           }
-          if (this.params.specular) {
-            m.specular = this.params.specular;
+          if (config.specular) {
+            m.specular = config.specular;
           }
-          if (this.params.emissive) {
-            m.emissive = this.params.emissive;
+          if (config.emissive) {
+            m.emissive = config.emissive;
           }
         }
       }
 
-      if (this.params.receiveShadow != undefined) {
-        c.receiveShadow = this.params.receiveShadow;
+      if (config.receiveShadow != undefined) {
+        c.receiveShadow = config.receiveShadow;
       }
-      if (this.params.castShadow != undefined) {
-        c.castShadow = this.params.castShadow;
+      if (config.castShadow != undefined) {
+        c.castShadow = config.castShadow;
       }
-      if (this.params.visible != undefined) {
-        c.visible = this.params.visible;
+      if (config.visible != undefined) {
+        c.visible = config.visible;
       }
     });
   }
 
-  loadResources() {
-    if (this.params.resourceTexture) {
+  loadResources(config: GltfModelConfig) {
+    if (config.resourceTexture) {
       const textureLoader = new TextureLoader();
-      this.texture = textureLoader.load(this.params.resourceTexture);
+      this.texture = textureLoader.load(config.resourceTexture);
       this.texture.encoding = sRGBEncoding;
     }
 
-    const path = this.params.resourcePath;
-    const model = this.params.resourceModel;
+    const path = config.resourcePath;
+    const model = config.resourceModel;
 
     if (!model.endsWith('glb') && !model.endsWith('gltf')) {
       throw new Error(`Can't find loader for such type of file: ${model}`);
@@ -108,7 +110,7 @@ export class GltfModelController extends ModelController {
     loader.load(model, (glb) => {
       this.mixer?.stopAllAction();
 
-      this.onModelLoaded(glb.scene);
+      this.onModelLoaded(glb.scene, config);
 
       const entity = this.entity;
       const model = this.getModelOrThrow();

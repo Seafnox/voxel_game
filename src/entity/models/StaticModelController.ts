@@ -1,9 +1,9 @@
-import { VisualEntity } from 'src/entity/VisualEntity';
+import { Entity } from 'src/engine/Entity';
 import { Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color, Quaternion } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { GameEngine } from '../../engine/GameEngine';
+import { GameEngine } from 'src/engine/GameEngine';
 import { ModelController } from './ModelController';
 
 export interface StaticModelConfig {
@@ -19,16 +19,16 @@ export interface StaticModelConfig {
 }
 
 export class StaticModelController extends ModelController {
-  private boundOnPositionChange = this.onPositionChange.bind(this);
-
   constructor(
-    private params: StaticModelConfig,
     engine: GameEngine,
-    entity: VisualEntity,
+    entity: Entity,
     name: string,
   ) {
     super(engine, entity, name);
-    this.loadModels();
+  }
+
+  set modelConfig(config: StaticModelConfig) {
+    this.loadModels(config);
   }
 
   onPositionChange(m: Vector3) {
@@ -42,27 +42,27 @@ export class StaticModelController extends ModelController {
           this.model.quaternion.copy(m);
       }
   }
-  loadModels() {
-    if (this.params.resourceName.endsWith('glb') || this.params.resourceName.endsWith('gltf')) {
-      this.loadAsGLTF();
-    } else if (this.params.resourceName.endsWith('fbx')) {
-      this.loadAsFBX();
+  loadModels(config: StaticModelConfig) {
+    if (config.resourceName.endsWith('glb') || config.resourceName.endsWith('gltf')) {
+      this.loadAsGLTF(config);
+    } else if (config.resourceName.endsWith('fbx')) {
+      this.loadAsFBX(config);
     }
   }
 
-  onTargetLoaded(obj: Group) {
+  onTargetLoaded(obj: Group, config: StaticModelConfig) {
     const entity = this.entity;
 
     this.model = obj;
     this.sceneFactor.add(this.model);
 
-    this.model.scale.setScalar(this.params.scale);
+    this.model.scale.setScalar(config.scale);
     this.entity && this.model.position.copy(entity.getPosition());
 
     let texture: Texture | null = null;
-    if (this.params.resourceTexture) {
+    if (config.resourceTexture) {
       const texLoader = new TextureLoader();
-      texture = texLoader.load(this.params.resourceTexture);
+      texture = texLoader.load(config.resourceTexture);
       texture.encoding = sRGBEncoding;
     }
 
@@ -78,41 +78,41 @@ export class StaticModelController extends ModelController {
           if (texture) {
             m.map = texture;
           }
-          if (this.params.specular) {
-            m.specular = this.params.specular;
+          if (config.specular) {
+            m.specular = config.specular;
           }
-          if (this.params.emissive) {
-            m.emissive = this.params.emissive;
+          if (config.emissive) {
+            m.emissive = config.emissive;
           }
         }
       }
-      if (this.params.receiveShadow != undefined) {
-        c.receiveShadow = this.params.receiveShadow;
+      if (config.receiveShadow != undefined) {
+        c.receiveShadow = config.receiveShadow;
       }
-      if (this.params.castShadow != undefined) {
-        c.castShadow = this.params.castShadow;
+      if (config.castShadow != undefined) {
+        c.castShadow = config.castShadow;
       }
-      if (this.params.visible != undefined) {
-        c.visible = this.params.visible;
+      if (config.visible != undefined) {
+        c.visible = config.visible;
       }
     });
 
     entity.isModelReady = true;
   }
 
-  loadAsGLTF() {
+  loadAsGLTF(config: StaticModelConfig) {
     const loader = new GLTFLoader();
-    loader.setPath(this.params.resourcePath);
-    loader.load(this.params.resourceName, (glb) => {
-      this.onTargetLoaded(glb.scene);
+    loader.setPath(config.resourcePath);
+    loader.load(config.resourceName, (glb) => {
+      this.onTargetLoaded(glb.scene, config);
     });
   }
 
-  loadAsFBX() {
+  loadAsFBX(config: StaticModelConfig) {
     const loader = new FBXLoader();
-    loader.setPath(this.params.resourcePath);
-    loader.load(this.params.resourceName, (fbx) => {
-      this.onTargetLoaded(fbx);
+    loader.setPath(config.resourcePath);
+    loader.load(config.resourceName, (fbx) => {
+      this.onTargetLoaded(fbx, config);
     });
   }
 

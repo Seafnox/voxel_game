@@ -1,6 +1,6 @@
+import { Entity } from 'src/engine/Entity';
 import { VisualEntity } from 'src/entity/VisualEntity';
 import { Vector3 } from 'three';
-import { Disposable } from 'src/emitter/SimpleEmitter';
 import { Controller } from '../engine/Controller';
 import { GameEngine } from '../engine/GameEngine';
 import { getVisualEntityOrThrow } from '../entity/utils/getVisualEntityOrThrow';
@@ -9,12 +9,11 @@ import { SurfaceFactor } from '../factor/surface/SurfaceFactor';
 import { SpatialClient, SpatialPoint } from './SpatialTyping';
 
 export class SpatialGridController extends Controller<VisualEntity> {
-  private _client?: SpatialClient;
-  private positionSubscription?: Disposable;
+  private _client: SpatialClient;
 
   constructor(
     engine: GameEngine,
-    entity: VisualEntity,
+    entity: Entity,
     name: string,
   ) {
     if (!(entity instanceof VisualEntity)) {
@@ -29,10 +28,8 @@ export class SpatialGridController extends Controller<VisualEntity> {
       entityPosition.z,
     ];
 
-    this.positionSubscription?.dispose();
     this._client = this.surfaceFactor.grid.NewClient(entity, pos, [1, 1]);
-    this._client.entity = entity;
-    this.positionSubscription = entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+    entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
   }
 
   get surfaceFactor(): SurfaceFactor {

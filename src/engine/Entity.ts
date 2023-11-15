@@ -1,7 +1,6 @@
-import { Controller } from './Controller';
+import { Controller, ControllerConstructor } from './Controller';
 import { TopicEmitter } from 'src/emitter/TopicEmitter';
 import { GameEngine } from './GameEngine';
-import { isFunction } from 'src/utils/isFunction';
 
 export interface EntityConstructor<TEntity extends Entity> {
   new(gameEngine: GameEngine, name: string): TEntity;
@@ -35,9 +34,12 @@ export class Entity extends TopicEmitter {
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
-  add(controller: Controller, as?: Function) {
-    const registeredAs = as || controller.constructor;
-    this.controllers[registeredAs.name] = controller;
+  create<TController extends Controller>(constructor: ControllerConstructor<TController>, as?: Function): TController {
+    const name = as?.name || constructor.name;
+    const controller = new constructor(this._gameEngine, this, name);
+    this.controllers[controller.name] = controller;
+
+    return controller;
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types

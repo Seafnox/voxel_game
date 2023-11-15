@@ -16,7 +16,7 @@ import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
 import { getVisualEntityOrThrow } from './entity/utils/getVisualEntityOrThrow';
 import { SurfaceController } from './entity/environment/SurfaceController';
-import { StaticModelController, StaticModelConfig } from './entity/models/StaticModelController';
+import { StaticModelController } from './entity/models/StaticModelController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
 import { SpatialGridController } from './grid/SpatialGridController';
@@ -29,7 +29,7 @@ import { CameraController } from './entity/environment/CameraController';
 import { UserCharacterController } from './entity/user/UserCharacterController';
 import { LogMethod } from './utils/logger/LogMethod';
 import { Level } from './utils/logger/Level';
-import { GltfModelController, GltfModelConfig } from './entity/models/GltfModelController';
+import { GltfModelController } from './entity/models/GltfModelController';
 import { ModelController } from './entity/models/ModelController';
 import { VisualEntity } from './entity/VisualEntity';
 import { FpsController } from './entity/hud/FpsController';
@@ -103,9 +103,9 @@ export class VoxelGame {
   private initEnvironment(): void {
     const environment = this.gameEngine.entities.create(VisualEntity, EntityName.Environment);
 
-    environment.add(new CameraController(this.gameEngine, environment, CameraController.name));
-    environment.add(new LightController(this.gameEngine, environment, LightController.name));
-    environment.add(new SurfaceController(this.gameEngine, environment, SurfaceController.name));
+    environment.create(CameraController);
+    environment.create(LightController);
+    environment.create(SurfaceController);
 
     this.gameEngine.entities.activate(environment);
   }
@@ -124,7 +124,6 @@ export class VoxelGame {
 
     const container = getHtmlElementByIdOrThrow(HtmlElementId.Container);
     container.appendChild(this.renderer.domElement);
-
 
     windowEventSystem.on<UIEvent>(WindowEvent.Resize, event => {
       const window = event.view!;
@@ -176,22 +175,21 @@ export class VoxelGame {
       const pos = new Vector3(
         (Math.random() * 2.0 - 1.0) * 500,
         250,
-        (Math.random() * 2.0 - 1.0) * 500);
+        (Math.random() * 2.0 - 1.0) * 500,
+      );
 
       const cloudEntity = this.gameEngine.entities.create(VisualEntity, `cloud_${i}`);
-      const staticModelConfig: StaticModelConfig = {
-          resourcePath: './resources/clouds/',
-          resourceName: 'Cloud' + index + '.glb',
-          scale: Math.random() * 5 + 10,
-          emissive: new Color(this.cloudColor),
-          castShadow: true,
-          receiveShadow: true,
+
+      const modelController = cloudEntity.create(StaticModelController);
+      modelController.modelConfig = {
+        resourcePath: './resources/clouds/',
+        resourceName: 'Cloud' + index + '.glb',
+        scale: Math.random() * 5 + 10,
+        emissive: new Color(this.cloudColor),
+        castShadow: true,
+        receiveShadow: true,
       };
 
-      cloudEntity.add(
-        new StaticModelController(staticModelConfig, this.gameEngine, cloudEntity, StaticModelController.name),
-        ModelController,
-      );
       cloudEntity.setPosition(pos);
     }
   }
@@ -218,21 +216,19 @@ export class VoxelGame {
       const pos = new Vector3(x,y,z);
 
       const tree = this.gameEngine.entities.create(VisualEntity, `tree_${i}`);
-      const staticModelConfig: StaticModelConfig = {
-          resourcePath: './resources/trees/',
-          resourceName: name + '_' + index + '.fbx',
-          scale: 0.25,
-          emissive: new Color(this.darkEmissionLight),
-          specular: new Color(this.lightAbsorptionMask),
-          receiveShadow: true,
-          castShadow: true,
+
+      tree.create(SpatialGridController);
+      const modelController = tree.create(StaticModelController);
+      modelController.modelConfig = {
+        resourcePath: './resources/trees/',
+        resourceName: name + '_' + index + '.fbx',
+        scale: 0.25,
+        emissive: new Color(this.darkEmissionLight),
+        specular: new Color(this.lightAbsorptionMask),
+        receiveShadow: true,
+        castShadow: true,
       };
 
-      tree.add(
-        new StaticModelController(staticModelConfig, this.gameEngine, tree, StaticModelController.name),
-        ModelController,
-      );
-      tree.add(new SpatialGridController(this.gameEngine, tree, SpatialGridController.name));
       tree.setPosition(pos);
     }
   }
@@ -249,18 +245,19 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initPlayer() {
     const player = this.gameEngine.entities.create(VisualEntity, EntityName.Player);
-    const gltfModelConfig: GltfModelConfig = {
-        resourcePath: './resources/units/',
-        resourceModel: 'guard.glb',
-        scale: 15,
-        receiveShadow: true,
-        castShadow: true,
+
+    player.create(UserCharacterController);
+    player.create(SpatialGridController);
+
+    const modelController = player.create(GltfModelController, ModelController);
+    modelController.modelConfig = {
+      resourcePath: './resources/units/',
+      resourceModel: 'guard.glb',
+      scale: 15,
+      receiveShadow: true,
+      castShadow: true,
     };
-    player.add(
-      new GltfModelController(gltfModelConfig, this.gameEngine, player, GltfModelController.name),
-      ModelController,
-    );
-    player.add(new UserCharacterController(this.gameEngine, player, UserCharacterController.name));
+
     // player.AddComponent(new EquipWeapon({anchor: 'RightHandIndex1'}));
     // player.AddComponent(new InventoryController(params));
     // player.AddComponent(new AttackController({timing: 0.7}));
@@ -275,36 +272,21 @@ export class VoxelGame {
     //   experience: 0,
     //   level: 1,
     // }));
-    player.add(new SpatialGridController(this.gameEngine, player, SpatialGridController.name));
     // TODO make position height (y) by surface position
-    const pos = new Vector3(
+    player.setPosition(new Vector3(
       initialPlayerPositionX,
       initialPlayerPositionY,
       initialPlayerPositionZ,
-    );
-    player.setPosition(pos);
+    ));
     this.gameEngine.entities.activate(player);
-    this.focusEnvironmentOn(EntityName.Player);
+    this.focusEnvironmentOn(player);
   }
 
-  private focusEnvironmentOn(entityName: string) {
-    const target = getVisualEntityOrThrow(this, this.gameEngine.entities.get(entityName));
+  // TODO convert code to one time action or send responsibility in controller.
+  private focusEnvironmentOn(target: VisualEntity) {
     const environment = getVisualEntityOrThrow(this, this.gameEngine.entities.get(EntityName.Environment));
-    const camera = environment?.get<CameraController>(CameraController);
-    const light = environment?.get<LightController>(LightController);
-
-    if (!camera) {
-      console.warn(EntityName.Environment, environment, CameraController.name, camera);
-      throw new Error(`No camera detected for focus on object`);
-    }
-
-    if (!light) {
-      console.warn(EntityName.Environment, environment, LightController.name, light);
-      throw new Error(`No light detected for focus on object`);
-    }
-
-    camera.setTarget(target);
-    light.setTarget(target);
+    environment.get<CameraController>(CameraController).setTarget(target);
+    environment.get<LightController>(LightController).setTarget(target);
   }
 
   @LogMethod({level: Level.info})
@@ -329,11 +311,11 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private initGui() {
-    const gui = this.gameEngine.entities.create(Entity, EntityName.Gui);
+    const gui = this.gameEngine.entities.create(Entity);
 
-    gui.add(new FpsController(this.gameEngine, gui, FpsController.name));
-    gui.add(new CameraHudController(this.gameEngine, gui, CameraHudController.name));
-    gui.add(new CharacterHudController(this.gameEngine, gui, CharacterHudController.name));
+    gui.create(FpsController);
+    gui.create(CameraHudController);
+    gui.create(CharacterHudController);
     this.gameEngine.entities.activate(gui);
   }
 }
