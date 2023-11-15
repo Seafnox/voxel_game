@@ -1,11 +1,9 @@
+import { Controller } from 'src/engine/Controller';
+import { Entity } from 'src/engine/Entity';
+import { GameEngine } from 'src/engine/GameEngine';
+import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
 import { Mesh, Vector3, BackSide, Texture, DataTexture, Scene, MeshStandardMaterial, MeshBasicMaterial } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
-import { BufferGeometry } from 'three/src/core/BufferGeometry';
-import { SurfaceFactor } from '../../factor/surface/SurfaceFactor';
-import { SpatialHashGrid } from '../../grid/SpatialHashGrid';
-import { Controller } from '../../engine/Controller';
-import { Entity } from '../../engine/Entity';
-import { GameEngine } from '../../engine/GameEngine';
 
 export class SurfaceController extends Controller {
   private surfaceFactor: SurfaceFactor;
@@ -22,11 +20,6 @@ export class SurfaceController extends Controller {
 
     this.scene.add(this.createSurfaceWireframeMesh());
     this.scene.add(this.createSurfaceMesh());
-  }
-
-  // FIXME refactor and remove
-  getGrid(): SpatialHashGrid {
-    return this.surfaceFactor.grid;
   }
 
   private createSurfaceMesh(): Mesh {
@@ -59,16 +52,14 @@ export class SurfaceController extends Controller {
     return surfaceMesh;
   }
 
-  private createSurfaceGeometry(): BufferGeometry {
+  private createSurfaceGeometry(): ParametricGeometry {
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
       const x = (percentX - 0.5) * (this.surfaceFactor.mapSize-1) * this.surfaceFactor.surfaceScale;
       const y = (percentY - 0.5) * (this.surfaceFactor.mapSize-1) * this.surfaceFactor.surfaceScale;
       const z = this.surfaceFactor.getZCord(x,y);
       target.set(x, z, y);
     };
-    const geometry = new ParametricGeometry(calculatePoint, this.surfaceFactor.mapSize, this.surfaceFactor.mapSize);
-
-    return geometry;
+    return new ParametricGeometry(calculatePoint, this.surfaceFactor.mapSize, this.surfaceFactor.mapSize);
   }
 
   private createSurfaceTexture(): Texture {
