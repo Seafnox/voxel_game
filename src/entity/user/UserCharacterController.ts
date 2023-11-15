@@ -9,8 +9,6 @@ import { UserActivityController } from './UserActivityController';
 import { StateMachine } from '../state/StateMachine';
 import { IdleUserState } from './states/IdleUserState';
 import { SpatialGridController } from '../../grid/SpatialGridController';
-import { LogMethod } from '../../utils/logger/LogMethod';
-import { Level } from '../../utils/logger/Level';
 import { WalkUserState } from './states/WalkUserState';
 import { RunUserState } from './states/RunUserState';
 
