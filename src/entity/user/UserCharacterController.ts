@@ -1,14 +1,14 @@
 import { Quaternion, Vector3 } from 'three';
-import { Controller } from '../../engine/Controller';
-import { Entity } from '../../engine/Entity';
-import { GameEngine } from '../../engine/GameEngine';
+import { Controller } from 'src/engine/Controller';
+import { Entity } from 'src/engine/Entity';
+import { GameEngine } from 'src/engine/GameEngine';
 import { ActivityStatus } from '../state/ActivityStatus';
 import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
 import { VisualEntity } from '../VisualEntity';
 import { UserActivityController } from './UserActivityController';
 import { StateMachine } from '../state/StateMachine';
 import { IdleUserState } from './states/IdleUserState';
-import { SpatialGridController } from '../../grid/SpatialGridController';
+import { SpatialGridController } from 'src/grid/SpatialGridController';
 import { WalkUserState } from './states/WalkUserState';
 import { RunUserState } from './states/RunUserState';
 
