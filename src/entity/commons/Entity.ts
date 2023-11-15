@@ -36,7 +36,6 @@ export class Entity extends TopicEmitter {
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   add(controller: Controller, as?: Function) {
-    controller.entity = this;
     const registeredAs = as || controller.constructor;
     this.controllers[registeredAs.name] = controller;
 
@@ -54,6 +53,6 @@ export class Entity extends TopicEmitter {
   }
 
   update(deltaTime: number) {
-    Object.values(this.controllers).forEach(component => component.update(deltaTime));
+    Object.values(this.controllers).forEach(component => component.update && component.update(deltaTime));
   }
 }

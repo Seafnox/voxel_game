@@ -14,6 +14,8 @@ import {
 } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
+import { Entity } from '../commons/Entity';
+import { GameEngine } from '../commons/GameEngine';
 import { ModelController } from './ModelController';
 
 export interface CustomizableModelConfig {
@@ -35,8 +37,11 @@ export class FbxModelController extends ModelController {
 
   constructor(
     private params: CustomizableModelConfig,
+    engine: GameEngine,
+    entity: Entity,
+    name: string,
   ) {
-    super();
+    super(engine, entity, name);
     this.loadResources();
   }
 

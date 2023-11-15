@@ -1,6 +1,7 @@
 import { Quaternion, Vector3 } from 'three';
 import { Controller } from '../commons/Controller';
 import { Entity } from '../commons/Entity';
+import { GameEngine } from '../commons/GameEngine';
 import { ActivityStatus } from '../commons/state/ActivityStatus';
 import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
 import { VisualEntity } from '../commons/VisualEntity';
@@ -13,7 +14,7 @@ import { Level } from '../../utils/logger/Level';
 import { WalkUserState } from './states/WalkUserState';
 import { RunUserState } from './states/RunUserState';
 
-export class UserCharacterController implements Controller {
+export class UserCharacterController extends Controller {
   private deceleration = new Vector3(-5.0, -5.0, -5.0);
   private acceleration = new Vector3(10.0, 20.0, 50.0);
   private deltaTimeScalar = 1000;
@@ -21,9 +22,14 @@ export class UserCharacterController implements Controller {
   private rotationScalar = 1;
   private stateMachine = new StateMachine();
   private activityController = new UserActivityController();
-  entity: Entity | undefined;
 
-  constructor() {
+  constructor(
+      engine: GameEngine,
+      entity: Entity,
+      name: string,
+  ) {
+    super(engine, entity, name);
+
     this.stateMachine.addState(IdleUserState);
     this.stateMachine.addState(WalkUserState);
     this.stateMachine.addState(RunUserState);

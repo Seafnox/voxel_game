@@ -18,19 +18,20 @@ import { Entity } from './entity/commons/Entity';
 import { GameEngine } from './entity/commons/GameEngine';
 import { getVisualEntityOrThrow } from './entity/commons/utils/getVisualEntityOrThrow';
 import { SurfaceController } from './entity/environment/SurfaceController';
-import { StaticModelController } from './entity/models/StaticModelController';
+import { StaticModelController, StaticModelConfig } from './entity/models/StaticModelController';
+import { GravityFactor } from './factor/GravityFactor';
+import { SurfaceFactor } from './factor/surface/SurfaceFactor';
 import { SpatialGridController } from './grid/SpatialGridController';
-import { WindowEventObserver } from './observers/WindowEventObserver';
-import { WindowTopic } from './observers/WindowTopic';
 import skyFragment from './resources/sky.fs';
 import skyVertex from './resources/sky.vs';
+import { WindowEventSystem, WindowEvent } from './system/WindowEventSystem';
 import { getHtmlElementByIdOrThrow } from './utils/getHtmlElementOrThrow';
 import { VMath } from './VMath';
 import { CameraController } from './entity/environment/CameraController';
 import { UserCharacterController } from './entity/user/UserCharacterController';
 import { LogMethod } from './utils/logger/LogMethod';
 import { Level } from './utils/logger/Level';
-import { GltfModelController } from './entity/models/GltfModelController';
+import { GltfModelController, GltfModelConfig } from './entity/models/GltfModelController';
 import { ModelController } from './entity/models/ModelController';
 import { VisualEntity } from './entity/commons/VisualEntity';
 import { FpsController } from './entity/hud/FpsController';
@@ -64,17 +65,9 @@ export class VoxelGame {
   private sun = this.createLightning();
 
   private gameEngine = new GameEngine();
-  private windowObserver = new WindowEventObserver();
-
-  private surfaceController = new SurfaceController(this.scene, this.mapSize, this.surfaceSize);
-  private cameraController = new CameraController(this.windowObserver);
 
   constructor() {
-    this.initialize();
-  }
-
-  @LogMethod({level: Level.info})
-  private initialize() {
+    this.initFactors();
     this.initSystems();
 
     this.configureThreeJs();
@@ -89,25 +82,37 @@ export class VoxelGame {
     this.subscribeRender();
   }
 
+  private initFactors() {
+    this.gameEngine.factors.create(GravityFactor);
+    this.gameEngine.factors.create(SurfaceFactor)
+      .generateSurface(this.mapSize, this.surfaceSize);
+  }
+
   private initSystems() {
     this.gameEngine.systems.create(TickSystem);
+    this.gameEngine.systems.create(WindowEventSystem);
   }
 
   // TODO MOVE into some Entity i think
   private subscribeRender() {
     const tickSystem = this.gameEngine.systems.findOne(TickSystem);
+    const cameraController = this.gameEngine.entities.get(EntityName.Environment).get<CameraController>(CameraController);
+
     tickSystem.on<number>(TickSystemEvent.Tick, event =>{
-      this.threeJs.render(this.scene, this.cameraController.getCamera());
+      this.threeJs.render(this.scene, cameraController.getCamera());
       // TODO change to Watching system
       this.gameEngine.update(event);
     })
   }
 
   private initEnvironment(): void {
+    const windowEventSystem = this.gameEngine.systems.findOne<WindowEventSystem>(WindowEventSystem);
+
     const environment = this.gameEngine.entities.create(VisualEntity, EntityName.Environment);
-    environment.add(this.cameraController);
-    environment.add(new LightController(this.sun));
-    environment.add(this.surfaceController);
+
+    environment.add(new CameraController(windowEventSystem, this.gameEngine, environment, CameraController.name));
+    environment.add(new LightController(this.sun, this.gameEngine, environment, LightController.name));
+    environment.add(new SurfaceController(this.scene, this.gameEngine, environment, SurfaceController.name));
 
     this.gameEngine.entities.activate(environment);
 
@@ -121,7 +126,8 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private configureThreeJs() {
-    const window = this.windowObserver.getWindow();
+    const windowEventSystem = this.gameEngine.systems.findOne<WindowEventSystem>(WindowEventSystem);
+    const window = windowEventSystem.getWindow();
 
     this.threeJs.outputColorSpace = SRGBColorSpace;
     this.threeJs.shadowMap.enabled = true;
@@ -134,7 +140,7 @@ export class VoxelGame {
     container.appendChild(this.threeJs.domElement);
 
 
-    this.windowObserver.on<UIEvent>(WindowTopic.Resize, event => {
+    windowEventSystem.on<UIEvent>(WindowEvent.Resize, event => {
       const window = event.view!;
       this.threeJs.setPixelRatio(window.devicePixelRatio);
       this.threeJs.setSize(window.innerWidth, window.innerHeight);
@@ -216,9 +222,7 @@ export class VoxelGame {
         (Math.random() * 2.0 - 1.0) * 500);
 
       const cloudEntity = this.gameEngine.entities.create(VisualEntity, `cloud_${i}`);
-
-      cloudEntity.add(
-        new StaticModelController({
+      const staticModelConfig: StaticModelConfig = {
           scene: this.scene,
           resourcePath: './resources/clouds/',
           resourceName: 'Cloud' + index + '.glb',
@@ -226,7 +230,10 @@ export class VoxelGame {
           emissive: new Color(this.cloudColor),
           castShadow: true,
           receiveShadow: true,
-        }),
+      };
+
+      cloudEntity.add(
+        new StaticModelController(staticModelConfig, this.gameEngine, cloudEntity, StaticModelController.name),
         ModelController,
       );
       cloudEntity.setPosition(pos);
@@ -235,6 +242,7 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private initThrees() {
+    const surfaceFactor = this.gameEngine.factors.findOne(SurfaceFactor);
     const names = [
       'BirchTree',
       'BirchTree_Dead',
@@ -249,14 +257,12 @@ export class VoxelGame {
       const index = VMath.rand_int(1, 5);
       const x = (Math.random() * 2.0 - 1.0) * 500;
       const z = (Math.random() * 2.0 - 1.0) * 500;
-      const y = this.surfaceController.getZCord(x,z);
+      const y = surfaceFactor.getZCord(x,z);
 
       const pos = new Vector3(x,y,z);
 
       const tree = this.gameEngine.entities.create(VisualEntity, `tree_${i}`);
-
-      tree.add(
-        new StaticModelController({
+      const staticModelConfig: StaticModelConfig = {
           scene: this.scene,
           resourcePath: './resources/trees/',
           resourceName: name + '_' + index + '.fbx',
@@ -265,10 +271,13 @@ export class VoxelGame {
           specular: new Color(this.lightAbsorptionMask),
           receiveShadow: true,
           castShadow: true,
-        }),
+      };
+
+      tree.add(
+        new StaticModelController(staticModelConfig, this.gameEngine, tree, StaticModelController.name),
         ModelController,
       );
-      tree.add(new SpatialGridController(this.surfaceController));
+      tree.add(new SpatialGridController(this.gameEngine, tree, SpatialGridController.name));
       tree.setPosition(pos);
     }
   }
@@ -285,18 +294,19 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initPlayer() {
     const player = this.gameEngine.entities.create(VisualEntity, EntityName.Player);
-    player.add(
-      new GltfModelController({
+    const gltfModelConfig: GltfModelConfig = {
         scene: this.scene,
         resourcePath: './resources/units/',
         resourceModel: 'guard.glb',
         scale: 15,
         receiveShadow: true,
         castShadow: true,
-      }),
+    };
+    player.add(
+      new GltfModelController(gltfModelConfig, this.gameEngine, player, GltfModelController.name),
       ModelController,
     );
-    player.add(new UserCharacterController());
+    player.add(new UserCharacterController(this.gameEngine, player, UserCharacterController.name));
     // player.AddComponent(new EquipWeapon({anchor: 'RightHandIndex1'}));
     // player.AddComponent(new InventoryController(params));
     // player.AddComponent(new AttackController({timing: 0.7}));
@@ -311,7 +321,7 @@ export class VoxelGame {
     //   experience: 0,
     //   level: 1,
     // }));
-    player.add(new SpatialGridController(this.surfaceController));
+    player.add(new SpatialGridController(this.gameEngine, player, SpatialGridController.name));
     // TODO make position height (y) by surface position
     const pos = new Vector3(
       initialPlayerPositionX,
@@ -367,9 +377,9 @@ export class VoxelGame {
   private initGui() {
     const gui = this.gameEngine.entities.create(Entity, EntityName.Gui);
 
-    gui.add(new FpsController());
-    gui.add(new CameraHudController());
-    gui.add(new CharacterHudController());
+    gui.add(new FpsController(this.gameEngine, gui, FpsController.name));
+    gui.add(new CameraHudController(this.gameEngine, gui, CameraHudController.name));
+    gui.add(new CharacterHudController(this.gameEngine, gui, CharacterHudController.name));
     this.gameEngine.entities.activate(gui);
   }
 }

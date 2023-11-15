@@ -3,13 +3,20 @@ import {Controller} from "../commons/Controller";
 import {Entity} from "../commons/Entity";
 import {EntityName} from "../commons/EntityName";
 import {HtmlElementId} from "../../HtmlElementId";
+import { GameEngine } from '../commons/GameEngine';
 import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
 
-export class CharacterHudController implements Controller {
-  entity: Entity | undefined;
+export class CharacterHudController extends Controller {
+  constructor(
+    engine: GameEngine,
+    entity: Entity,
+    name: string,
+  ) {
+    super(engine, entity, name);
+  }
 
   update(): void {
-    const characterEntity = getVisualEntityOrThrow(this, this.entity?.engine.entities.get(EntityName.Player));
+    const characterEntity = getVisualEntityOrThrow(this, this.entity.engine.entities.get(EntityName.Player));
     const characterPositionWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterPosition);
     const characterRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterRotation);
     const characterVelocityWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterVelocity);

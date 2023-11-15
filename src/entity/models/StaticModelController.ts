@@ -2,6 +2,8 @@ import { Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, 
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
+import { Entity } from '../commons/Entity';
+import { GameEngine } from '../commons/GameEngine';
 import { ModelController } from './ModelController';
 
 export interface StaticModelConfig {
@@ -22,8 +24,11 @@ export class StaticModelController extends ModelController {
 
   constructor(
     private params: StaticModelConfig,
+    engine: GameEngine,
+    entity: Entity,
+    name: string,
   ) {
-    super();
+    super(engine, entity, name);
     this.loadModels();
   }
 

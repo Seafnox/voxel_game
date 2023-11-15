@@ -3,13 +3,11 @@ import { Controller } from '../commons/Controller';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from '../../utils/logger/LogMethod';
 import { Level } from '../../utils/logger/Level';
-import { Entity } from '../commons/Entity';
 import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
 import { VisualEntity } from '../commons/VisualEntity';
 import { VisualEntityTopic } from '../commons/VisualEntityTopic';
 
-export abstract class ModelController implements Controller {
-  entity: Entity | undefined;
+export abstract class ModelController extends Controller {
   protected model: Object3D | undefined;
   protected animationMap: Record<string, AnimationAction> = {};
   protected mixer: AnimationMixer | undefined;

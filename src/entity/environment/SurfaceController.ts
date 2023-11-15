@@ -1,57 +1,32 @@
 import { Mesh, Vector3, BackSide, Texture, DataTexture, Scene, MeshStandardMaterial, MeshBasicMaterial } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 import { BufferGeometry } from 'three/src/core/BufferGeometry';
+import { SurfaceFactor } from '../../factor/surface/SurfaceFactor';
 import { SpatialHashGrid } from '../../grid/SpatialHashGrid';
-import { SurfaceBuilder, SurfacePoint } from '../../grid/SurfaceBuilder';
-import { VMath } from '../../VMath';
 import { Controller } from '../commons/Controller';
 import { Entity } from '../commons/Entity';
+import { GameEngine } from '../commons/GameEngine';
 
-export class SurfaceController implements Controller {
-  public entity: Entity | undefined;
-
-  private surfaceScale: number;
-  private gridSize: number;
-  private gridDimension: number;
-  private grid: SpatialHashGrid;
-  private surfaceMap: SurfacePoint[][];
+export class SurfaceController extends Controller {
+  private surfaceFactor: SurfaceFactor;
 
   constructor(
     private scene: Scene,
-    private mapSize: number,
-    private surfaceSize: number,
+    engine: GameEngine,
+    entity: Entity,
+    name: string,
   ) {
-    this.gridSize = this.surfaceSize / 4;
-    this.gridDimension = this.surfaceSize / this.mapSize;
-    this.surfaceScale = this.surfaceSize / this.mapSize;
-    this.grid = new SpatialHashGrid(
-      [[-this.gridSize, -this.gridSize], [this.gridSize, this.gridSize]],
-      [this.gridDimension, this.gridDimension]
-    );
-    const surfaceBuilder = new SurfaceBuilder(0.003 * this.surfaceScale);
-    this.surfaceMap = surfaceBuilder.getSurfaceMap(this.mapSize, this.mapSize);
+    super(engine, entity, name);
+
+    this.surfaceFactor = this.engine.factors.findOne(SurfaceFactor);
+
     this.scene.add(this.createSurfaceWireframeMesh());
     this.scene.add(this.createSurfaceMesh());
   }
 
+  // FIXME refactor and remove
   getGrid(): SpatialHashGrid {
-    return this.grid;
-  }
-
-  onEntityChange() {}
-  update(): void {}
-
-  getZCord(xCord: number, yCord: number): number {
-    return this.getZCordByPoint(this.getSurfacePoint(xCord, yCord))
-  }
-  getMapIndex(cord: number): number {
-    return Math.floor(cord * (this.mapSize/this.surfaceSize) + this.mapSize/2);
-  }
-
-  getSurfacePoint(xCord: number, yCord: number): SurfacePoint {
-    const x = this.getMapIndex(xCord);
-    const y = this.getMapIndex(yCord);
-    return this.surfaceMap[x][y];
+    return this.surfaceFactor.grid;
   }
 
   private createSurfaceMesh(): Mesh {
@@ -84,30 +59,26 @@ export class SurfaceController implements Controller {
     return surfaceMesh;
   }
 
-  private getZCordByPoint(point: SurfacePoint): number {
-    return VMath.lerp(point.value, -150, 150);
-  }
-
   private createSurfaceGeometry(): BufferGeometry {
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
-      const x = (percentX - 0.5) * (this.mapSize-1) * this.surfaceScale;
-      const y = (percentY - 0.5) * (this.mapSize-1) * this.surfaceScale;
-      const z = this.getZCord(x,y);
+      const x = (percentX - 0.5) * (this.surfaceFactor.mapSize-1) * this.surfaceFactor.surfaceScale;
+      const y = (percentY - 0.5) * (this.surfaceFactor.mapSize-1) * this.surfaceFactor.surfaceScale;
+      const z = this.surfaceFactor.getZCord(x,y);
       target.set(x, z, y);
     };
-    const geometry = new ParametricGeometry(calculatePoint, this.mapSize, this.mapSize);
+    const geometry = new ParametricGeometry(calculatePoint, this.surfaceFactor.mapSize, this.surfaceFactor.mapSize);
 
     return geometry;
   }
 
   private createSurfaceTexture(): Texture {
-    const size = this.mapSize * this.mapSize;
+    const size = this.surfaceFactor.mapSize * this.surfaceFactor.mapSize;
     const data = new Uint8Array( 4 * size );
 
-    for ( let x = 0; x < this.mapSize; x++ ) {
-      for ( let y = 0; y < this.mapSize; y++ ) {
-        const stride = (x * this.mapSize + y) * 4;
-        const color = this.surfaceMap[y][x].color;
+    for ( let x = 0; x < this.surfaceFactor.mapSize; x++ ) {
+      for ( let y = 0; y < this.surfaceFactor.mapSize; y++ ) {
+        const stride = (x * this.surfaceFactor.mapSize + y) * 4;
+        const color = this.surfaceFactor.surfaceMap[y][x].color;
         data[ stride ] = color[0];
         data[ stride + 1 ] = color[1];
         data[ stride + 2 ] = color[2];
@@ -116,7 +87,7 @@ export class SurfaceController implements Controller {
     }
 
     // used the buffer to create a DataTexture
-    const texture = new DataTexture( data, this.mapSize, this.mapSize );
+    const texture = new DataTexture( data, this.surfaceFactor.mapSize, this.surfaceFactor.mapSize );
     texture.needsUpdate = true;
 
     return texture;

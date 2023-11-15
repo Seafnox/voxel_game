@@ -2,6 +2,8 @@ import { createNoise3D, NoiseFunction3D } from 'simplex-noise';
 import { RGBColor } from './RGBColor';
 import { surfaceEntries, SurfaceEntry } from './TempSurfaceConstant';
 
+export type SurfaceMap = SurfacePoint[][];
+
 export interface SurfacePoint {
   color: RGBColor;
   value: number;

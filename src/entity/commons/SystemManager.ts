@@ -1,5 +1,6 @@
 import { GameEngine } from 'src/entity/commons/GameEngine';
 import { System, SystemConstructor } from 'src/entity/commons/System';
+import { FilterPredicate } from './FilterPredicate';
 
 export class SystemManager {
   private systems: Record<string, System> = {};
@@ -30,6 +31,10 @@ export class SystemManager {
     }
 
     return first;
+  }
+
+  filter(predicate: FilterPredicate<System>): System[] {
+    return Object.values(this.systems).filter(predicate);
   }
 
   create<TSystem extends System>(constructor: SystemConstructor<TSystem>, preferName?: string): TSystem {

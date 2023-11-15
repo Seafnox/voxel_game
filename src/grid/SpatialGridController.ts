@@ -2,22 +2,25 @@ import { Vector3 } from 'three';
 import { Disposable } from 'src/emitter/SimpleEmitter';
 import { Controller } from '../entity/commons/Controller';
 import { Entity } from '../entity/commons/Entity';
+import { GameEngine } from '../entity/commons/GameEngine';
 import { getVisualEntityOrThrow } from '../entity/commons/utils/getVisualEntityOrThrow';
 import { VisualEntityTopic } from '../entity/commons/VisualEntityTopic';
-import { SurfaceController } from '../entity/environment/SurfaceController';
+import { SurfaceFactor } from '../factor/surface/SurfaceFactor';
 import { SpatialClient, SpatialPoint } from './SpatialTyping';
 
-export class SpatialGridController implements Controller {
+export class SpatialGridController extends Controller {
   private _client?: SpatialClient;
   private positionSubscription?: Disposable;
+  private surfaceFactor: SurfaceFactor;
 
   constructor(
-    private surfaceController: SurfaceController,
-  ) {}
+    engine: GameEngine,
+    entity: Entity,
+    name: string,
+  ) {
+    super(engine, entity, name);
 
-  entity: Entity | undefined;
-
-  update(): void {
+    this.surfaceFactor = this.engine.factors.findOne(SurfaceFactor);
   }
 
   onEntityChange() {
@@ -29,7 +32,7 @@ export class SpatialGridController implements Controller {
     ];
 
     this.positionSubscription?.dispose();
-    this._client = this.surfaceController.getGrid().NewClient(entity, pos, [1, 1]);
+    this._client = this.surfaceFactor.grid.NewClient(entity, pos, [1, 1]);
     this._client.entity = entity;
     this.positionSubscription = entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
   }
@@ -38,13 +41,13 @@ export class SpatialGridController implements Controller {
     if (!this._client) return;
 
     this._client.position = [msg.x, msg.z];
-    this.surfaceController.getGrid().UpdateClient(this._client);
+    this.surfaceFactor.grid.UpdateClient(this._client);
   }
 
   FindNearbyEntities(range: number): SpatialClient[] {
     const entity = getVisualEntityOrThrow(this, this.entity);
 
-    const results = this.surfaceController.getGrid().FindNear(
+    const results = this.surfaceFactor.grid.FindNear(
       [entity.getPosition().x, entity.getPosition().z],
         [range, range]
     );

@@ -1,25 +1,28 @@
-import { WindowEventObserver } from '../../observers/WindowEventObserver';
-import { WindowTopic } from '../../observers/WindowTopic';
+import { WindowEventSystem, WindowEvent } from '../../system/WindowEventSystem';
 import { Controller } from '../commons/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { Entity } from '../commons/Entity';
+import { GameEngine } from '../commons/GameEngine';
 import { VisualEntity } from '../commons/VisualEntity';
 import { getVisualEntityOrThrow } from '../commons/utils/getVisualEntityOrThrow';
 
-export class CameraController implements Controller {
-  entity: Entity | undefined;
-
+export class CameraController extends Controller {
   private target: VisualEntity | undefined;
   private currentLookAt: Vector3 = new Vector3();
   private readonly camera: PerspectiveCamera;
 
   constructor(
-    private windowObserver: WindowEventObserver,
+    private windowObserver: WindowEventSystem,
+    engine: GameEngine,
+    entity: Entity,
+    name: string,
   ) {
+    super(engine, entity, name);
+
     const window = this.windowObserver.getWindow();
     this.camera = this.createCamera(window);
 
-    this.windowObserver.on<UIEvent>(WindowTopic.Resize, event => {
+    this.windowObserver.on<UIEvent>(WindowEvent.Resize, event => {
       const window = event.view!;
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();

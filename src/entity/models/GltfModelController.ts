@@ -14,6 +14,8 @@ import {
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
+import { Entity } from '../commons/Entity';
+import { GameEngine } from '../commons/GameEngine';
 import { ModelController } from './ModelController';
 
 export interface GltfModelConfig {
@@ -34,8 +36,11 @@ export class GltfModelController extends ModelController {
 
   constructor(
     private params: GltfModelConfig,
+    engine: GameEngine,
+    entity: Entity,
+    name: string,
   ) {
-    super();
+    super(engine, entity, name);
     this.loadResources();
   }
 
