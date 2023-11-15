@@ -3,7 +3,6 @@ import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import {
   WebGLRenderer,
   Color,
-  DirectionalLight,
   Mesh,
   HemisphereLight,
   Object3D,
@@ -46,7 +45,6 @@ const initialPlayerPositionZ = 0;
 
 export class VoxelGame {
   private backgroundColor = 0xeeffff;
-  private lightColor = 0xeeffff;
   private skyColor = 0x3385FF;
   private cloudColor = 0xaecfff;
   private lightAbsorptionMask = 0x000000;
@@ -58,8 +56,6 @@ export class VoxelGame {
   private renderer = new WebGLRenderer({
     antialias: true,
   });
-
-  private sun = this.createLightning();
 
   private gameEngine = new GameEngine();
 
@@ -105,18 +101,13 @@ export class VoxelGame {
   }
 
   private initEnvironment(): void {
-    const windowEventSystem = this.gameEngine.systems.findOne<WindowEventSystem>(WindowEventSystem);
-
     const environment = this.gameEngine.entities.create(VisualEntity, EntityName.Environment);
 
-    environment.add(new CameraController(windowEventSystem, this.gameEngine, environment, CameraController.name));
-    environment.add(new LightController(this.sun, this.gameEngine, environment, LightController.name));
+    environment.add(new CameraController(this.gameEngine, environment, CameraController.name));
+    environment.add(new LightController(this.gameEngine, environment, LightController.name));
     environment.add(new SurfaceController(this.gameEngine, environment, SurfaceController.name));
 
     this.gameEngine.entities.activate(environment);
-
-    this.putIntoScene(this.sun);
-    this.putIntoScene(this.sun.target);
   }
 
   @LogMethod({level: Level.info})
@@ -140,26 +131,6 @@ export class VoxelGame {
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(window.innerWidth, window.innerHeight);
     })
-  }
-
-  @LogMethod({level: Level.info})
-  private createLightning(): DirectionalLight {
-    const light = new DirectionalLight(this.lightColor, 1.0);
-    light.position.set(0, 800, 0);
-    light.castShadow = true;
-    light.shadow.bias = -0.001;
-    light.shadow.mapSize.width = 4096;
-    light.shadow.mapSize.height = 4096;
-    light.shadow.camera.near = 0.1;
-    light.shadow.camera.far = 1000.0;
-    light.shadow.camera.left = 150;
-    light.shadow.camera.right = -150;
-    light.shadow.camera.top = 150;
-    light.shadow.camera.bottom = -150;
-    light.shadow.radius = 5;
-    light.shadow.blurSamples = 25;
-
-    return light;
   }
 
   private createHelioSphere(): HemisphereLight {

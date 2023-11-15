@@ -12,21 +12,24 @@ export class CameraController extends Controller {
   private readonly camera: PerspectiveCamera;
 
   constructor(
-    private windowObserver: WindowEventSystem,
     engine: GameEngine,
     entity: Entity,
     name: string,
   ) {
     super(engine, entity, name);
 
-    const window = this.windowObserver.getWindow();
+    const window = this.windowEventSystem.getWindow();
     this.camera = this.createCamera(window);
 
-    this.windowObserver.on<UIEvent>(WindowEvent.Resize, event => {
+    this.windowEventSystem.on<UIEvent>(WindowEvent.Resize, event => {
       const window = event.view!;
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
     });
+  }
+
+  get windowEventSystem(): WindowEventSystem {
+    return this.engine.systems.findOne(WindowEventSystem);
   }
 
   getCamera(): PerspectiveCamera {
