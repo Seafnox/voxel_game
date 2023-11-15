@@ -1,8 +1,8 @@
-import { WindowEventSystem, WindowEvent } from '../../system/WindowEventSystem';
-import { Controller } from '../../engine/Controller';
+import { WindowEventSystem, WindowEvent } from 'src/system/WindowEventSystem';
+import { Controller } from 'src/engine/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
-import { Entity } from '../../engine/Entity';
-import { GameEngine } from '../../engine/GameEngine';
+import { Entity } from 'src/engine/Entity';
+import { GameEngine } from 'src/engine/GameEngine';
 import { VisualEntity } from '../VisualEntity';
 import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
 
@@ -84,9 +84,9 @@ export class CameraController extends Controller {
     const far = 10000.0;
     const camera = new PerspectiveCamera(fov, aspect, near, far);
     camera.position.set(
-        0,
-        5,
-        25);
+      0,
+      5,
+      25);
 
     camera.updateProjectionMatrix();
 

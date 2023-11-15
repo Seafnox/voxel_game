@@ -1,9 +1,8 @@
+import { SceneFactor } from 'src/factor/SceneFactor';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import {
   WebGLRenderer,
-  Scene,
   Color,
-  FogExp2,
   DirectionalLight,
   Mesh,
   HemisphereLight,
@@ -46,7 +45,6 @@ const initialPlayerPositionY = 10;
 const initialPlayerPositionZ = 0;
 
 export class VoxelGame {
-  private fogColor = 0x6982ab;
   private backgroundColor = 0xeeffff;
   private lightColor = 0xeeffff;
   private skyColor = 0x3385FF;
@@ -57,11 +55,10 @@ export class VoxelGame {
   private surfaceSize = 5000;
   private mapSize = 1000;
 
-  private threeJs = new WebGLRenderer({
+  private renderer = new WebGLRenderer({
     antialias: true,
   });
 
-  private scene = this.createScene();
   private sun = this.createLightning();
 
   private gameEngine = new GameEngine();
@@ -83,6 +80,7 @@ export class VoxelGame {
   }
 
   private initFactors() {
+    this.gameEngine.factors.create(SceneFactor);
     this.gameEngine.factors.create(GravityFactor);
     this.gameEngine.factors.create(SurfaceFactor)
       .generateSurface(this.mapSize, this.surfaceSize);
@@ -98,8 +96,9 @@ export class VoxelGame {
     const tickSystem = this.gameEngine.systems.findOne(TickSystem);
     const cameraController = this.gameEngine.entities.get(EntityName.Environment).get<CameraController>(CameraController);
 
-    tickSystem.on<number>(TickSystemEvent.Tick, event =>{
-      this.threeJs.render(this.scene, cameraController.getCamera());
+    tickSystem.on<number>(TickSystemEvent.Tick, event => {
+      const scene = this.gameEngine.factors.findOne(SceneFactor).value;
+      this.renderer.render(scene, cameraController.getCamera());
       // TODO change to Watching system
       this.gameEngine.update(event);
     })
@@ -112,16 +111,12 @@ export class VoxelGame {
 
     environment.add(new CameraController(windowEventSystem, this.gameEngine, environment, CameraController.name));
     environment.add(new LightController(this.sun, this.gameEngine, environment, LightController.name));
-    environment.add(new SurfaceController(this.scene, this.gameEngine, environment, SurfaceController.name));
+    environment.add(new SurfaceController(this.gameEngine, environment, SurfaceController.name));
 
     this.gameEngine.entities.activate(environment);
 
     this.putIntoScene(this.sun);
     this.putIntoScene(this.sun.target);
-    this.initSurface();
-  }
-  private initSurface() {
-    // TODO think about surface
   }
 
   @LogMethod({level: Level.info})
@@ -129,31 +124,22 @@ export class VoxelGame {
     const windowEventSystem = this.gameEngine.systems.findOne<WindowEventSystem>(WindowEventSystem);
     const window = windowEventSystem.getWindow();
 
-    this.threeJs.outputColorSpace = SRGBColorSpace;
-    this.threeJs.shadowMap.enabled = true;
-    this.threeJs.shadowMap.type = PCFSoftShadowMap;
-    this.threeJs.setPixelRatio(window.devicePixelRatio);
-    this.threeJs.setSize(window.innerWidth, window.innerHeight);
-    this.threeJs.domElement.id = HtmlElementId.Scene;
+    this.renderer.outputColorSpace = SRGBColorSpace;
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = PCFSoftShadowMap;
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.domElement.id = HtmlElementId.Scene;
 
     const container = getHtmlElementByIdOrThrow(HtmlElementId.Container);
-    container.appendChild(this.threeJs.domElement);
+    container.appendChild(this.renderer.domElement);
 
 
     windowEventSystem.on<UIEvent>(WindowEvent.Resize, event => {
       const window = event.view!;
-      this.threeJs.setPixelRatio(window.devicePixelRatio);
-      this.threeJs.setSize(window.innerWidth, window.innerHeight);
+      this.renderer.setPixelRatio(window.devicePixelRatio);
+      this.renderer.setSize(window.innerWidth, window.innerHeight);
     })
-  }
-
-  @LogMethod({level: Level.info})
-  private createScene(): Scene {
-    const scene = new Scene();
-    scene.background = new Color(this.backgroundColor);
-    scene.fog = new FogExp2(this.fogColor, 0.002);
-
-    return scene;
   }
 
   @LogMethod({level: Level.info})
@@ -185,7 +171,7 @@ export class VoxelGame {
   }
 
   private putIntoScene(...objects: Object3D[]) {
-    this.scene.add(...objects);
+    this.gameEngine.factors.findOne(SceneFactor).add(...objects);
   }
 
   @LogMethod({level: Level.info})
@@ -223,7 +209,6 @@ export class VoxelGame {
 
       const cloudEntity = this.gameEngine.entities.create(VisualEntity, `cloud_${i}`);
       const staticModelConfig: StaticModelConfig = {
-          scene: this.scene,
           resourcePath: './resources/clouds/',
           resourceName: 'Cloud' + index + '.glb',
           scale: Math.random() * 5 + 10,
@@ -263,7 +248,6 @@ export class VoxelGame {
 
       const tree = this.gameEngine.entities.create(VisualEntity, `tree_${i}`);
       const staticModelConfig: StaticModelConfig = {
-          scene: this.scene,
           resourcePath: './resources/trees/',
           resourceName: name + '_' + index + '.fbx',
           scale: 0.25,
@@ -295,7 +279,6 @@ export class VoxelGame {
   private initPlayer() {
     const player = this.gameEngine.entities.create(VisualEntity, EntityName.Player);
     const gltfModelConfig: GltfModelConfig = {
-        scene: this.scene,
         resourcePath: './resources/units/',
         resourceModel: 'guard.glb',
         scale: 15,

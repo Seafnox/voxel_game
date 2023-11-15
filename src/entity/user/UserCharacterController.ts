@@ -33,11 +33,8 @@ export class UserCharacterController extends Controller {
     this.stateMachine.addState(IdleUserState);
     this.stateMachine.addState(WalkUserState);
     this.stateMachine.addState(RunUserState);
-  }
 
-  @LogMethod({level: Level.info})
-  onEntityChange() {
-    this.stateMachine.setEntity(this.entity!);
+    this.stateMachine.setEntity(this.entity);
     this.stateMachine.setState(IdleUserState);
   }
 

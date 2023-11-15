@@ -5,21 +5,18 @@ export interface ControllerConstructor<TController extends Controller> {
   new(engine: GameEngine, entity: Entity, name: string): TController;
 }
 
-export abstract class Controller {
+export abstract class Controller<TEntity extends Entity = Entity> {
   constructor(
     private _engine: GameEngine,
-    private _entity: Entity,
+    private _entity: TEntity,
     private _name: string,
-  ) {
-    // FIXME refactor and remove
-    this.onEntityChange();
-  }
+  ) {}
 
   get name(): string {
     return this._name;
   }
 
-  get entity(): Entity {
+  get entity(): TEntity {
     return this._entity;
   }
 
@@ -27,8 +24,9 @@ export abstract class Controller {
     return this._engine;
   }
 
-  // FIXME refactor and remove
-  onEntityChange(): void {};
+  get constructorName(): string {
+    return this.constructor.name;
+  }
 
-  update(deltaTime: number): void {};
+  update(deltaTime: number): void {}
 }

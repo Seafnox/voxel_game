@@ -1,15 +1,14 @@
-import { Scene, Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color, Quaternion } from 'three';
+import { VisualEntity } from 'src/entity/VisualEntity';
+import { Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color, Quaternion } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { Entity } from '../../engine/Entity';
 import { GameEngine } from '../../engine/GameEngine';
 import { ModelController } from './ModelController';
 
 export interface StaticModelConfig {
   resourcePath: string;
   resourceName: string;
-  scene: Scene;
   scale: number;
   resourceTexture?: string;
   specular?: Color;
@@ -25,7 +24,7 @@ export class StaticModelController extends ModelController {
   constructor(
     private params: StaticModelConfig,
     engine: GameEngine,
-    entity: Entity,
+    entity: VisualEntity,
     name: string,
   ) {
     super(engine, entity, name);
@@ -52,10 +51,10 @@ export class StaticModelController extends ModelController {
   }
 
   onTargetLoaded(obj: Group) {
-    const entity = this.getVisualEntityOrThrow()
+    const entity = this.entity;
 
     this.model = obj;
-    this.params.scene.add(this.model);
+    this.sceneFactor.add(this.model);
 
     this.model.scale.setScalar(this.params.scale);
     this.entity && this.model.position.copy(entity.getPosition());

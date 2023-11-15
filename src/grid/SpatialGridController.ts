@@ -1,30 +1,28 @@
+import { VisualEntity } from 'src/entity/VisualEntity';
 import { Vector3 } from 'three';
 import { Disposable } from 'src/emitter/SimpleEmitter';
 import { Controller } from '../engine/Controller';
-import { Entity } from '../engine/Entity';
 import { GameEngine } from '../engine/GameEngine';
 import { getVisualEntityOrThrow } from '../entity/utils/getVisualEntityOrThrow';
 import { VisualEntityTopic } from '../entity/VisualEntityTopic';
 import { SurfaceFactor } from '../factor/surface/SurfaceFactor';
 import { SpatialClient, SpatialPoint } from './SpatialTyping';
 
-export class SpatialGridController extends Controller {
+export class SpatialGridController extends Controller<VisualEntity> {
   private _client?: SpatialClient;
   private positionSubscription?: Disposable;
-  private surfaceFactor: SurfaceFactor;
 
   constructor(
     engine: GameEngine,
-    entity: Entity,
+    entity: VisualEntity,
     name: string,
   ) {
+    if (!(entity instanceof VisualEntity)) {
+      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
+    }
+
     super(engine, entity, name);
 
-    this.surfaceFactor = this.engine.factors.findOne(SurfaceFactor);
-  }
-
-  onEntityChange() {
-    const entity = getVisualEntityOrThrow(this, this.entity);
     const entityPosition = entity.getPosition();
     const pos: SpatialPoint = [
       entityPosition.x,
@@ -35,6 +33,10 @@ export class SpatialGridController extends Controller {
     this._client = this.surfaceFactor.grid.NewClient(entity, pos, [1, 1]);
     this._client.entity = entity;
     this.positionSubscription = entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+  }
+
+  get surfaceFactor(): SurfaceFactor {
+    return this.engine.factors.findOne(SurfaceFactor);
   }
 
   onPositionChange(msg: Vector3) {

@@ -38,9 +38,6 @@ export class Entity extends TopicEmitter {
   add(controller: Controller, as?: Function) {
     const registeredAs = as || controller.constructor;
     this.controllers[registeredAs.name] = controller;
-
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    isFunction(controller.onEntityChange) && controller.onEntityChange();
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types

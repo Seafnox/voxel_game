@@ -1,51 +1,48 @@
-import { Disposable } from 'src/emitter/SimpleEmitter';
-import { Controller } from '../../engine/Controller';
+import { GameEngine } from 'src/engine/GameEngine';
+import { Controller } from 'src/engine/Controller';
+import { SceneFactor } from 'src/factor/SceneFactor';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
-import { LogMethod } from '../../utils/logger/LogMethod';
-import { Level } from '../../utils/logger/Level';
-import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
+import { LogMethod } from 'src/utils/logger/LogMethod';
+import { Level } from 'src/utils/logger/Level';
 import { VisualEntity } from '../VisualEntity';
 import { VisualEntityTopic } from '../VisualEntityTopic';
 
-export abstract class ModelController extends Controller {
+export abstract class ModelController extends Controller<VisualEntity> {
   protected model: Object3D | undefined;
   protected animationMap: Record<string, AnimationAction> = {};
   protected mixer: AnimationMixer | undefined;
   protected activeAnimationName: string | undefined;
   protected activeAnimation: AnimationAction | undefined;
-  private positionSubscription?: Disposable;
-  private rotationSubscription?: Disposable;
 
-  onEntityChange() {
-    this.positionSubscription?.dispose();
-    this.positionSubscription = this.entity?.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+  constructor(
+    engine: GameEngine,
+    entity: VisualEntity,
+    name: string,
+  ) {
+    if (!(entity instanceof VisualEntity)) {
+      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
+    }
 
-    this.rotationSubscription?.dispose();
-    this.rotationSubscription = this.entity?.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));
+    super(engine, entity, name);
+
+    this.entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+    this.entity.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));
   }
 
-  getModel(): Object3D | undefined {
-    return this.model;
+  get sceneFactor(): SceneFactor {
+    return this.engine.factors.findOne(SceneFactor);
   }
 
   getAnimationList(): string[] {
     return Object.keys(this.animationMap);
   }
 
-  getConstructorName(): string {
-    return this.constructor.name;
-  }
-
   protected abstract onPositionChange(m: Vector3): void;
   protected abstract onRotationChange(m: Quaternion): void;
 
-  protected getVisualEntityOrThrow(): VisualEntity {
-    return getVisualEntityOrThrow(this, this.entity);
-  }
-
   protected getModelOrThrow(): Object3D {
     if (!this.model) {
-      throw new Error(`Can't find 3d model for ${this.getConstructorName()}`);
+      throw new Error(`Can't find 3d model for ${this.constructorName}`);
     }
 
     return this.model;
@@ -53,7 +50,7 @@ export abstract class ModelController extends Controller {
 
   protected getMixerOrThrow(): AnimationMixer {
     if (!this.mixer) {
-      throw new Error(`Can't find 3d model mixer for ${this.getConstructorName()}`);
+      throw new Error(`Can't find 3d model mixer for ${this.constructorName}`);
     }
 
     return this.mixer;
@@ -88,7 +85,6 @@ export abstract class ModelController extends Controller {
     this.setActiveAnimationTrusted(animationName);
   }
 
-  // @LogMethod({logType: [LogAction.entry], level: Level.info})
   update(deltaTime: number) {
     this.mixer?.update(deltaTime / 1000);
   }

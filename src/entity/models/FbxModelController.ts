@@ -1,6 +1,6 @@
+import { VisualEntity } from 'src/entity/VisualEntity';
 import {
   Vector3,
-  Scene,
   Color,
   AnimationClip,
   TextureLoader,
@@ -10,19 +10,18 @@ import {
   AnimationMixer,
   Object3D,
   Mesh,
-  LoadingManager, Quaternion,
+  LoadingManager,
+  Quaternion,
 } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { Entity } from '../../engine/Entity';
-import { GameEngine } from '../../engine/GameEngine';
+import { GameEngine } from 'src/engine/GameEngine';
 import { ModelController } from './ModelController';
 
 export interface CustomizableModelConfig {
   resourcePath: string;
   resourceModel: string;
   resourceAnimations: Record<string, string>;
-  scene: Scene;
   scale: number;
   resourceTexture?: string;
   specular?: Color;
@@ -38,7 +37,7 @@ export class FbxModelController extends ModelController {
   constructor(
     private params: CustomizableModelConfig,
     engine: GameEngine,
-    entity: Entity,
+    entity: VisualEntity,
     name: string,
   ) {
     super(engine, entity, name);
@@ -54,13 +53,13 @@ export class FbxModelController extends ModelController {
   }
 
   private onModelLoaded(model: Object3D) {
-    const entity = this.getVisualEntityOrThrow();
+    const entity = this.entity;
     const mixer = this.getMixerOrThrow();
 
     mixer.stopAllAction();
 
     this.model = model;
-    this.params.scene.add(this.model);
+    this.sceneFactor.add(this.model);
 
     this.model.scale.setScalar(this.params.scale);
     this.model.position.copy(entity.getPosition());

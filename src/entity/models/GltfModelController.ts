@@ -1,6 +1,6 @@
+import { VisualEntity } from 'src/entity/VisualEntity';
 import {
   Vector3,
-  Scene,
   Color,
   TextureLoader,
   sRGBEncoding,
@@ -14,14 +14,12 @@ import {
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { Entity } from '../../engine/Entity';
 import { GameEngine } from '../../engine/GameEngine';
 import { ModelController } from './ModelController';
 
 export interface GltfModelConfig {
   resourcePath: string;
   resourceModel: string;
-  scene: Scene;
   scale: number;
   resourceTexture?: string;
   specular?: Color;
@@ -37,7 +35,7 @@ export class GltfModelController extends ModelController {
   constructor(
     private params: GltfModelConfig,
     engine: GameEngine,
-    entity: Entity,
+    entity: VisualEntity,
     name: string,
   ) {
     super(engine, entity, name);
@@ -54,7 +52,7 @@ export class GltfModelController extends ModelController {
 
   private onModelLoaded(model: Object3D) {
     this.model = model;
-    this.params.scene.add(this.model);
+    this.sceneFactor.add(this.model);
 
     this.model.scale.setScalar(this.params.scale);
 
@@ -112,7 +110,7 @@ export class GltfModelController extends ModelController {
 
       this.onModelLoaded(glb.scene);
 
-      const entity = this.getVisualEntityOrThrow();
+      const entity = this.entity;
       const model = this.getModelOrThrow();
 
       model.position.copy(entity.getPosition());

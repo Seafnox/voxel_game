@@ -1,15 +1,16 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
+import { SceneFactor } from 'src/factor/SceneFactor';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
-import { Mesh, Vector3, BackSide, Texture, DataTexture, Scene, MeshStandardMaterial, MeshBasicMaterial } from 'three';
+import { Mesh, Vector3, BackSide, Texture, DataTexture, MeshStandardMaterial, MeshBasicMaterial } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 
 export class SurfaceController extends Controller {
   private surfaceFactor: SurfaceFactor;
+  private sceneFactor: SceneFactor;
 
   constructor(
-    private scene: Scene,
     engine: GameEngine,
     entity: Entity,
     name: string,
@@ -17,9 +18,10 @@ export class SurfaceController extends Controller {
     super(engine, entity, name);
 
     this.surfaceFactor = this.engine.factors.findOne(SurfaceFactor);
+    this.sceneFactor = this.engine.factors.findOne(SceneFactor);
 
-    this.scene.add(this.createSurfaceWireframeMesh());
-    this.scene.add(this.createSurfaceMesh());
+    this.sceneFactor.add(this.createSurfaceWireframeMesh());
+    this.sceneFactor.add(this.createSurfaceMesh());
   }
 
   private createSurfaceMesh(): Mesh {
