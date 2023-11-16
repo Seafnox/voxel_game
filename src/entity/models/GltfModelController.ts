@@ -1,6 +1,6 @@
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { PropertyChangeEvent } from 'src/engine/PropertyChangeEvent';
+import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { Vector3, Color, TextureLoader, Texture, AnimationMixer, Object3D, Mesh, LoadingManager, Quaternion, AnimationClip, SRGBColorSpace } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -34,11 +34,11 @@ export class GltfModelController extends ModelController {
     this.loadResources(config);
   }
 
-  onPositionChange(event: PropertyChangeEvent<Vector3>) {
+  onPositionChange(event: UpdatePropertyEvent<Vector3>) {
     this.model?.position.copy(event.next);
   }
 
-  onRotationChange(event: PropertyChangeEvent<Quaternion>) {
+  onRotationChange(event: UpdatePropertyEvent<Quaternion>) {
     this.model?.quaternion.copy(event.next);
   }
 

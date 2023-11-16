@@ -1,4 +1,4 @@
-export const enum VisualEntityEvent {
+export const enum VisualEntityTopic {
   UpdateModel = 'update.model',
   UpdateModelReady = 'update.isModelReady',
   UpdatePosition = 'update.position',

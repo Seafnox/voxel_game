@@ -1,7 +1,7 @@
 import { GameEngine } from 'src/engine/GameEngine';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { Vector3, Quaternion } from 'three';
-import {VisualEntityEvent} from "src/entity/VisualEntityEvent";
+import {VisualEntityTopic} from "src/entity/VisualEntityTopic";
 import {Entity} from "../engine/Entity";
 
 export class VisualEntity extends Entity {
@@ -22,7 +22,7 @@ export class VisualEntity extends Entity {
   }
 
   setPosition(value: Vector3) {
-    this.setProperty(VisualEntityProperty.Position, value, VisualEntityEvent.UpdatePosition);
+    this.setProperty(VisualEntityProperty.Position, value, VisualEntityTopic.UpdatePosition);
   }
 
   // FIXME make getter and setter after refactoring
@@ -31,7 +31,7 @@ export class VisualEntity extends Entity {
   }
 
   setVelocity(value: Vector3) {
-    this.setProperty(VisualEntityProperty.Velocity, value, VisualEntityEvent.UpdateVelocity);
+    this.setProperty(VisualEntityProperty.Velocity, value, VisualEntityTopic.UpdateVelocity);
   }
 
   // FIXME make getter and setter after refactoring
@@ -40,7 +40,7 @@ export class VisualEntity extends Entity {
   }
 
   setRotation(value: Quaternion) {
-    this.setProperty(VisualEntityProperty.Rotation, value, VisualEntityEvent.UpdateRotation);
+    this.setProperty(VisualEntityProperty.Rotation, value, VisualEntityTopic.UpdateRotation);
   }
 
   get isModelReady(): boolean {
@@ -48,6 +48,6 @@ export class VisualEntity extends Entity {
   }
 
   set isModelReady(value: boolean) {
-    this.setProperty(VisualEntityProperty.IsModelReady, value, VisualEntityEvent.UpdateModelReady);
+    this.setProperty(VisualEntityProperty.IsModelReady, value, VisualEntityTopic.UpdateModelReady);
   }
 }

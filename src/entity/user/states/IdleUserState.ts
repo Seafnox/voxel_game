@@ -3,7 +3,7 @@ import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { VMath } from 'src/VMath';
 import { AnimationAction } from 'three';
-import { VisualEntityEvent } from 'src/entity/VisualEntityEvent';
+import { VisualEntityTopic } from 'src/entity/VisualEntityTopic';
 import { ModelController } from '../../models/ModelController';
 import { VisualEntity } from '../../VisualEntity';
 import { Disposable } from 'src/emitter/SimpleEmitter';
@@ -26,7 +26,7 @@ export class IdleUserState implements SimpleState {
       this.getModelAndRunAnimation();
       return;
     }
-    this.modelDisposable = this.entity.on(VisualEntityEvent.UpdateModelReady, () => this.getModelAndRunAnimation());
+    this.modelDisposable = this.entity.on(VisualEntityTopic.UpdateModelReady, () => this.getModelAndRunAnimation());
   }
 
   exit(/* nextState: SimpleState */): void {

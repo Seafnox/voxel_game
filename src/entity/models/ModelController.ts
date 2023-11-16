@@ -1,13 +1,13 @@
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { Controller } from 'src/engine/Controller';
-import { PropertyChangeEvent } from 'src/engine/PropertyChangeEvent';
+import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from 'src/utils/logger/LogMethod';
 import { Level } from 'src/utils/logger/Level';
 import { VisualEntity } from '../VisualEntity';
-import { VisualEntityEvent } from 'src/entity/VisualEntityEvent';
+import { VisualEntityTopic } from 'src/entity/VisualEntityTopic';
 
 export abstract class ModelController extends Controller<VisualEntity> {
   protected model: Object3D | undefined;
@@ -27,8 +27,8 @@ export abstract class ModelController extends Controller<VisualEntity> {
 
     super(engine, entity, name);
 
-    this.entity.on(VisualEntityEvent.UpdatePosition, this.onPositionChange.bind(this));
-    this.entity.on(VisualEntityEvent.UpdateRotation, this.onRotationChange.bind(this));
+    this.entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+    this.entity.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));
   }
 
   get sceneFactor(): SceneFactor {
@@ -39,8 +39,8 @@ export abstract class ModelController extends Controller<VisualEntity> {
     return Object.keys(this.animationMap);
   }
 
-  protected abstract onPositionChange(m: PropertyChangeEvent<Vector3>): void;
-  protected abstract onRotationChange(m: PropertyChangeEvent<Quaternion>): void;
+  protected abstract onPositionChange(m: UpdatePropertyEvent<Vector3>): void;
+  protected abstract onRotationChange(m: UpdatePropertyEvent<Quaternion>): void;
 
   protected getModelOrThrow(): Object3D {
     if (!this.model) {

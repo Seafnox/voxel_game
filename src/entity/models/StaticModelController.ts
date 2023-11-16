@@ -1,5 +1,5 @@
 import { Entity } from 'src/engine/Entity';
-import { PropertyChangeEvent } from 'src/engine/PropertyChangeEvent';
+import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color, Quaternion } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -32,11 +32,11 @@ export class StaticModelController extends ModelController {
     this.loadModels(config);
   }
 
-  onPositionChange(event: PropertyChangeEvent<Vector3>) {
+  onPositionChange(event: UpdatePropertyEvent<Vector3>) {
     this.model?.position.copy(event.next);
   }
 
-  onRotationChange(event: PropertyChangeEvent<Quaternion>) {
+  onRotationChange(event: UpdatePropertyEvent<Quaternion>) {
     this.model?.quaternion.copy(event.next);
   }
   loadModels(config: StaticModelConfig) {

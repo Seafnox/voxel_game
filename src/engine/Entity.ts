@@ -1,5 +1,5 @@
-import { EntityEvent } from 'src/engine/EntityEvent';
-import { PropertyChangeEvent } from 'src/engine/PropertyChangeEvent';
+import { EntityTopic } from 'src/engine/EntityTopic';
+import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { Controller, ControllerConstructor } from './Controller';
 import { TopicEmitter } from 'src/emitter/TopicEmitter';
 import { GameEngine } from './GameEngine';
@@ -58,13 +58,13 @@ export class Entity extends TopicEmitter {
     const prev = this._properties[name];
     this._properties[name] = value;
 
-    this.emit<PropertyChangeEvent<T>>(EntityEvent.PropertyChange, {
+    this.emit<UpdatePropertyEvent<T>>(EntityTopic.UpdateProperty, {
       prev,
       next: value,
     });
 
     if (specialEventName) {
-      this.emit<PropertyChangeEvent<T>>(specialEventName, {
+      this.emit<UpdatePropertyEvent<T>>(specialEventName, {
         prev,
         next: value,
       });
