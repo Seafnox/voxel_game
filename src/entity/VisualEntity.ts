@@ -10,9 +10,9 @@ export class VisualEntity extends Entity {
     name: string,
   ) {
     super(gameEngine, name);
-    this.setPosition(new Vector3());
-    this.setRotation(new Quaternion());
-    this.setVelocity(new Vector3());
+    this.setPosition(new Vector3(0,0,0));
+    this.setRotation(new Quaternion(0,0,0,1));
+    this.setVelocity(new Vector3(0,0,0));
     this.isModelReady = false;
   }
 

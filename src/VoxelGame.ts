@@ -15,7 +15,7 @@ import { StaticModelController } from './entity/models/StaticModelController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
 import { SpatialGridController } from './grid/SpatialGridController';
-import { WindowEventSystem, WindowEvent } from './system/WindowEventSystem';
+import { WindowEventSystem, WindowEvent, WindowResizeEvent } from './system/WindowEventSystem';
 import { getHtmlElementByIdOrThrow } from './utils/getHtmlElementOrThrow';
 import { VMath } from './VMath';
 import { CameraController } from './entity/environment/CameraController';
@@ -114,7 +114,7 @@ export class VoxelGame {
     const container = getHtmlElementByIdOrThrow(HtmlElementId.Container);
     container.appendChild(this.renderer.domElement);
 
-    windowEventSystem.on<UIEvent>(WindowEvent.Resize, event => {
+    windowEventSystem.on<WindowResizeEvent>(WindowEvent.Resize, event => {
       const window = event.view!;
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(window.innerWidth, window.innerHeight);

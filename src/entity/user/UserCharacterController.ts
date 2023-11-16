@@ -1,9 +1,10 @@
+import { isDifferentQuaternion } from 'src/entity/utils/isDifferentQuaternion';
+import { isDifferentVector } from 'src/entity/utils/isDifferentVector';
 import { Quaternion, Vector3 } from 'three';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { ActivityStatus } from '../state/ActivityStatus';
-import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
 import { VisualEntity } from '../VisualEntity';
 import { UserActivityController } from './UserActivityController';
 import { StateMachine } from '../state/StateMachine';
@@ -12,7 +13,7 @@ import { SpatialGridController } from 'src/grid/SpatialGridController';
 import { WalkUserState } from './states/WalkUserState';
 import { RunUserState } from './states/RunUserState';
 
-export class UserCharacterController extends Controller {
+export class UserCharacterController extends Controller<VisualEntity> {
   private deceleration = new Vector3(-5.0, -5.0, -5.0);
   private acceleration = new Vector3(10.0, 20.0, 50.0);
   private deltaTimeScalar = 1000;
@@ -26,6 +27,10 @@ export class UserCharacterController extends Controller {
       entity: Entity,
       name: string,
   ) {
+    if (!(entity instanceof VisualEntity)) {
+      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
+    }
+
     super(engine, entity, name);
 
     this.stateMachine.addState(IdleUserState);
@@ -37,12 +42,11 @@ export class UserCharacterController extends Controller {
   }
 
   update(deltaTime: number): void {
-    const entity = getVisualEntityOrThrow(this, this.entity);
-    this.calculateRotation(deltaTime, entity);
-    this.calculateVelocity(deltaTime, entity);
-    this.calculatePosition(deltaTime, entity);
+    this.calculateRotation(deltaTime);
+    this.calculateVelocity(deltaTime);
+    this.calculatePosition(deltaTime);
     this.stateMachine.validateState(deltaTime, {
-      velocity: entity.getVelocity().clone(),
+      velocity: this.entity.getVelocity().clone(),
       activityStatus: this.activityController.status,
     });
   }
@@ -76,13 +80,11 @@ export class UserCharacterController extends Controller {
     return collisions;
   }
 
-  private calculateRotation(deltaTime: number, entity: VisualEntity) {
-    if (!this.entity) return;
-
+  private calculateRotation(deltaTime: number) {
     const input = this.activityController.status;
     const rotationMultiplier = new Quaternion();
     const RotationDirection = new Vector3();
-    const currentRotation = entity.getRotation().clone();
+    const currentRotation = this.entity.getRotation().clone();
 
     if (input.left) {
       RotationDirection.set(0, 1, 0);
@@ -95,47 +97,45 @@ export class UserCharacterController extends Controller {
       currentRotation.multiply(rotationMultiplier);
     }
 
-    entity.setRotation(currentRotation);
+    if (isDifferentQuaternion(this.entity.getRotation(), currentRotation)) {
+      this.entity.getRotation().copy(currentRotation);
+      this.entity.setRotation(this.entity.getRotation());
+    }
   }
 
-  private calculateVelocity(deltaTime: number, entity: VisualEntity) {
-    if (!this.entity) return;
-
-    const velocity = entity.getVelocity();
+  private calculateVelocity(deltaTime: number) {
+    const velocity = this.entity.getVelocity();
     const input = this.activityController.status;
 
-    const acc = this.acceleration.clone();
+    const frameAcceleration = this.acceleration.clone();
 
     if (input.shift) {
-      acc.multiplyScalar(this.extremeAccelerationScalar);
+      frameAcceleration.multiplyScalar(this.extremeAccelerationScalar);
     }
 
     if (input.forward) {
-      velocity.z += acc.z * deltaTime / this.deltaTimeScalar;
-      this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
+      velocity.z += frameAcceleration.z * deltaTime / this.deltaTimeScalar;
     }
 
     if (input.backward) {
-      velocity.z -= acc.z * deltaTime / this.deltaTimeScalar;
-      this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
+      velocity.z -= frameAcceleration.z * deltaTime / this.deltaTimeScalar;
     }
 
     if (input.top) {
-      velocity.y += acc.y * deltaTime / this.deltaTimeScalar;
-      this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
+      velocity.y += frameAcceleration.y * deltaTime / this.deltaTimeScalar;
     }
 
     if (input.down) {
-      velocity.y -= acc.y * deltaTime / this.deltaTimeScalar;
-      this.stateMachine.setState(input.shift ? RunUserState : WalkUserState);
+      velocity.y -= frameAcceleration.y * deltaTime / this.deltaTimeScalar;
     }
 
-    this.normalizeVelocity(velocity, deltaTime, input);
+    const frameDeceleration = this.getFrameDeceleration(velocity, deltaTime, input);
+    velocity.add(frameDeceleration);
+
+    // this.entity.setVelocity(velocity);
   }
 
-  private normalizeVelocity(velocity: Vector3, deltaTime: number, input: ActivityStatus) {
-    if (!this.entity) return;
-
+  private getFrameDeceleration(velocity: Vector3, deltaTime: number, input: ActivityStatus) {
     const frameDeceleration = new Vector3(
       velocity.x * this.deceleration.x,
       velocity.y * (input.top || input.down ? this.deceleration.y : this.deceleration.y * 100),
@@ -145,15 +145,13 @@ export class UserCharacterController extends Controller {
     frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
     frameDeceleration.y = Math.sign(frameDeceleration.y) * Math.min(Math.abs(frameDeceleration.y), Math.abs(velocity.y));
 
-    velocity.add(frameDeceleration);
+    return frameDeceleration;
   }
 
-  private calculatePosition(deltaTime: number, entity: VisualEntity) {
-    if (!this.entity) return;
-
-    const velocity = entity.getVelocity();
-    const position = entity.getPosition();
-    const rotation = entity.getRotation();
+  private calculatePosition(deltaTime: number) {
+    const velocity = this.entity.getVelocity();
+    const position = this.entity.getPosition();
+    const rotation = this.entity.getRotation();
 
     const forward = new Vector3(0, 0, 1);
     forward.applyQuaternion(rotation);
@@ -171,14 +169,17 @@ export class UserCharacterController extends Controller {
     verticalWays.multiplyScalar(velocity.y * deltaTime / this.deltaTimeScalar);
     forward.multiplyScalar(velocity.z * deltaTime / this.deltaTimeScalar);
 
-    const resultPosition = position.clone();
-    resultPosition.add(forward);
-    resultPosition.add(verticalWays);
-    resultPosition.add(sideways);
+    const supposedPosition = position.clone();
+    supposedPosition.add(forward);
+    supposedPosition.add(verticalWays);
+    supposedPosition.add(sideways);
 
-    const collisions = this.findIntersections(resultPosition);
+    const collisions = this.findIntersections(supposedPosition);
     if (collisions.length > 0) return;
 
-    entity?.setPosition(resultPosition);
+    if (isDifferentVector(position, supposedPosition)) {
+      position.copy(supposedPosition);
+      this.entity.setPosition(position);
+    }
   }
 }

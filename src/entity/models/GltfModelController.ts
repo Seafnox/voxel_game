@@ -1,20 +1,10 @@
 import { Entity } from 'src/engine/Entity';
-import {
-  Vector3,
-  Color,
-  TextureLoader,
-  sRGBEncoding,
-  Texture,
-  Material,
-  AnimationMixer,
-  Object3D,
-  Mesh,
-  LoadingManager,
-  Quaternion,
-} from 'three';
+import { GameEngine } from 'src/engine/GameEngine';
+import { PropertyChangeEvent } from 'src/engine/PropertyChangeEvent';
+import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
+import { Vector3, Color, TextureLoader, Texture, AnimationMixer, Object3D, Mesh, LoadingManager, Quaternion, AnimationClip, SRGBColorSpace } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { GameEngine } from '../../engine/GameEngine';
 import { ModelController } from './ModelController';
 
 export interface GltfModelConfig {
@@ -44,57 +34,65 @@ export class GltfModelController extends ModelController {
     this.loadResources(config);
   }
 
-  onPositionChange(m: Vector3) {
-    this.model?.position.copy(m);
+  onPositionChange(event: PropertyChangeEvent<Vector3>) {
+    this.model?.position.copy(event.next);
   }
 
-  onRotationChange(m: Quaternion) {
-    this.model?.quaternion.copy(m);
+  onRotationChange(event: PropertyChangeEvent<Quaternion>) {
+    this.model?.quaternion.copy(event.next);
   }
 
-  private onModelLoaded(model: Object3D, config: GltfModelConfig) {
+  private onModelLoaded(model: Object3D, animations: AnimationClip[], config: GltfModelConfig) {
     this.model = model;
-    this.sceneFactor.add(this.model);
-
-    this.model.scale.setScalar(config.scale);
-
+    this.sceneFactor.add(model);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    this.model.traverse((c: Mesh) => {
-      const materials: Material[] = c.material instanceof Array ? c.material : [c.material];
-
+    this.model.traverse((mesh: Mesh) => {
       // FIXME fake type declaration
-      for (const m of (materials as MeshPhongMaterial[])) {
-        if (m) {
+      const materials = (mesh.material instanceof Array ? mesh.material : [mesh.material]) as MeshPhongMaterial[];
+
+      for (const material of materials) {
+        if (material) {
           if (this.texture) {
-            m.map = this.texture;
+            material.map = this.texture;
           }
           if (config.specular) {
-            m.specular = config.specular;
+            material.specular = config.specular;
           }
           if (config.emissive) {
-            m.emissive = config.emissive;
+            material.emissive = config.emissive;
           }
         }
       }
 
       if (config.receiveShadow != undefined) {
-        c.receiveShadow = config.receiveShadow;
+        mesh.receiveShadow = config.receiveShadow;
       }
       if (config.castShadow != undefined) {
-        c.castShadow = config.castShadow;
+        mesh.castShadow = config.castShadow;
       }
       if (config.visible != undefined) {
-        c.visible = config.visible;
+        mesh.visible = config.visible;
       }
     });
+
+    this.model.scale.setScalar(config.scale);
+    this.model.position.copy(this.entity.getPosition());
+    this.model.quaternion.copy(this.entity.getRotation());
+
+    this.animationMap = {};
+    this.mixer = new AnimationMixer(this.model);
+
+    animations.forEach(animationClip => this.addAnimation(animationClip));
+    this.entity.isModelReady = true;
+    this.entity.setProperty(VisualEntityProperty.Model, this.model);
   }
 
   loadResources(config: GltfModelConfig) {
     if (config.resourceTexture) {
       const textureLoader = new TextureLoader();
       this.texture = textureLoader.load(config.resourceTexture);
-      this.texture.encoding = sRGBEncoding;
+      this.texture.colorSpace = SRGBColorSpace;
     }
 
     const path = config.resourcePath;
@@ -110,22 +108,7 @@ export class GltfModelController extends ModelController {
     loader.load(model, (glb) => {
       this.mixer?.stopAllAction();
 
-      this.onModelLoaded(glb.scene, config);
-
-      const entity = this.entity;
-      const model = this.getModelOrThrow();
-
-      model.position.copy(entity.getPosition());
-
-      this.animationMap = {};
-      this.mixer = new AnimationMixer(model);
-
-      glb.animations.forEach(animationClip => this.addAnimation(animationClip));
-
-      // FIXME possible it is no necessary
-      entity.setPosition(entity.getPosition());
-
-      entity.isModelReady = true;
+      this.onModelLoaded(glb.scene, glb.animations, config);
     });
   }
 }

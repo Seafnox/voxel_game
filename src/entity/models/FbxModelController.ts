@@ -1,4 +1,5 @@
 import { Entity } from 'src/engine/Entity';
+import { PropertyChangeEvent } from 'src/engine/PropertyChangeEvent';
 import {
   Vector3,
   Color,
@@ -44,12 +45,12 @@ export class FbxModelController extends ModelController {
     this.loadResources();
   }
 
-  onPositionChange(m: Vector3) {
-    this.model?.position.copy(m);
+  onPositionChange(event: PropertyChangeEvent<Vector3>) {
+    this.model?.position.copy(event.next);
   }
 
-  onRotationChange(m: Quaternion) {
-    this.model?.quaternion.copy(m);
+  onRotationChange(event: PropertyChangeEvent<Quaternion>) {
+    this.model?.quaternion.copy(event.next);
   }
 
   private onModelLoaded(model: Object3D) {

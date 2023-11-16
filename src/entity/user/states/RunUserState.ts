@@ -26,7 +26,7 @@ export class RunUserState implements SimpleState {
       this.getModelAndRunAnimation();
       return;
     }
-    this.modelDisposable = this.entity.on<boolean>(VisualEntityEvent.UpdateModelReady, () => this.getModelAndRunAnimation());
+    this.modelDisposable = this.entity.on(VisualEntityEvent.UpdateModelReady, () => this.getModelAndRunAnimation());
   }
 
   exit(/* nextState: SimpleState */): void {

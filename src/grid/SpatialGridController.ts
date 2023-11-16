@@ -1,4 +1,5 @@
 import { Entity } from 'src/engine/Entity';
+import { PropertyChangeEvent } from 'src/engine/PropertyChangeEvent';
 import { VisualEntity } from 'src/entity/VisualEntity';
 import { Vector3 } from 'three';
 import { Controller } from '../engine/Controller';
@@ -36,10 +37,10 @@ export class SpatialGridController extends Controller<VisualEntity> {
     return this.engine.factors.findOne(SurfaceFactor);
   }
 
-  onPositionChange(msg: Vector3) {
+  onPositionChange(event: PropertyChangeEvent<Vector3>) {
     if (!this._client) return;
 
-    this._client.position = [msg.x, msg.z];
+    this._client.position = [event.next.x, event.next.z];
     this.surfaceFactor.grid.UpdateClient(this._client);
   }
 

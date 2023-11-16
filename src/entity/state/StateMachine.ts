@@ -37,8 +37,14 @@ export class StateMachine {
 
     this.currentState = newState;
     newState.enter(lastState);
+
+    this.entity?.broadcast(StateMachineEvent.PlayerAction, {
+      action: this.currentState.constructor.name,
+      time: this.currentState.action?.time || 0,
+    });
   }
 
+  // FIXME create state controller with state validation process
   validateState(deltaTime: number, input: StateInput) {
     if (this.currentState) {
       this.currentState.validate(deltaTime, input);

@@ -53,9 +53,9 @@ export class Entity extends TopicEmitter {
   }
 
   setProperty<T>(name: string, value: T, specialEventName?: string) {
-    if (this._properties[name] === value) return;
+    // console.log(this.constructorName, this.name, 'setProperty', name, value, specialEventName);
 
-    const prev = this._properties[name] as T;
+    const prev = this._properties[name];
     this._properties[name] = value;
 
     this.emit<PropertyChangeEvent<T>>(EntityEvent.PropertyChange, {

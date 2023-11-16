@@ -1,3 +1,7 @@
+import { StateInput } from 'src/entity/state/StateInput';
+import { RunUserState } from 'src/entity/user/states/RunUserState';
+import { WalkUserState } from 'src/entity/user/states/WalkUserState';
+import { VMath } from 'src/VMath';
 import { AnimationAction } from 'three';
 import { VisualEntityEvent } from 'src/entity/VisualEntityEvent';
 import { ModelController } from '../../models/ModelController';
@@ -22,14 +26,22 @@ export class IdleUserState implements SimpleState {
       this.getModelAndRunAnimation();
       return;
     }
-    this.modelDisposable = this.entity.on<boolean>(VisualEntityEvent.UpdateModelReady, () => this.getModelAndRunAnimation());
+    this.modelDisposable = this.entity.on(VisualEntityEvent.UpdateModelReady, () => this.getModelAndRunAnimation());
   }
 
   exit(/* nextState: SimpleState */): void {
     this.modelDisposable?.dispose();
   }
 
-  validate(/* deltaTime: number, input: StateInput */): void {
+  validate(deltaTime: number, input: StateInput): void {
+    if (input.velocity.length() > VMath.epsilon) {
+      if (!input.activityStatus.shift) {
+        this.controller.setState(WalkUserState);
+        return;
+      }
+      this.controller.setState(RunUserState);
+    }
+
   }
 
   private getModelAndRunAnimation() {

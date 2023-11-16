@@ -1,6 +1,7 @@
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { Controller } from 'src/engine/Controller';
+import { PropertyChangeEvent } from 'src/engine/PropertyChangeEvent';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from 'src/utils/logger/LogMethod';
@@ -38,8 +39,8 @@ export abstract class ModelController extends Controller<VisualEntity> {
     return Object.keys(this.animationMap);
   }
 
-  protected abstract onPositionChange(m: Vector3): void;
-  protected abstract onRotationChange(m: Quaternion): void;
+  protected abstract onPositionChange(m: PropertyChangeEvent<Vector3>): void;
+  protected abstract onRotationChange(m: PropertyChangeEvent<Quaternion>): void;
 
   protected getModelOrThrow(): Object3D {
     if (!this.model) {
