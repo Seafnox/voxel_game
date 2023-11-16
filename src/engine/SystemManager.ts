@@ -10,38 +10,32 @@ export class SystemManager {
     private gameEngine: GameEngine,
   ) {}
 
-  get<TSystem extends System>(name: string): TSystem {
+  get(name: string): System {
     if (!this.systems[name]) {
       throw new Error(`Can't find ${System.name} '${name}' in ${this.constructor.name} '${SystemManager.name}'`);
     }
 
-    return this.systems[name] as TSystem;
+    return this.systems[name];
   }
 
-  find<TSystem extends System>(constructor: SystemConstructor<System>): TSystem[] {
-    return Object.values(this.systems).filter(system => system instanceof constructor) as TSystem[];
-  }
-
-  findOne<TSystem extends System>(constructor: SystemConstructor<System>): TSystem {
-    const systems = this.find<TSystem>(constructor);
-    const first = systems[0];
+  find<TSystem extends System>(constructor: SystemConstructor<TSystem>): TSystem {
+    const first = this.systems[constructor.name];
 
     if (!first) {
-      throw new Error(`Can't find ${constructor.name} in ${this.constructor.name} '${SystemManager.name}'`);
+      throw new Error(`Can't find ${constructor.name} in ${this.constructor.name}`);
     }
 
-    return first;
+    return first as TSystem;
   }
 
   filter(predicate: FilterPredicate<System>): System[] {
     return Object.values(this.systems).filter(predicate);
   }
 
-  create<TSystem extends System>(constructor: SystemConstructor<TSystem>, preferName?: string): TSystem {
-    // FIXME is system in engine is unique? i think so. should use only constructor name?
-    const name = preferName || this.generateName(constructor.name);
+  create<TSystem extends System>(constructor: SystemConstructor<TSystem>): TSystem {
+    const name = constructor.name;
     const system = new constructor(this.gameEngine, name);
-    console.log(this.constructor.name, 'create', constructor.name, name);
+    console.log(this.constructor.name, 'create', constructor.name);
 
     this.systems[name] = system
 

@@ -34,7 +34,7 @@ export class SpatialGridController extends Controller<VisualEntity> {
   }
 
   get surfaceFactor(): SurfaceFactor {
-    return this.engine.factors.findOne(SurfaceFactor);
+    return this.engine.factors.find(SurfaceFactor);
   }
 
   onPositionChange(event: UpdatePropertyEvent<Vector3>) {

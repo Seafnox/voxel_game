@@ -12,19 +12,14 @@ export class FactorManager {
     return this.factors[name] as TFactor;
   }
 
-  find<TValue, TFactor extends Factor<TValue>>(constructor: FactorConstructor<TValue, TFactor>): TFactor[] {
-    return Object.values(this.factors).filter(factor => factor instanceof constructor) as TFactor[];
-  }
-
-  findOne<TValue, TFactor extends Factor<TValue>>(constructor: FactorConstructor<TValue, TFactor>): TFactor {
-    const factors = this.find<TValue, TFactor>(constructor);
-    const first = factors[0];
+  find<TValue, TFactor extends Factor<TValue>>(constructor: FactorConstructor<TValue, TFactor>): TFactor {
+    const first = this.factors[constructor.name];
 
     if (!first) {
       throw new Error(`Can't find ${constructor.name} in ${this.constructor.name} '${FactorManager.name}'`);
     }
 
-    return first;
+    return first as TFactor;
   }
 
   filter(predicate: FilterPredicate<Factor<unknown>>): Factor<unknown>[] {

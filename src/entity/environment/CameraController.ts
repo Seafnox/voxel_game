@@ -32,7 +32,7 @@ export class CameraController extends Controller<VisualEntity> {
   }
 
   get windowEventSystem(): WindowEventSystem {
-    return this.engine.systems.findOne(WindowEventSystem);
+    return this.engine.systems.find(WindowEventSystem);
   }
 
   getCamera(): PerspectiveCamera {

@@ -7,8 +7,6 @@ export class GameEngine {
   private systemManager = new SystemManager(this);
   private factorManager = new FactorManager();
 
-  // TODO make factors for engine. Like Surface, Gravity
-
   // TODo split controllers to components and Watchers. Combine Watchers with engine Factors and Systems
 
   get entities(): EntityManager {

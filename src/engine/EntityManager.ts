@@ -18,7 +18,7 @@ export class EntityManager {
     return this.entities[name] as TEntity;
   }
 
-  find<TEntity extends Entity>(constructor: EntityConstructor<Entity>): TEntity[] {
+  find<TEntity extends Entity>(constructor: EntityConstructor<TEntity>): TEntity[] {
     return Object.values(this.entities).filter(entity => entity instanceof constructor) as TEntity[];
   }
 
@@ -26,12 +26,11 @@ export class EntityManager {
     return Object.values(this.entities).filter(predicate);
   }
 
-  findOne<TEntity extends Entity>(constructor: EntityConstructor<Entity>): TEntity {
-    const entities = this.find<TEntity>(constructor);
-    const first = entities[0];
+  findOne<TEntity extends Entity>(constructor: EntityConstructor<TEntity>): TEntity {
+    const first = this.find<TEntity>(constructor)[0];
 
     if (!first) {
-      throw new Error(`Can't find ${constructor.name} in ${this.constructor.name} '${EntityManager.name}'`);
+      throw new Error(`Can't find ${constructor.name} in ${this.constructor.name}`);
     }
 
     return first;

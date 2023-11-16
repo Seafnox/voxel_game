@@ -32,7 +32,7 @@ export abstract class ModelController extends Controller<VisualEntity> {
   }
 
   get sceneFactor(): SceneFactor {
-    return this.engine.factors.findOne(SceneFactor);
+    return this.engine.factors.find(SceneFactor);
   }
 
   getAnimationList(): string[] {

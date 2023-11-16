@@ -22,8 +22,8 @@ export class SurfaceController extends Controller<VisualEntity> {
 
     super(engine, entity, name);
 
-    this.surfaceFactor = this.engine.factors.findOne(SurfaceFactor);
-    this.sceneFactor = this.engine.factors.findOne(SceneFactor);
+    this.surfaceFactor = this.engine.factors.find(SurfaceFactor);
+    this.sceneFactor = this.engine.factors.find(SceneFactor);
 
     this.sceneFactor.add(this.createSurfaceWireframeMesh());
     this.sceneFactor.add(this.createSurfaceMesh());

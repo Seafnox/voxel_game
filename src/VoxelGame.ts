@@ -83,11 +83,11 @@ export class VoxelGame {
 
   // TODO MOVE into some Entity i think
   private subscribeRender() {
-    const tickSystem = this.gameEngine.systems.findOne(TickSystem);
+    const tickSystem = this.gameEngine.systems.find(TickSystem);
     const cameraController = this.gameEngine.entities.get(EntityName.Environment).get<CameraController>(CameraController);
 
     tickSystem.on<number>(TickSystemEvent.Tick, event => {
-      const scene = this.gameEngine.factors.findOne(SceneFactor).value;
+      const scene = this.gameEngine.factors.find(SceneFactor).value;
       this.renderer.render(scene, cameraController.getCamera());
       // TODO change to Watching system
       this.gameEngine.update(event);
@@ -107,7 +107,7 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private configureThreeJs() {
-    const windowEventSystem = this.gameEngine.systems.findOne<WindowEventSystem>(WindowEventSystem);
+    const windowEventSystem = this.gameEngine.systems.find<WindowEventSystem>(WindowEventSystem);
     const window = windowEventSystem.getWindow();
 
     this.renderer.outputColorSpace = SRGBColorSpace;
@@ -155,7 +155,7 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private initThrees() {
-    const surfaceFactor = this.gameEngine.factors.findOne(SurfaceFactor);
+    const surfaceFactor = this.gameEngine.factors.find(SurfaceFactor);
     const names = [
       'BirchTree',
       'BirchTree_Dead',
