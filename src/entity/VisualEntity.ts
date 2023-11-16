@@ -1,48 +1,53 @@
+import { GameEngine } from 'src/engine/GameEngine';
+import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { Vector3, Quaternion } from 'three';
-import {VisualEntityTopic} from "./VisualEntityTopic";
+import {VisualEntityEvent} from "src/entity/VisualEntityEvent";
 import {Entity} from "../engine/Entity";
 
 export class VisualEntity extends Entity {
-  private position = new Vector3();
-  private rotation = new Quaternion();
-  private velocity = new Vector3(0, 0, 0);
-  private _isModelReady = false;
+  constructor(
+    gameEngine: GameEngine,
+    name: string,
+  ) {
+    super(gameEngine, name);
+    this.setPosition(new Vector3());
+    this.setRotation(new Quaternion());
+    this.setVelocity(new Vector3());
+    this.isModelReady = false;
+  }
 
   // FIXME make getter and setter after refactoring
   getPosition(): Vector3 {
-    return this.position;
+    return this.getProperty<Vector3>(VisualEntityProperty.Position);
   }
 
-  setPosition(p: Vector3) {
-    this.position.copy(p);
-    this.broadcast(VisualEntityTopic.UpdatePosition, this.position);
+  setPosition(value: Vector3) {
+    this.setProperty(VisualEntityProperty.Position, value, VisualEntityEvent.UpdatePosition);
   }
 
+  // FIXME make getter and setter after refactoring
   getVelocity(): Vector3 {
-    return this.velocity;
+    return this.getProperty<Vector3>(VisualEntityProperty.Velocity);
   }
 
-  setVelocity(p: Vector3) {
-    this.velocity.copy(p);
-    this.broadcast(VisualEntityTopic.UpdateVelocity, this.velocity);
+  setVelocity(value: Vector3) {
+    this.setProperty(VisualEntityProperty.Velocity, value, VisualEntityEvent.UpdateVelocity);
   }
 
   // FIXME make getter and setter after refactoring
   getRotation(): Quaternion {
-    return this.rotation;
+    return this.getProperty<Quaternion>(VisualEntityProperty.Rotation);
   }
 
-  setRotation(r: Quaternion) {
-    this.rotation.copy(r);
-    this.broadcast(VisualEntityTopic.UpdateRotation, this.rotation);
-  }
-
-  set isModelReady(value: boolean) {
-    this._isModelReady = value;
-    this.broadcast<boolean>(VisualEntityTopic.ModelLoaded, this._isModelReady);
+  setRotation(value: Quaternion) {
+    this.setProperty(VisualEntityProperty.Rotation, value, VisualEntityEvent.UpdateRotation);
   }
 
   get isModelReady(): boolean {
-    return this._isModelReady;
+    return this.getProperty<boolean>(VisualEntityProperty.IsModelReady);
+  }
+
+  set isModelReady(value: boolean) {
+    this.setProperty(VisualEntityProperty.IsModelReady, value, VisualEntityEvent.UpdateModelReady);
   }
 }

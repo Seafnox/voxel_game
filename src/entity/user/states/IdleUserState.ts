@@ -1,5 +1,5 @@
 import { AnimationAction } from 'three';
-import { VisualEntityTopic } from '../../VisualEntityTopic';
+import { VisualEntityEvent } from 'src/entity/VisualEntityEvent';
 import { ModelController } from '../../models/ModelController';
 import { VisualEntity } from '../../VisualEntity';
 import { Disposable } from 'src/emitter/SimpleEmitter';
@@ -22,7 +22,7 @@ export class IdleUserState implements SimpleState {
       this.getModelAndRunAnimation();
       return;
     }
-    this.modelDisposable = this.entity.on<boolean>(VisualEntityTopic.ModelLoaded, () => this.getModelAndRunAnimation());
+    this.modelDisposable = this.entity.on<boolean>(VisualEntityEvent.UpdateModelReady, () => this.getModelAndRunAnimation());
   }
 
   exit(/* nextState: SimpleState */): void {

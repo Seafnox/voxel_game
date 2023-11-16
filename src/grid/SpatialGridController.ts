@@ -4,7 +4,7 @@ import { Vector3 } from 'three';
 import { Controller } from '../engine/Controller';
 import { GameEngine } from '../engine/GameEngine';
 import { getVisualEntityOrThrow } from '../entity/utils/getVisualEntityOrThrow';
-import { VisualEntityTopic } from '../entity/VisualEntityTopic';
+import { VisualEntityEvent } from 'src/entity/VisualEntityEvent';
 import { SurfaceFactor } from '../factor/surface/SurfaceFactor';
 import { SpatialClient, SpatialPoint } from './SpatialTyping';
 
@@ -29,7 +29,7 @@ export class SpatialGridController extends Controller<VisualEntity> {
     ];
 
     this._client = this.surfaceFactor.grid.NewClient(entity, pos, [1, 1]);
-    entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+    entity.on(VisualEntityEvent.UpdatePosition, this.onPositionChange.bind(this));
   }
 
   get surfaceFactor(): SurfaceFactor {

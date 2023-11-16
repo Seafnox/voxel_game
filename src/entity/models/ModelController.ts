@@ -6,7 +6,7 @@ import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quat
 import { LogMethod } from 'src/utils/logger/LogMethod';
 import { Level } from 'src/utils/logger/Level';
 import { VisualEntity } from '../VisualEntity';
-import { VisualEntityTopic } from '../VisualEntityTopic';
+import { VisualEntityEvent } from 'src/entity/VisualEntityEvent';
 
 export abstract class ModelController extends Controller<VisualEntity> {
   protected model: Object3D | undefined;
@@ -26,8 +26,8 @@ export abstract class ModelController extends Controller<VisualEntity> {
 
     super(engine, entity, name);
 
-    this.entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
-    this.entity.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));
+    this.entity.on(VisualEntityEvent.UpdatePosition, this.onPositionChange.bind(this));
+    this.entity.on(VisualEntityEvent.UpdateRotation, this.onRotationChange.bind(this));
   }
 
   get sceneFactor(): SceneFactor {

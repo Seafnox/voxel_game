@@ -1,20 +1,9 @@
-import { getHtmlElementByIdOrThrow } from '../../utils/getHtmlElementOrThrow';
-import {Controller} from "../../engine/Controller";
-import {Entity} from "../../engine/Entity";
-import {HtmlElementId} from "../../HtmlElementId";
-import { GameEngine } from '../../engine/GameEngine';
+import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
+import {Controller} from 'src/engine/Controller';
+import {HtmlElementId} from 'src/HtmlElementId';
 
 export class FpsController extends Controller {
   private tickFrames: number[] = [];
-
-  constructor(
-    engine: GameEngine,
-    entity: Entity,
-    name: string,
-  ) {
-    super(engine, entity, name);
-  }
-
   update(deltaTime: number) {
     if (this.tickFrames.length >= 1000) {
       this.tickFrames = this.tickFrames.slice(this.tickFrames.length - 200);

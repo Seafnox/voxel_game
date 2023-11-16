@@ -1,38 +1,31 @@
-import { getHtmlElementByIdOrThrow } from '../../utils/getHtmlElementOrThrow';
-import {Controller} from "../../engine/Controller";
-import {Entity} from "../../engine/Entity";
-import {EntityName} from "../../engine/EntityName";
-import {HtmlElementId} from "../../HtmlElementId";
-import { GameEngine } from '../../engine/GameEngine';
-import { getVisualEntityOrThrow } from '../utils/getVisualEntityOrThrow';
+import { Controller } from 'src/engine/Controller';
+import { EntityName } from 'src/engine/EntityName';
+import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
+import { HtmlElementId } from 'src/HtmlElementId';
+import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
+import { Vector3, Quaternion } from 'three';
 
 export class CharacterHudController extends Controller {
-  constructor(
-    engine: GameEngine,
-    entity: Entity,
-    name: string,
-  ) {
-    super(engine, entity, name);
-  }
-
   update(): void {
-    const characterEntity = getVisualEntityOrThrow(this, this.entity.engine.entities.get(EntityName.Player));
+    const characterEntity = this.entity.engine.entities.get(EntityName.Player);
     const characterPositionWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterPosition);
     const characterRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterRotation);
     const characterVelocityWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterVelocity);
 
-    const prettyPosition = characterEntity.getPosition()
+    const prettyPosition = characterEntity.getProperty<Vector3>(VisualEntityProperty.Position)
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
-    characterPositionWrapper.innerText = `[${prettyPosition.join(', ')}]`;
+    characterPositionWrapper.innerText =
+      `[${prettyPosition.join(', ')}]`;
 
-    const prettyRotation = characterEntity.getRotation()
+    const prettyRotation = characterEntity.getProperty<Quaternion>(VisualEntityProperty.Rotation)
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
-    characterRotationWrapper.innerText = `[${prettyRotation.join(', ')}]`;
+    characterRotationWrapper.innerText =
+      `[${prettyRotation.join(', ')}]`;
 
-    const prettyVelocity = characterEntity.getVelocity().length().toFixed(3);
-    characterVelocityWrapper.innerText = prettyVelocity;
+    characterVelocityWrapper.innerText =
+      characterEntity.getProperty<Vector3>(VisualEntityProperty.Velocity).length().toFixed(3);
   }
 
 }
