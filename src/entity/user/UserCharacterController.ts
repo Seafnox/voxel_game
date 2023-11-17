@@ -1,3 +1,4 @@
+import { ActivityStatusProperty } from 'src/entity/user/ActivityStatusController';
 import { isDifferentQuaternion } from 'src/entity/utils/isDifferentQuaternion';
 import { isDifferentVector } from 'src/entity/utils/isDifferentVector';
 import { Quaternion, Vector3 } from 'three';
@@ -6,7 +7,6 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { ActivityStatus } from '../state/ActivityStatus';
 import { VisualEntity } from '../VisualEntity';
-import { UserActivityController } from './UserActivityController';
 import { StateMachine } from '../state/StateMachine';
 import { IdleUserState } from './states/IdleUserState';
 import { SpatialGridController } from 'src/grid/SpatialGridController';
@@ -15,12 +15,9 @@ import { RunUserState } from './states/RunUserState';
 
 export class UserCharacterController extends Controller<VisualEntity> {
   private deceleration = new Vector3(-5.0, -5.0, -5.0);
-  private acceleration = new Vector3(10.0, 20.0, 50.0);
   private deltaTimeScalar = 1000;
-  private extremeAccelerationScalar = 10;
   private rotationScalar = 1;
   private stateMachine = new StateMachine();
-  private activityController = new UserActivityController();
 
   constructor(
       engine: GameEngine,
@@ -47,7 +44,7 @@ export class UserCharacterController extends Controller<VisualEntity> {
     this.calculatePosition(deltaTime);
     this.stateMachine.validateState(deltaTime, {
       velocity: this.entity.getVelocity().clone(),
-      activityStatus: this.activityController.status,
+      activityStatus: this.entity.getProperty<ActivityStatus>(ActivityStatusProperty),
     });
   }
 
@@ -81,17 +78,17 @@ export class UserCharacterController extends Controller<VisualEntity> {
   }
 
   private calculateRotation(deltaTime: number) {
-    const input = this.activityController.status;
+    const activityStatus = this.entity.getProperty<ActivityStatus>(ActivityStatusProperty);
     const rotationMultiplier = new Quaternion();
     const RotationDirection = new Vector3();
     const currentRotation = this.entity.getRotation().clone();
 
-    if (input.left) {
+    if (activityStatus.left) {
       RotationDirection.set(0, 1, 0);
       rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * Math.PI * deltaTime / this.deltaTimeScalar);
       currentRotation.multiply(rotationMultiplier);
     }
-    if (input.right) {
+    if (activityStatus.right) {
       RotationDirection.set(0, 1, 0);
       rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * -Math.PI * deltaTime / this.deltaTimeScalar);
       currentRotation.multiply(rotationMultiplier);
@@ -105,41 +102,25 @@ export class UserCharacterController extends Controller<VisualEntity> {
 
   private calculateVelocity(deltaTime: number) {
     const velocity = this.entity.getVelocity();
-    const input = this.activityController.status;
 
-    const frameAcceleration = this.acceleration.clone();
+    const activityStatus = this.entity.getProperty<ActivityStatus>(ActivityStatusProperty);
+    const frameAcceleration = this.entity.getAcceleration().clone();
+    frameAcceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
+    velocity.add(frameAcceleration);
 
-    if (input.shift) {
-      frameAcceleration.multiplyScalar(this.extremeAccelerationScalar);
-    }
 
-    if (input.forward) {
-      velocity.z += frameAcceleration.z * deltaTime / this.deltaTimeScalar;
-    }
-
-    if (input.backward) {
-      velocity.z -= frameAcceleration.z * deltaTime / this.deltaTimeScalar;
-    }
-
-    if (input.top) {
-      velocity.y += frameAcceleration.y * deltaTime / this.deltaTimeScalar;
-    }
-
-    if (input.down) {
-      velocity.y -= frameAcceleration.y * deltaTime / this.deltaTimeScalar;
-    }
-
-    const frameDeceleration = this.getFrameDeceleration(velocity, deltaTime, input);
+    const frameDeceleration = this.getFrameDeceleration(velocity, deltaTime, activityStatus);
     velocity.add(frameDeceleration);
 
     // this.entity.setVelocity(velocity);
   }
 
-  private getFrameDeceleration(velocity: Vector3, deltaTime: number, input: ActivityStatus) {
+  // TODO create Decceleration controller
+  private getFrameDeceleration(velocity: Vector3, deltaTime: number, activityStatus: ActivityStatus) {
     const frameDeceleration = new Vector3(
       velocity.x * this.deceleration.x,
-      velocity.y * (input.top || input.down ? this.deceleration.y : this.deceleration.y * 100),
-      velocity.z * (input.forward || input.backward ? this.deceleration.z : this.deceleration.z * 100),
+      velocity.y * (activityStatus.top || activityStatus.down ? this.deceleration.y : this.deceleration.y * 100),
+      velocity.z * (activityStatus.forward || activityStatus.backward ? this.deceleration.z : this.deceleration.z * 100),
     );
     frameDeceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
     frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));

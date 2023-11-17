@@ -1,7 +1,7 @@
 import { GameEngine } from '../engine/GameEngine';
 import { System } from '../engine/System';
 
-export const enum WindowEvent {
+export const enum WindowTopic {
     Resize = 'resize',
 }
 
@@ -14,7 +14,7 @@ export class WindowEventSystem extends System {
     ) {
         super(ganeEngine, name);
 
-        window.addEventListener('resize', event => this.emit<WindowResizeEvent>(WindowEvent.Resize, {
+        window.addEventListener('resize', event => this.emit<WindowResizeEvent>(WindowTopic.Resize, {
           ...event,
           view: window,
         }), false);

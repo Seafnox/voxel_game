@@ -1,4 +1,4 @@
-import { WindowEventSystem, WindowEvent, WindowResizeEvent } from 'src/system/WindowEventSystem';
+import { WindowEventSystem, WindowTopic, WindowResizeEvent } from 'src/system/WindowEventSystem';
 import { Controller } from 'src/engine/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { Entity } from 'src/engine/Entity';
@@ -24,7 +24,7 @@ export class CameraController extends Controller<VisualEntity> {
     const window = this.windowEventSystem.getWindow();
     this.camera = this.createCamera(window);
 
-    this.windowEventSystem.on<WindowResizeEvent>(WindowEvent.Resize, event => {
+    this.windowEventSystem.on<WindowResizeEvent>(WindowTopic.Resize, event => {
       const window = event.view!;
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();

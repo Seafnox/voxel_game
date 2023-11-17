@@ -1,5 +1,9 @@
 import { SkyController } from 'src/entity/environment/SkyController';
+import { AccelerationController } from 'src/entity/user/AccelerationController';
+import { ActivityStatusController } from 'src/entity/user/ActivityStatusController';
 import { SceneFactor } from 'src/factor/SceneFactor';
+import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
+import { MouseEventSystem } from 'src/system/MouseEventSystem';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import {
   WebGLRenderer,
@@ -15,7 +19,7 @@ import { StaticModelController } from './entity/models/StaticModelController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
 import { SpatialGridController } from './grid/SpatialGridController';
-import { WindowEventSystem, WindowEvent, WindowResizeEvent } from './system/WindowEventSystem';
+import { WindowEventSystem, WindowTopic, WindowResizeEvent } from './system/WindowEventSystem';
 import { getHtmlElementByIdOrThrow } from './utils/getHtmlElementOrThrow';
 import { VMath } from './VMath';
 import { CameraController } from './entity/environment/CameraController';
@@ -73,6 +77,8 @@ export class VoxelGame {
   private initSystems() {
     this.gameEngine.systems.create(TickSystem);
     this.gameEngine.systems.create(WindowEventSystem);
+    this.gameEngine.systems.create(KeyboardEventSystem);
+    this.gameEngine.systems.create(MouseEventSystem);
   }
 
   // TODO MOVE into some Entity i think
@@ -114,7 +120,7 @@ export class VoxelGame {
     const container = getHtmlElementByIdOrThrow(HtmlElementId.Container);
     container.appendChild(this.renderer.domElement);
 
-    windowEventSystem.on<WindowResizeEvent>(WindowEvent.Resize, event => {
+    windowEventSystem.on<WindowResizeEvent>(WindowTopic.Resize, event => {
       const window = event.view!;
       this.renderer.setPixelRatio(window.devicePixelRatio);
       this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -199,6 +205,8 @@ export class VoxelGame {
   private initPlayer() {
     const player = this.gameEngine.entities.create(VisualEntity, EntityName.Player);
 
+    player.create(ActivityStatusController);
+    player.create(AccelerationController);
     player.create(UserCharacterController);
     player.create(SpatialGridController);
 

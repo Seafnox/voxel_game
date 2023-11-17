@@ -58,7 +58,7 @@ export class Entity extends TopicEmitter {
     const prev = this._properties[name];
     this._properties[name] = value;
 
-    this.emit<UpdatePropertyEvent<T>>(EntityTopic.UpdateProperty, {
+    this.emit<UpdatePropertyEvent<T>>(name, {
       prev,
       next: value,
     });

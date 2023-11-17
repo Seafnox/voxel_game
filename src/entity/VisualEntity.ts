@@ -16,7 +16,7 @@ export class VisualEntity extends Entity {
     this.isModelReady = false;
   }
 
-  // FIXME make getter and setter after refactoring
+  // FIXME make getter and setter after refactoring or remove
   getPosition(): Vector3 {
     return this.getProperty<Vector3>(VisualEntityProperty.Position);
   }
@@ -25,16 +25,25 @@ export class VisualEntity extends Entity {
     this.setProperty(VisualEntityProperty.Position, value, VisualEntityTopic.UpdatePosition);
   }
 
-  // FIXME make getter and setter after refactoring
+  // FIXME make getter and setter after refactoring or remove
   getVelocity(): Vector3 {
     return this.getProperty<Vector3>(VisualEntityProperty.Velocity);
   }
 
   setVelocity(value: Vector3) {
-    this.setProperty(VisualEntityProperty.Velocity, value, VisualEntityTopic.UpdateVelocity);
+    this.setProperty(VisualEntityProperty.Velocity, value);
   }
 
-  // FIXME make getter and setter after refactoring
+  // FIXME make getter and setter after refactoring or remove
+  getAcceleration(): Vector3 {
+    return this.getProperty<Vector3>(VisualEntityProperty.Acceleration);
+  }
+
+  setAcceleration(value: Vector3) {
+    this.setProperty(VisualEntityProperty.Acceleration, value);
+  }
+
+  // FIXME make getter and setter after refactoring or remove
   getRotation(): Quaternion {
     return this.getProperty<Quaternion>(VisualEntityProperty.Rotation);
   }
