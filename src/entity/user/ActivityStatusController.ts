@@ -29,7 +29,7 @@ export class ActivityStatusController extends Controller {
 
     this.entity.setProperty(ActivityStatusProperty, this.defaultValue);
 
-    const keyBoardEventSystem = this.engine.systems.findOne(KeyboardEventSystem);
+    const keyBoardEventSystem = this.engine.systems.find(KeyboardEventSystem);
 
     keyBoardEventSystem.on(KeyboardTopic.KeyDown, this.onKeyDown.bind(this));
     keyBoardEventSystem.on(KeyboardTopic.KeyUp, this.onKeyUp.bind(this));
