@@ -1,6 +1,8 @@
 import { SkyController } from 'src/entity/environment/SkyController';
 import { AccelerationController } from 'src/entity/user/AccelerationController';
 import { ActivityStatusController } from 'src/entity/user/ActivityStatusController';
+import { DecelerationController } from 'src/entity/user/DecelerationController';
+import { GravityAccelerationController } from 'src/entity/user/GravityAccelerationController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
@@ -204,13 +206,15 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initPlayer() {
     const player = this.gameEngine.entities.create(VisualEntity, EntityName.Player);
+    const modelController = player.create(GltfModelController, ModelController);
 
     player.create(ActivityStatusController);
+    player.create(GravityAccelerationController);
     player.create(AccelerationController);
+    player.create(DecelerationController);
     player.create(UserCharacterController);
     player.create(SpatialGridController);
 
-    const modelController = player.create(GltfModelController, ModelController);
     modelController.modelConfig = {
       resourcePath: './resources/units/',
       resourceModel: 'guard.glb',

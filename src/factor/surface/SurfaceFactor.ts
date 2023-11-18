@@ -11,6 +11,10 @@ export class SurfaceFactor implements Factor<SurfaceMap> {
   private _surfaceScale: number = 0;
   private _surfaceMap: SurfaceMap = [];
   private _grid: SpatialHashGrid = this.createSpatialGrid();
+  private _emptyPoint: SurfacePoint = {
+    value: 0,
+    color: [0,0,0],
+  }
 
   get value(): SurfaceMap {
     return this._surfaceMap;
@@ -58,6 +62,15 @@ export class SurfaceFactor implements Factor<SurfaceMap> {
   getSurfacePoint(xCord: number, yCord: number): SurfacePoint {
     const x = this.getMapIndex(xCord);
     const y = this.getMapIndex(yCord);
+
+    if (x >= this.mapSize || y >= this.mapSize) {
+      return this._emptyPoint;
+    }
+
+    if (x < 0 || y < 0) {
+      return this._emptyPoint;
+    }
+
     return this._surfaceMap[x][y];
   }
 

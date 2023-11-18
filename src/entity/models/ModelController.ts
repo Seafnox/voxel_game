@@ -2,6 +2,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { Controller } from 'src/engine/Controller';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
+import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from 'src/utils/logger/LogMethod';
@@ -26,6 +27,9 @@ export abstract class ModelController extends Controller<VisualEntity> {
     }
 
     super(engine, entity, name);
+
+    this.entity.registerProperty(VisualEntityProperty.Model, undefined);
+    this.entity.registerProperty(VisualEntityProperty.IsModelReady, false);
 
     this.entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
     this.entity.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));

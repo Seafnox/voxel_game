@@ -10,10 +10,12 @@ export class VisualEntity extends Entity {
     name: string,
   ) {
     super(gameEngine, name);
-    this.setPosition(new Vector3(0,0,0));
-    this.setRotation(new Quaternion(0,0,0,1));
-    this.setVelocity(new Vector3(0,0,0));
-    this.isModelReady = false;
+    // TODO refactor to separated component
+    this.registerProperty(VisualEntityProperty.Position, new Vector3(0,0,0));
+    // TODO refactor to separated component
+    this.registerProperty(VisualEntityProperty.Rotation,new Quaternion(0,0,0,1));
+    // TODO refactor to separated component
+    this.registerProperty(VisualEntityProperty.Velocity,new Vector3(0,0,0));
   }
 
   // FIXME make getter and setter after refactoring or remove
@@ -23,24 +25,6 @@ export class VisualEntity extends Entity {
 
   setPosition(value: Vector3) {
     this.setProperty(VisualEntityProperty.Position, value, VisualEntityTopic.UpdatePosition);
-  }
-
-  // FIXME make getter and setter after refactoring or remove
-  getVelocity(): Vector3 {
-    return this.getProperty<Vector3>(VisualEntityProperty.Velocity);
-  }
-
-  setVelocity(value: Vector3) {
-    this.setProperty(VisualEntityProperty.Velocity, value);
-  }
-
-  // FIXME make getter and setter after refactoring or remove
-  getAcceleration(): Vector3 {
-    return this.getProperty<Vector3>(VisualEntityProperty.Acceleration);
-  }
-
-  setAcceleration(value: Vector3) {
-    this.setProperty(VisualEntityProperty.Acceleration, value);
   }
 
   // FIXME make getter and setter after refactoring or remove

@@ -1,4 +1,3 @@
-import { EntityTopic } from 'src/engine/EntityTopic';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { Controller, ControllerConstructor } from './Controller';
 import { TopicEmitter } from 'src/emitter/TopicEmitter';
@@ -40,16 +39,16 @@ export class Entity extends TopicEmitter {
     return this.constructor.name;
   }
 
-  hasProperty(name: string): boolean {
-    return name in this._properties;
-  }
-
-  getProperty<T>(name: string): T {
-    if (!(name in this._properties)) {
-      throw new Error(`Can't read property '${name}' from  ${this.constructorName} '${this.name}'`)
+  registerProperty<T>(name: string, value: T) {
+    if (name in this._properties) {
+      throw new Error(`Property '${name}' already registered in ${this.constructorName} '${this.name}'`)
     }
 
-    return this._properties[name] as T;
+    this.setProperty(name, value);
+  }
+
+  hasProperty(name: string): boolean {
+    return name in this._properties;
   }
 
   setProperty<T>(name: string, value: T, specialEventName?: string) {
@@ -69,6 +68,14 @@ export class Entity extends TopicEmitter {
         next: value,
       });
     }
+  }
+
+  getProperty<T>(name: string): T {
+    if (!(name in this._properties)) {
+      throw new Error(`Can't read property '${name}' from ${this.constructorName} '${this.name}'`)
+    }
+
+    return this._properties[name] as T;
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types

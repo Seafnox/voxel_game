@@ -24,8 +24,13 @@ export class CharacterHudController extends Controller {
     characterRotationWrapper.innerText =
       `[${prettyRotation.join(', ')}]`;
 
+    const prettyVelocity = characterEntity.getProperty<Vector3>(VisualEntityProperty.Velocity)
+      .toArray()
+      .map(coord => coord.toFixed(3).padStart(3, ' '));
+    const calculatedVelocity = characterEntity.getProperty<Vector3>(VisualEntityProperty.Velocity).length().toFixed(3);
+
     characterVelocityWrapper.innerText =
-      characterEntity.getProperty<Vector3>(VisualEntityProperty.Velocity).length().toFixed(3);
+      `${calculatedVelocity} [${prettyVelocity.join(', ')}]`;
   }
 
 }
