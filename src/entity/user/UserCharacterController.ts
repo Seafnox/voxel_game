@@ -1,10 +1,7 @@
-import { AccelerationProperty } from 'src/entity/user/ActivityAccelerationController';
 import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
-import { DecelerationProperty } from 'src/entity/user/ActivityDecelerationController';
-import { GravityAccelerationProperty } from 'src/entity/user/GravityAccelerationController';
 import { RotationProperty } from 'src/entity/user/ActivityRotationController';
+import { VelocityProperty } from 'src/entity/user/VelocityController';
 import { isDifferentVector } from 'src/entity/utils/isDifferentVector';
-import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { Vector3, Quaternion } from 'three';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
@@ -41,10 +38,9 @@ export class UserCharacterController extends Controller<VisualEntity> {
   }
 
   update(deltaTime: number): void {
-    this.calculateVelocity(deltaTime);
     this.calculatePosition(deltaTime);
     this.stateMachine.validateState(deltaTime, {
-      velocity: this.entity.getProperty<Vector3>(VisualEntityProperty.Velocity).clone(),
+      velocity: this.entity.getProperty<Vector3>(VelocityProperty).clone(),
       activityStatus: this.entity.getProperty<ActivityStatus>(ActivityProperty),
     });
   }
@@ -78,35 +74,8 @@ export class UserCharacterController extends Controller<VisualEntity> {
     return collisions;
   }
 
-  private calculateVelocity(deltaTime: number) {
-    const velocity = this.entity.getProperty<Vector3>(VisualEntityProperty.Velocity);
-
-    const gravityAcceleration = this.entity.getProperty<Vector3>(GravityAccelerationProperty).clone();
-    const frameAcceleration = this.entity.getProperty<Vector3>(AccelerationProperty).clone();
-    frameAcceleration.add(gravityAcceleration);
-    frameAcceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
-
-    velocity.add(frameAcceleration);
-
-    const frameDeceleration = this.getFrameDeceleration(velocity, deltaTime);
-
-    velocity.add(frameDeceleration);
-
-    this.entity.setProperty(VisualEntityProperty.Velocity, velocity);
-  }
-
-  private getFrameDeceleration(velocity: Vector3, deltaTime: number) {
-    const frameDeceleration = this.entity.getProperty<Vector3>(DecelerationProperty).clone();
-    frameDeceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
-    frameDeceleration.x = Math.sign(frameDeceleration.x) * Math.min(Math.abs(frameDeceleration.x), Math.abs(velocity.x));
-    frameDeceleration.y = Math.sign(frameDeceleration.y) * Math.min(Math.abs(frameDeceleration.y), Math.abs(velocity.y));
-    frameDeceleration.z = Math.sign(frameDeceleration.z) * Math.min(Math.abs(frameDeceleration.z), Math.abs(velocity.z));
-
-    return frameDeceleration;
-  }
-
   private calculatePosition(deltaTime: number) {
-    const velocity = this.entity.getProperty<Vector3>(VisualEntityProperty.Velocity);
+    const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
     const position = this.entity.getPosition();
     const rotation = this.entity.getProperty<Quaternion>(RotationProperty)
 

@@ -1,6 +1,6 @@
 import { GameEngine } from 'src/engine/GameEngine';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
-import { Vector3, Quaternion } from 'three';
+import { Vector3 } from 'three';
 import {VisualEntityTopic} from "src/entity/VisualEntityTopic";
 import {Entity} from "../engine/Entity";
 
@@ -12,8 +12,6 @@ export class VisualEntity extends Entity {
     super(gameEngine, name);
     // TODO refactor to separated component
     this.registerProperty(VisualEntityProperty.Position, new Vector3(0,0,0));
-    // TODO refactor to separated component
-    this.registerProperty(VisualEntityProperty.Velocity,new Vector3(0,0,0));
   }
 
   // FIXME make getter and setter after refactoring or remove

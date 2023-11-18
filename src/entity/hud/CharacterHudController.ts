@@ -1,6 +1,7 @@
 import { Controller } from 'src/engine/Controller';
 import { EntityName } from 'src/engine/EntityName';
 import { RotationProperty } from 'src/entity/user/ActivityRotationController';
+import { VelocityProperty } from 'src/entity/user/VelocityController';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { HtmlElementId } from 'src/HtmlElementId';
 import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
@@ -25,10 +26,10 @@ export class CharacterHudController extends Controller {
     characterRotationWrapper.innerText =
       `[${prettyRotation.join(', ')}]`;
 
-    const prettyVelocity = characterEntity.getProperty<Vector3>(VisualEntityProperty.Velocity)
+    const prettyVelocity = characterEntity.getProperty<Vector3>(VelocityProperty)
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
-    const calculatedVelocity = characterEntity.getProperty<Vector3>(VisualEntityProperty.Velocity).length().toFixed(3);
+    const calculatedVelocity = characterEntity.getProperty<Vector3>(VelocityProperty).length().toFixed(3);
 
     characterVelocityWrapper.innerText =
       `${calculatedVelocity} [${prettyVelocity.join(', ')}]`;

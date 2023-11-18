@@ -4,6 +4,7 @@ import { KeyboardActivityController } from 'src/entity/user/KeyboardActivityCont
 import { ActivityDecelerationController } from 'src/entity/user/ActivityDecelerationController';
 import { GravityAccelerationController } from 'src/entity/user/GravityAccelerationController';
 import { ActivityRotationController } from 'src/entity/user/ActivityRotationController';
+import { VelocityController } from 'src/entity/user/VelocityController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
@@ -213,6 +214,7 @@ export class VoxelGame {
     player.create(GravityAccelerationController);
     player.create(ActivityAccelerationController);
     player.create(ActivityDecelerationController);
+    player.create(VelocityController);
     player.create(ActivityRotationController);
     player.create(UserCharacterController);
     player.create(SpatialGridController);
