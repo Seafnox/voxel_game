@@ -1,5 +1,6 @@
 import { Controller } from 'src/engine/Controller';
 import { EntityName } from 'src/engine/EntityName';
+import { RotationProperty } from 'src/entity/user/ActivityRotationController';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { HtmlElementId } from 'src/HtmlElementId';
 import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
@@ -18,7 +19,7 @@ export class CharacterHudController extends Controller {
     characterPositionWrapper.innerText =
       `[${prettyPosition.join(', ')}]`;
 
-    const prettyRotation = characterEntity.getProperty<Quaternion>(VisualEntityProperty.Rotation)
+    const prettyRotation = characterEntity.getProperty<Quaternion>(RotationProperty)
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
     characterRotationWrapper.innerText =

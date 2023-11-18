@@ -3,12 +3,12 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { ActivityStatus } from 'src/entity/state/ActivityStatus';
-import { ActivityStatusProperty } from 'src/entity/user/ActivityStatusController';
+import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
 import { Vector3 } from 'three';
 
 export const AccelerationProperty = 'acceleration';
 
-export class AccelerationController extends Controller {
+export class ActivityAccelerationController extends Controller {
   private defaultAcceleration = new Vector3(0.0, 0.0, 0.0);
   private totalAcceleration = new Vector3(10.0, 20.0, 50.0);
   private extremeAccelerationScalar = 10;
@@ -22,7 +22,7 @@ export class AccelerationController extends Controller {
 
     this.entity.registerProperty(AccelerationProperty, this.defaultAcceleration);
 
-    this.entity.on(ActivityStatusProperty, this.updateAcceleration.bind(this));
+    this.entity.on(ActivityProperty, this.updateAcceleration.bind(this));
   }
 
   private updateAcceleration(event: UpdatePropertyEvent<ActivityStatus>) {

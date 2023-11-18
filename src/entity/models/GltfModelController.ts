@@ -1,6 +1,7 @@
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
+import { RotationProperty } from 'src/entity/user/ActivityRotationController';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { Vector3, Color, TextureLoader, Texture, AnimationMixer, Object3D, Mesh, LoadingManager, Quaternion, AnimationClip, SRGBColorSpace } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -78,7 +79,7 @@ export class GltfModelController extends ModelController {
 
     this.model.scale.setScalar(config.scale);
     this.model.position.copy(this.entity.getPosition());
-    this.model.quaternion.copy(this.entity.getRotation());
+    this.model.quaternion.copy(this.entity.getProperty<Quaternion>(RotationProperty));
 
     this.animationMap = {};
     this.mixer = new AnimationMixer(this.model);

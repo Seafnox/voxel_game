@@ -1,8 +1,9 @@
 import { SkyController } from 'src/entity/environment/SkyController';
-import { AccelerationController } from 'src/entity/user/AccelerationController';
-import { ActivityStatusController } from 'src/entity/user/ActivityStatusController';
-import { DecelerationController } from 'src/entity/user/DecelerationController';
+import { ActivityAccelerationController } from 'src/entity/user/ActivityAccelerationController';
+import { KeyboardActivityController } from 'src/entity/user/KeyboardActivityController';
+import { ActivityDecelerationController } from 'src/entity/user/ActivityDecelerationController';
 import { GravityAccelerationController } from 'src/entity/user/GravityAccelerationController';
+import { ActivityRotationController } from 'src/entity/user/ActivityRotationController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
@@ -208,10 +209,11 @@ export class VoxelGame {
     const player = this.gameEngine.entities.create(VisualEntity, EntityName.Player);
     const modelController = player.create(GltfModelController, ModelController);
 
-    player.create(ActivityStatusController);
+    player.create(KeyboardActivityController);
     player.create(GravityAccelerationController);
-    player.create(AccelerationController);
-    player.create(DecelerationController);
+    player.create(ActivityAccelerationController);
+    player.create(ActivityDecelerationController);
+    player.create(ActivityRotationController);
     player.create(UserCharacterController);
     player.create(SpatialGridController);
 

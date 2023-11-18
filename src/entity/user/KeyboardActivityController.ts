@@ -4,9 +4,9 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { ActivityStatus } from 'src/entity/state/ActivityStatus';
 import { KeyboardEventSystem, KeyboardTopic } from 'src/system/KeyboardEventSystem';
 
-export const ActivityStatusProperty = 'activityStatus';
+export const ActivityProperty = 'activity';
 
-export class ActivityStatusController extends Controller {
+export class KeyboardActivityController extends Controller {
   defaultValue: ActivityStatus = {
     forward: false,
     backward: false,
@@ -27,7 +27,7 @@ export class ActivityStatusController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.setProperty(ActivityStatusProperty, this.defaultValue);
+    this.entity.setProperty(ActivityProperty, this.defaultValue);
 
     const keyBoardEventSystem = this.engine.systems.find(KeyboardEventSystem);
 
@@ -36,16 +36,16 @@ export class ActivityStatusController extends Controller {
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    const status = this.entity.getProperty<ActivityStatus>(ActivityStatusProperty);
-    this.entity.setProperty(ActivityStatusProperty, {
+    const status = this.entity.getProperty<ActivityStatus>(ActivityProperty);
+    this.entity.setProperty(ActivityProperty, {
       ...status,
       ...this.getChange(event.keyCode, true),
     });
   }
 
   private onKeyUp(event: KeyboardEvent) {
-    const status = this.entity.getProperty<ActivityStatus>(ActivityStatusProperty);
-    this.entity.setProperty(ActivityStatusProperty, {
+    const status = this.entity.getProperty<ActivityStatus>(ActivityProperty);
+    this.entity.setProperty(ActivityProperty, {
       ...status,
       ...this.getChange(event.keyCode, false),
     });

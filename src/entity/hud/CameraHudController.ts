@@ -1,3 +1,4 @@
+import { CameraRotationProperty } from 'src/entity/environment/CameraController';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { Vector3, Quaternion } from 'three';
 import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
@@ -16,7 +17,7 @@ export class CameraHudController extends Controller {
       .map(coord => coord.toFixed(3).padStart(3, ' '));
     cameraPositionWrapper.innerText = `[${prettyPosition.join(', ')}]`;
 
-    const prettyRotation = cameraEntity.getProperty<Quaternion>(VisualEntityProperty.Rotation)
+    const prettyRotation = cameraEntity.getProperty<Quaternion>(CameraRotationProperty)
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
     cameraRotationWrapper.innerText = `[${prettyRotation.join(', ')}]`;

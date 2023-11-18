@@ -5,6 +5,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { VisualEntity } from '../VisualEntity';
 
+export const CameraRotationProperty = 'rotation';
 export class CameraController extends Controller<VisualEntity> {
   private target: VisualEntity | undefined;
   private currentLookAt: Vector3 = new Vector3();
@@ -20,6 +21,8 @@ export class CameraController extends Controller<VisualEntity> {
     }
 
     super(engine, entity, name);
+
+    this.entity.registerProperty(CameraRotationProperty, new Quaternion(0,0,0,1));
 
     const window = this.windowEventSystem.getWindow();
     this.camera = this.createCamera(window);
@@ -43,26 +46,28 @@ export class CameraController extends Controller<VisualEntity> {
     this.target = targetEntity;
   }
 
-  calculateIdealOffset(target: VisualEntity) {
+  calculateIdealOffset(targerPosition: Vector3, targetRotation: Quaternion): Vector3 {
     const idealOffset = new Vector3(-0, 10, -15);
-    idealOffset.applyQuaternion(target.getRotation());
-    idealOffset.add(target.getPosition());
+    idealOffset.applyQuaternion(targetRotation);
+    idealOffset.add(targerPosition);
     return idealOffset;
   }
 
-  calculateIdealLookAt(target: VisualEntity) {
+  calculateIdealLookAt(targerPosition: Vector3, targetRotation: Quaternion): Vector3 {
     const idealLookAt = new Vector3(0, 5, 20);
-    idealLookAt.applyQuaternion(target.getRotation());
-    idealLookAt.add(target.getPosition());
+    idealLookAt.applyQuaternion(targetRotation);
+    idealLookAt.add(targerPosition);
     return idealLookAt;
   }
 
   update(deltaTime: number) {
     if (!this.target) return;
     const entity = this.entity;
+    const targetPosition = this.target.getPosition();
+    const targetRotation = this.target.getProperty<Quaternion>(CameraRotationProperty);
 
-    const idealOffset = this.calculateIdealOffset(this.target);
-    const idealLookAt = this.calculateIdealLookAt(this.target);
+    const idealOffset = this.calculateIdealOffset(targetPosition, targetRotation);
+    const idealLookAt = this.calculateIdealLookAt(targetPosition, targetRotation);
 
     // const t = 0.05;
     // const t = 4.0 * deltaTime;
@@ -78,7 +83,7 @@ export class CameraController extends Controller<VisualEntity> {
     entity.setPosition(currentPosition);
     this.camera.position.copy(currentPosition);
 
-    entity.setRotation(currentRotation);
+    entity.setProperty(CameraRotationProperty, currentRotation);
     this.currentLookAt.copy(currentLookAt);
     this.camera.lookAt(this.currentLookAt);
   }

@@ -13,8 +13,6 @@ export class VisualEntity extends Entity {
     // TODO refactor to separated component
     this.registerProperty(VisualEntityProperty.Position, new Vector3(0,0,0));
     // TODO refactor to separated component
-    this.registerProperty(VisualEntityProperty.Rotation,new Quaternion(0,0,0,1));
-    // TODO refactor to separated component
     this.registerProperty(VisualEntityProperty.Velocity,new Vector3(0,0,0));
   }
 
@@ -25,15 +23,6 @@ export class VisualEntity extends Entity {
 
   setPosition(value: Vector3) {
     this.setProperty(VisualEntityProperty.Position, value, VisualEntityTopic.UpdatePosition);
-  }
-
-  // FIXME make getter and setter after refactoring or remove
-  getRotation(): Quaternion {
-    return this.getProperty<Quaternion>(VisualEntityProperty.Rotation);
-  }
-
-  setRotation(value: Quaternion) {
-    this.setProperty(VisualEntityProperty.Rotation, value, VisualEntityTopic.UpdateRotation);
   }
 
   get isModelReady(): boolean {

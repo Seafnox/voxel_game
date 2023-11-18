@@ -2,6 +2,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { Controller } from 'src/engine/Controller';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
+import { RotationProperty } from 'src/entity/user/ActivityRotationController';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
@@ -32,7 +33,7 @@ export abstract class ModelController extends Controller<VisualEntity> {
     this.entity.registerProperty(VisualEntityProperty.IsModelReady, false);
 
     this.entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
-    this.entity.on(VisualEntityTopic.UpdateRotation, this.onRotationChange.bind(this));
+    this.entity.on(RotationProperty, this.onRotationChange.bind(this));
   }
 
   get sceneFactor(): SceneFactor {

@@ -1,11 +1,11 @@
-import { AccelerationProperty } from 'src/entity/user/AccelerationController';
-import { ActivityStatusProperty } from 'src/entity/user/ActivityStatusController';
-import { DecelerationProperty } from 'src/entity/user/DecelerationController';
+import { AccelerationProperty } from 'src/entity/user/ActivityAccelerationController';
+import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
+import { DecelerationProperty } from 'src/entity/user/ActivityDecelerationController';
 import { GravityAccelerationProperty } from 'src/entity/user/GravityAccelerationController';
-import { isDifferentQuaternion } from 'src/entity/utils/isDifferentQuaternion';
+import { RotationProperty } from 'src/entity/user/ActivityRotationController';
 import { isDifferentVector } from 'src/entity/utils/isDifferentVector';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
-import { Quaternion, Vector3 } from 'three';
+import { Vector3, Quaternion } from 'three';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
@@ -19,7 +19,6 @@ import { RunUserState } from './states/RunUserState';
 
 export class UserCharacterController extends Controller<VisualEntity> {
   private deltaTimeScalar = 1000;
-  private rotationScalar = 1;
   private stateMachine = new StateMachine();
 
   constructor(
@@ -42,12 +41,11 @@ export class UserCharacterController extends Controller<VisualEntity> {
   }
 
   update(deltaTime: number): void {
-    this.calculateRotation(deltaTime);
     this.calculateVelocity(deltaTime);
     this.calculatePosition(deltaTime);
     this.stateMachine.validateState(deltaTime, {
       velocity: this.entity.getProperty<Vector3>(VisualEntityProperty.Velocity).clone(),
-      activityStatus: this.entity.getProperty<ActivityStatus>(ActivityStatusProperty),
+      activityStatus: this.entity.getProperty<ActivityStatus>(ActivityProperty),
     });
   }
 
@@ -80,29 +78,6 @@ export class UserCharacterController extends Controller<VisualEntity> {
     return collisions;
   }
 
-  private calculateRotation(deltaTime: number) {
-    const activityStatus = this.entity.getProperty<ActivityStatus>(ActivityStatusProperty);
-    const rotationMultiplier = new Quaternion();
-    const RotationDirection = new Vector3();
-    const currentRotation = this.entity.getRotation().clone();
-
-    if (activityStatus.left) {
-      RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * Math.PI * deltaTime / this.deltaTimeScalar);
-      currentRotation.multiply(rotationMultiplier);
-    }
-    if (activityStatus.right) {
-      RotationDirection.set(0, 1, 0);
-      rotationMultiplier.setFromAxisAngle(RotationDirection, this.rotationScalar * -Math.PI * deltaTime / this.deltaTimeScalar);
-      currentRotation.multiply(rotationMultiplier);
-    }
-
-    if (isDifferentQuaternion(this.entity.getRotation(), currentRotation)) {
-      this.entity.getRotation().copy(currentRotation);
-      this.entity.setRotation(this.entity.getRotation());
-    }
-  }
-
   private calculateVelocity(deltaTime: number) {
     const velocity = this.entity.getProperty<Vector3>(VisualEntityProperty.Velocity);
 
@@ -133,7 +108,7 @@ export class UserCharacterController extends Controller<VisualEntity> {
   private calculatePosition(deltaTime: number) {
     const velocity = this.entity.getProperty<Vector3>(VisualEntityProperty.Velocity);
     const position = this.entity.getPosition();
-    const rotation = this.entity.getRotation();
+    const rotation = this.entity.getProperty<Quaternion>(RotationProperty)
 
     const forward = new Vector3(0, 0, 1);
     forward.applyQuaternion(rotation);
