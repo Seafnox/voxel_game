@@ -1,13 +1,13 @@
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { RotationProperty } from 'src/entity/user/ActivityRotationController';
-import { PositionProperty } from 'src/entity/user/PositionController';
-import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
+import { RotationProperty } from 'src/entity/ActivityRotationController';
+import { PositionProperty } from 'src/entity/PositionController';
+import { VisualEntityProperty } from 'src/entity/visualEntity/VisualEntityProperty';
 import { Vector3, Color, TextureLoader, Texture, AnimationMixer, Object3D, Mesh, LoadingManager, Quaternion, AnimationClip, SRGBColorSpace } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { ModelController } from './ModelController';
+import { ModelController } from 'src/entity/visualEntity/models/ModelController';
 
 export interface GltfModelConfig {
   resourcePath: string;

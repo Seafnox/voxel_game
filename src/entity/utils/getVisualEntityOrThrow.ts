@@ -1,5 +1,5 @@
 import { Entity } from '../../engine/Entity';
-import { VisualEntity } from '../VisualEntity';
+import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 
 export function getVisualEntityOrThrow<
   TAny extends NonNullable<unknown>,

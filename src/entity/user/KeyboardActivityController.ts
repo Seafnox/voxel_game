@@ -1,13 +1,13 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { ActivityStatus } from 'src/entity/state/ActivityStatus';
+import { EntityActivity } from 'src/entity/EntityActivity';
 import { KeyboardEventSystem, KeyboardTopic } from 'src/system/KeyboardEventSystem';
 
 export const ActivityProperty = 'activity';
 
 export class KeyboardActivityController extends Controller {
-  defaultValue: ActivityStatus = {
+  defaultValue: EntityActivity = {
     forward: false,
     backward: false,
     left: false,
@@ -36,7 +36,7 @@ export class KeyboardActivityController extends Controller {
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    const status = this.entity.getProperty<ActivityStatus>(ActivityProperty);
+    const status = this.entity.getProperty<EntityActivity>(ActivityProperty);
     this.entity.setProperty(ActivityProperty, {
       ...status,
       ...this.getChange(event.keyCode, true),
@@ -44,14 +44,14 @@ export class KeyboardActivityController extends Controller {
   }
 
   private onKeyUp(event: KeyboardEvent) {
-    const status = this.entity.getProperty<ActivityStatus>(ActivityProperty);
+    const status = this.entity.getProperty<EntityActivity>(ActivityProperty);
     this.entity.setProperty(ActivityProperty, {
       ...status,
       ...this.getChange(event.keyCode, false),
     });
   }
 
-  private getChange(actionCode: number, value: boolean): Partial<ActivityStatus> {
+  private getChange(actionCode: number, value: boolean): Partial<EntityActivity> {
     switch (actionCode) {
       case 87: return { forward: value }; // w
       case 65: return { left: value }; // a

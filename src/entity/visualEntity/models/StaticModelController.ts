@@ -1,13 +1,13 @@
 import { Entity } from 'src/engine/Entity';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { RotationProperty } from 'src/entity/user/ActivityRotationController';
-import { PositionProperty } from 'src/entity/user/PositionController';
+import { RotationProperty } from 'src/entity/ActivityRotationController';
+import { PositionProperty } from 'src/entity/PositionController';
 import { Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color, Quaternion } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 import { GameEngine } from 'src/engine/GameEngine';
-import { ModelController } from './ModelController';
+import { ModelController } from 'src/entity/visualEntity/models/ModelController';
 
 export interface StaticModelConfig {
   resourcePath: string;

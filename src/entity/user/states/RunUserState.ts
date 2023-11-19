@@ -1,9 +1,9 @@
-import { ActivityStatus } from 'src/entity/state/ActivityStatus';
+import { EntityActivity } from 'src/entity/EntityActivity';
 import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
-import { VelocityProperty } from 'src/entity/user/VelocityController';
-import { VisualEntityTopic } from 'src/entity/VisualEntityTopic';
+import { VelocityProperty } from 'src/entity/VelocityController';
+import { VisualEntityTopic } from 'src/entity/visualEntity/VisualEntityTopic';
 import { Vector3 } from 'three';
-import { ModelController } from '../../models/ModelController';
+import { ModelController } from '../../visualEntity/models/ModelController';
 import { Disposable } from 'src/emitter/SimpleEmitter';
 import { SimpleState } from '../../state/SimpleState';
 import { VMath } from 'src/VMath';
@@ -28,7 +28,7 @@ export class RunUserState extends SimpleState {
 
   validate(): void {
     const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
-    const activity = this.entity.getProperty<ActivityStatus>(ActivityProperty);
+    const activity = this.entity.getProperty<EntityActivity>(ActivityProperty);
 
     if (velocity.length() <= VMath.epsilon) {
       this.controller.setState(IdleUserState);

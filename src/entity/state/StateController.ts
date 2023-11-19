@@ -3,7 +3,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { SimpleStateConstructor, SimpleState } from 'src/entity/state/SimpleState';
 import { NoopState } from 'src/entity/state/NoopState';
-import { VisualEntity } from 'src/entity/VisualEntity';
+import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 
 export const ActiveStateProperty = 'activeState';

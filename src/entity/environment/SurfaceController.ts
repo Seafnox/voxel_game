@@ -1,7 +1,7 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { VisualEntity } from 'src/entity/VisualEntity';
+import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
 import { Mesh, Vector3, BackSide, Texture, DataTexture, MeshStandardMaterial, MeshBasicMaterial } from 'three';

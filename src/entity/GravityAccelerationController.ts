@@ -1,7 +1,7 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { PositionProperty } from 'src/entity/user/PositionController';
+import { PositionProperty } from 'src/entity/PositionController';
 import { GravityFactor } from 'src/factor/GravityFactor';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
 import { Vector3 } from 'three';

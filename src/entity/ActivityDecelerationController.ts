@@ -1,9 +1,9 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { ActivityStatus } from 'src/entity/state/ActivityStatus';
+import { EntityActivity } from 'src/entity/EntityActivity';
 import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
-import { VelocityProperty } from 'src/entity/user/VelocityController';
+import { VelocityProperty } from 'src/entity/VelocityController';
 import { Vector3 } from 'three';
 
 export const DecelerationProperty = 'deceleration';
@@ -27,7 +27,7 @@ export class ActivityDecelerationController extends Controller {
     return this.entity.getProperty(VelocityProperty);
   }
 
-  private get activityStatus(): ActivityStatus {
+  private get activityStatus(): EntityActivity {
     return this.entity.getProperty(ActivityProperty);
   }
 

@@ -1,9 +1,9 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { AccelerationProperty } from 'src/entity/user/ActivityAccelerationController';
-import { DecelerationProperty } from 'src/entity/user/ActivityDecelerationController';
-import { GravityAccelerationProperty } from 'src/entity/user/GravityAccelerationController';
+import { AccelerationProperty } from 'src/entity/ActivityAccelerationController';
+import { DecelerationProperty } from 'src/entity/ActivityDecelerationController';
+import { GravityAccelerationProperty } from 'src/entity/GravityAccelerationController';
 import { Vector3 } from 'three';
 
 export const VelocityProperty = 'velocity';

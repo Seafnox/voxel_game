@@ -1,11 +1,11 @@
-import { RotationProperty } from 'src/entity/user/ActivityRotationController';
-import { PositionProperty } from 'src/entity/user/PositionController';
+import { RotationProperty } from 'src/entity/ActivityRotationController';
+import { PositionProperty } from 'src/entity/PositionController';
 import { WindowEventSystem, WindowTopic, WindowResizeEvent } from 'src/system/WindowEventSystem';
 import { Controller } from 'src/engine/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { VisualEntity } from '../VisualEntity';
+import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 
 export const CameraRotationProperty = 'rotation';
 export const CameraPositionProperty = 'position';

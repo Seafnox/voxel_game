@@ -1,4 +1,4 @@
-import { VisualEntity } from '../entity/VisualEntity';
+import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { VMath } from '../VMath';
 import { SpatialClient, SpatialNode, CellPosition, SpatialDimension, SpatialPoint } from './SpatialTyping';
 

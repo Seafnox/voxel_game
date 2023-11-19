@@ -1,6 +1,6 @@
-import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
-import { VisualEntityTopic } from "src/entity/VisualEntityTopic";
-import { Entity } from "../engine/Entity";
+import { VisualEntityProperty } from 'src/entity/visualEntity/VisualEntityProperty';
+import { VisualEntityTopic } from "src/entity/visualEntity/VisualEntityTopic";
+import { Entity } from "src/engine/Entity";
 
 export class VisualEntity extends Entity {
   get isModelReady(): boolean {

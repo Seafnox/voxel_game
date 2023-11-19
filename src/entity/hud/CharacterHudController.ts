@@ -1,8 +1,8 @@
 import { Controller } from 'src/engine/Controller';
 import { EntityName } from 'src/engine/EntityName';
-import { RotationProperty } from 'src/entity/user/ActivityRotationController';
-import { PositionProperty } from 'src/entity/user/PositionController';
-import { VelocityProperty } from 'src/entity/user/VelocityController';
+import { RotationProperty } from 'src/entity/ActivityRotationController';
+import { PositionProperty } from 'src/entity/PositionController';
+import { VelocityProperty } from 'src/entity/VelocityController';
 import { HtmlElementId } from 'src/HtmlElementId';
 import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
 import { Vector3, Quaternion } from 'three';

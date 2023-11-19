@@ -1,7 +1,7 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { ActivityStatus } from 'src/entity/state/ActivityStatus';
+import { EntityActivity } from 'src/entity/EntityActivity';
 import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
 import { isDifferentQuaternion } from 'src/entity/utils/isDifferentQuaternion';
 import { Quaternion, Vector3 } from 'three';
@@ -23,7 +23,7 @@ export class ActivityRotationController extends Controller {
   }
 
   update(deltaTime: number) {
-    const activityStatus = this.entity.getProperty<ActivityStatus>(ActivityProperty);
+    const activityStatus = this.entity.getProperty<EntityActivity>(ActivityProperty);
     const rotationMultiplier = new Quaternion();
     const rotationDirection = new Vector3(0, 1, 0);
     const targetRotation = this.entity.getProperty<Quaternion>(RotationProperty);

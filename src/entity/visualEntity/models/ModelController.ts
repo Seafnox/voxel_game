@@ -2,14 +2,14 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { Controller } from 'src/engine/Controller';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { RotationProperty } from 'src/entity/user/ActivityRotationController';
-import { PositionProperty } from 'src/entity/user/PositionController';
-import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
+import { RotationProperty } from 'src/entity/ActivityRotationController';
+import { PositionProperty } from 'src/entity/PositionController';
+import { VisualEntityProperty } from 'src/entity/visualEntity/VisualEntityProperty';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from 'src/utils/logger/LogMethod';
 import { Level } from 'src/utils/logger/Level';
-import { VisualEntity } from '../VisualEntity';
+import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 
 export abstract class ModelController extends Controller<VisualEntity> {
   protected model: Object3D | undefined;

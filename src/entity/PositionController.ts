@@ -1,8 +1,8 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { RotationProperty } from 'src/entity/user/ActivityRotationController';
-import { VelocityProperty } from 'src/entity/user/VelocityController';
+import { RotationProperty } from 'src/entity/ActivityRotationController';
+import { VelocityProperty } from 'src/entity/VelocityController';
 import { isDifferentVector } from 'src/entity/utils/isDifferentVector';
 import { Vector3, Quaternion } from 'three';
 

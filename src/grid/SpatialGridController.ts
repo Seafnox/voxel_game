@@ -1,7 +1,7 @@
 import { Entity } from 'src/engine/Entity';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { PositionProperty } from 'src/entity/user/PositionController';
-import { VisualEntity } from 'src/entity/VisualEntity';
+import { PositionProperty } from 'src/entity/PositionController';
+import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { Vector3 } from 'three';
 import { Controller } from '../engine/Controller';
 import { GameEngine } from '../engine/GameEngine';

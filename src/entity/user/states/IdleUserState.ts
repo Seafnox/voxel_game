@@ -1,12 +1,12 @@
-import { ActivityStatus } from 'src/entity/state/ActivityStatus';
+import { EntityActivity } from 'src/entity/EntityActivity';
 import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
-import { VelocityProperty } from 'src/entity/user/VelocityController';
+import { VelocityProperty } from 'src/entity/VelocityController';
 import { VMath } from 'src/VMath';
-import { VisualEntityTopic } from 'src/entity/VisualEntityTopic';
+import { VisualEntityTopic } from 'src/entity/visualEntity/VisualEntityTopic';
 import { Vector3 } from 'three';
-import { ModelController } from '../../models/ModelController';
+import { ModelController } from '../../visualEntity/models/ModelController';
 import { Disposable } from 'src/emitter/SimpleEmitter';
 import { SimpleState } from '../../state/SimpleState';
 
@@ -28,7 +28,7 @@ export class IdleUserState extends SimpleState {
 
   validate(): void {
     const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
-    const activity = this.entity.getProperty<ActivityStatus>(ActivityProperty);
+    const activity = this.entity.getProperty<EntityActivity>(ActivityProperty);
 
     if (velocity.length() > VMath.epsilon) {
       if (!activity.shift) {

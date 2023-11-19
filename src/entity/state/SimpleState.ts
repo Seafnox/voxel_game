@@ -1,6 +1,6 @@
 import { GameEngine } from 'src/engine/GameEngine';
 import { StateController } from 'src/entity/state/StateController';
-import { VisualEntity } from 'src/entity/VisualEntity';
+import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { AnimationAction } from 'three';
 
 export interface SimpleStateConstructor {

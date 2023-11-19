@@ -2,7 +2,7 @@ import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { ActivityStatus } from 'src/entity/state/ActivityStatus';
+import { EntityActivity } from 'src/entity/EntityActivity';
 import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
 import { Vector3 } from 'three';
 
@@ -25,7 +25,7 @@ export class ActivityAccelerationController extends Controller {
     this.entity.on(ActivityProperty, this.updateAcceleration.bind(this));
   }
 
-  private updateAcceleration(event: UpdatePropertyEvent<ActivityStatus>) {
+  private updateAcceleration(event: UpdatePropertyEvent<EntityActivity>) {
     const status = event.next;
     const acceleration = this.totalAcceleration.clone();
     const multiplicator = new Vector3(0, 0, 0);

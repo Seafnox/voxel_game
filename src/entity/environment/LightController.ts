@@ -1,10 +1,10 @@
-import { PositionProperty } from 'src/entity/user/PositionController';
+import { PositionProperty } from 'src/entity/PositionController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { Controller } from 'src/engine/Controller';
 import { DirectionalLight, Vector3 } from 'three';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { VisualEntity } from '../VisualEntity';
+import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 
 export class LightController extends Controller<VisualEntity> {
   private lightColor = 0xeeffff;
