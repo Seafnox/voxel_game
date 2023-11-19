@@ -3,13 +3,13 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { Controller } from 'src/engine/Controller';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { RotationProperty } from 'src/entity/user/ActivityRotationController';
+import { PositionProperty } from 'src/entity/user/PositionController';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from 'src/utils/logger/LogMethod';
 import { Level } from 'src/utils/logger/Level';
 import { VisualEntity } from '../VisualEntity';
-import { VisualEntityTopic } from 'src/entity/VisualEntityTopic';
 
 export abstract class ModelController extends Controller<VisualEntity> {
   protected model: Object3D | undefined;
@@ -32,7 +32,7 @@ export abstract class ModelController extends Controller<VisualEntity> {
     this.entity.registerProperty(VisualEntityProperty.Model, undefined);
     this.entity.registerProperty(VisualEntityProperty.IsModelReady, false);
 
-    this.entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+    this.entity.on(PositionProperty, this.onPositionChange.bind(this));
     this.entity.on(RotationProperty, this.onRotationChange.bind(this));
   }
 

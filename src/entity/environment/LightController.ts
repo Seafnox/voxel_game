@@ -1,6 +1,7 @@
+import { PositionProperty } from 'src/entity/user/PositionController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { Controller } from 'src/engine/Controller';
-import { DirectionalLight } from 'three';
+import { DirectionalLight, Vector3 } from 'three';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { VisualEntity } from '../VisualEntity';
@@ -37,7 +38,12 @@ export class LightController extends Controller<VisualEntity> {
   update() {
     if (!this.target) return;
 
-    this.light.target.position.copy(this.target.getPosition());
+    const targetPosition = this.target.getProperty<Vector3>(PositionProperty);
+    this.light.target.position.copy(targetPosition);
+
+    this.light.position.x = targetPosition.x;
+    this.light.position.z = targetPosition.z;
+
   }
 
   private createLight(): DirectionalLight {

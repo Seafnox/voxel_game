@@ -1,5 +1,7 @@
 import { Entity } from 'src/engine/Entity';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
+import { RotationProperty } from 'src/entity/user/ActivityRotationController';
+import { PositionProperty } from 'src/entity/user/PositionController';
 import {
   Vector3,
   Color,
@@ -53,6 +55,7 @@ export class FbxModelController extends ModelController {
     this.model?.quaternion.copy(event.next);
   }
 
+  // TODO refactor code and replace identical code to abstract class method
   private onModelLoaded(model: Object3D) {
     const entity = this.entity;
     const mixer = this.getMixerOrThrow();
@@ -62,8 +65,10 @@ export class FbxModelController extends ModelController {
     this.model = model;
     this.sceneFactor.add(this.model);
 
-    this.model.scale.setScalar(this.params.scale);
-    this.model.position.copy(entity.getPosition());
+    const entityPosition = this.entity.getProperty<Vector3>(PositionProperty);
+    const entityRotation = this.entity.getProperty<Quaternion>(RotationProperty);
+    this.model.position.copy(entityPosition);
+    this.model.quaternion.copy(entityRotation);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

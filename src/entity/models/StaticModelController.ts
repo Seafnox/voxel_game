@@ -1,5 +1,7 @@
 import { Entity } from 'src/engine/Entity';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
+import { RotationProperty } from 'src/entity/user/ActivityRotationController';
+import { PositionProperty } from 'src/entity/user/PositionController';
 import { Group, Vector3, sRGBEncoding, TextureLoader, Texture, Material, Mesh, Color, Quaternion } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -47,6 +49,7 @@ export class StaticModelController extends ModelController {
     }
   }
 
+  // TODO refactor code and replace identical code to abstract class method
   onTargetLoaded(obj: Group, config: StaticModelConfig) {
     const entity = this.entity;
 
@@ -54,7 +57,10 @@ export class StaticModelController extends ModelController {
     this.sceneFactor.add(this.model);
 
     this.model.scale.setScalar(config.scale);
-    this.entity && this.model.position.copy(entity.getPosition());
+    const entityPosition = this.entity.getProperty<Vector3>(PositionProperty);
+    const entityRotation = this.entity.getProperty<Quaternion>(RotationProperty);
+    this.model.position.copy(entityPosition);
+    this.model.quaternion.copy(entityRotation);
 
     let texture: Texture | null = null;
     if (config.resourceTexture) {

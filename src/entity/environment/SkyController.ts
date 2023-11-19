@@ -1,11 +1,12 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
+import { PositionProperty } from 'src/entity/user/PositionController';
 import { VisualEntity } from 'src/entity/VisualEntity';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import skyFragment from 'src/resources/sky.fs';
 import skyVertex from 'src/resources/sky.vs';
-import { HemisphereLight, Mesh, SphereGeometry, ShaderMaterial, BackSide, Color } from 'three';
+import { HemisphereLight, Mesh, SphereGeometry, ShaderMaterial, BackSide, Color, Vector3 } from 'three';
 
 export class SkyController extends Controller<VisualEntity> {
     private backgroundColor = 0xffffcc;
@@ -42,8 +43,10 @@ export class SkyController extends Controller<VisualEntity> {
     update() {
         if (!this.target) return;
 
-        this.skySpere.position.x = this.target.getPosition().x;
-        this.skySpere.position.z = this.target.getPosition().z;
+        const targetPosition = this.target.getProperty<Vector3>(PositionProperty);
+
+        this.skySpere.position.x = targetPosition.x;
+        this.skySpere.position.z = targetPosition.z;
     }
 
     private createSkySphereLight(): HemisphereLight {

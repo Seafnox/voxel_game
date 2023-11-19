@@ -2,6 +2,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { RotationProperty } from 'src/entity/user/ActivityRotationController';
+import { PositionProperty } from 'src/entity/user/PositionController';
 import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
 import { Vector3, Color, TextureLoader, Texture, AnimationMixer, Object3D, Mesh, LoadingManager, Quaternion, AnimationClip, SRGBColorSpace } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -43,6 +44,7 @@ export class GltfModelController extends ModelController {
     this.model?.quaternion.copy(event.next);
   }
 
+  // TODO refactor code and replace identical code to abstract class method
   private onModelLoaded(model: Object3D, animations: AnimationClip[], config: GltfModelConfig) {
     this.model = model;
     this.sceneFactor.add(model);
@@ -78,8 +80,10 @@ export class GltfModelController extends ModelController {
     });
 
     this.model.scale.setScalar(config.scale);
-    this.model.position.copy(this.entity.getPosition());
-    this.model.quaternion.copy(this.entity.getProperty<Quaternion>(RotationProperty));
+    const entityPosition = this.entity.getProperty<Vector3>(PositionProperty);
+    const entityRotation = this.entity.getProperty<Quaternion>(RotationProperty);
+    this.model.position.copy(entityPosition);
+    this.model.quaternion.copy(entityRotation);
 
     this.animationMap = {};
     this.mixer = new AnimationMixer(this.model);

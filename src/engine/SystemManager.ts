@@ -3,7 +3,8 @@ import { System, SystemConstructor } from 'src/engine/System';
 import { FilterPredicate } from './FilterPredicate';
 
 export class SystemManager {
-  private systems: Record<string, System> = {};
+  private systemMap: Record<string, System> = {};
+  private systemList: System[] = [];
   private idCounter = 0;
 
   constructor(
@@ -11,15 +12,15 @@ export class SystemManager {
   ) {}
 
   get(name: string): System {
-    if (!this.systems[name]) {
+    if (!this.systemMap[name]) {
       throw new Error(`Can't find ${System.name} '${name}' in ${this.constructor.name} '${SystemManager.name}'`);
     }
 
-    return this.systems[name];
+    return this.systemMap[name];
   }
 
   find<TSystem extends System>(constructor: SystemConstructor<TSystem>): TSystem {
-    const first = this.systems[constructor.name];
+    const first = this.systemMap[constructor.name];
 
     if (!first) {
       throw new Error(`Can't find ${constructor.name} in ${this.constructor.name}`);
@@ -29,7 +30,7 @@ export class SystemManager {
   }
 
   filter(predicate: FilterPredicate<System>): System[] {
-    return Object.values(this.systems).filter(predicate);
+    return this.systemList.filter(predicate);
   }
 
   create<TSystem extends System>(constructor: SystemConstructor<TSystem>): TSystem {
@@ -37,7 +38,8 @@ export class SystemManager {
     const system = new constructor(this.gameEngine, name);
     console.log(this.constructor.name, 'create', constructor.name);
 
-    this.systems[name] = system
+    this.systemMap[name] = system;
+    this.systemList.push(system);
 
     return system;
   }

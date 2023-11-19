@@ -4,6 +4,7 @@ import { KeyboardActivityController } from 'src/entity/user/KeyboardActivityCont
 import { ActivityDecelerationController } from 'src/entity/user/ActivityDecelerationController';
 import { GravityAccelerationController } from 'src/entity/user/GravityAccelerationController';
 import { ActivityRotationController } from 'src/entity/user/ActivityRotationController';
+import { PositionController, PositionProperty } from 'src/entity/user/PositionController';
 import { VelocityController } from 'src/entity/user/VelocityController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
@@ -153,7 +154,7 @@ export class VoxelGame {
         receiveShadow: true,
       };
 
-      cloudEntity.setPosition(pos);
+      cloudEntity.setProperty(PositionProperty, pos);
     }
   }
 
@@ -192,7 +193,7 @@ export class VoxelGame {
         castShadow: true,
       };
 
-      tree.setPosition(pos);
+      tree.setProperty(PositionProperty, pos);
     }
   }
 
@@ -214,8 +215,9 @@ export class VoxelGame {
     player.create(GravityAccelerationController);
     player.create(ActivityAccelerationController);
     player.create(ActivityDecelerationController);
-    player.create(VelocityController);
     player.create(ActivityRotationController);
+    player.create(VelocityController);
+    player.create(PositionController);
     player.create(UserCharacterController);
     player.create(SpatialGridController);
 
@@ -242,7 +244,7 @@ export class VoxelGame {
     //   level: 1,
     // }));
     // TODO make position height (y) by surface position
-    player.setPosition(new Vector3(
+    player.setProperty(PositionProperty, new Vector3(
       initialPlayerPositionX,
       initialPlayerPositionY,
       initialPlayerPositionZ,

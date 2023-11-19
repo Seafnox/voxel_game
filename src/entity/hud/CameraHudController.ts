@@ -1,5 +1,4 @@
-import { CameraRotationProperty } from 'src/entity/environment/CameraController';
-import { VisualEntityProperty } from 'src/entity/VisualEntityProperty';
+import { CameraRotationProperty, CameraPositionProperty } from 'src/entity/environment/CameraController';
 import { Vector3, Quaternion } from 'three';
 import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
 import {Controller} from 'src/engine/Controller';
@@ -12,7 +11,7 @@ export class CameraHudController extends Controller {
     const cameraPositionWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CameraPosition);
     const cameraRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CameraRotation);
 
-    const prettyPosition = cameraEntity.getProperty<Vector3>(VisualEntityProperty.Position)
+    const prettyPosition = cameraEntity.getProperty<Vector3>(CameraPositionProperty)
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
     cameraPositionWrapper.innerText = `[${prettyPosition.join(', ')}]`;

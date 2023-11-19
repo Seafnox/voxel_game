@@ -1,11 +1,10 @@
 import { Entity } from 'src/engine/Entity';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
+import { PositionProperty } from 'src/entity/user/PositionController';
 import { VisualEntity } from 'src/entity/VisualEntity';
 import { Vector3 } from 'three';
 import { Controller } from '../engine/Controller';
 import { GameEngine } from '../engine/GameEngine';
-import { getVisualEntityOrThrow } from '../entity/utils/getVisualEntityOrThrow';
-import { VisualEntityTopic } from 'src/entity/VisualEntityTopic';
 import { SurfaceFactor } from '../factor/surface/SurfaceFactor';
 import { SpatialClient, SpatialPoint } from './SpatialTyping';
 
@@ -23,14 +22,14 @@ export class SpatialGridController extends Controller<VisualEntity> {
 
     super(engine, entity, name);
 
-    const entityPosition = entity.getPosition();
+    const entityPosition = entity.getProperty<Vector3>(PositionProperty);
     const pos: SpatialPoint = [
       entityPosition.x,
       entityPosition.z,
     ];
 
     this._client = this.surfaceFactor.grid.NewClient(entity, pos, [1, 1]);
-    entity.on(VisualEntityTopic.UpdatePosition, this.onPositionChange.bind(this));
+    entity.on(PositionProperty, this.onPositionChange.bind(this));
   }
 
   get surfaceFactor(): SurfaceFactor {
@@ -45,10 +44,10 @@ export class SpatialGridController extends Controller<VisualEntity> {
   }
 
   FindNearbyEntities(range: number): SpatialClient[] {
-    const entity = getVisualEntityOrThrow(this, this.entity);
+    const position = this.entity.getProperty<Vector3>(PositionProperty);
 
     const results = this.surfaceFactor.grid.FindNear(
-      [entity.getPosition().x, entity.getPosition().z],
+      [position.x, position.z],
         [range, range]
     );
 

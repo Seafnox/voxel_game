@@ -4,26 +4,27 @@ import { GameEngine } from 'src/engine/GameEngine';
 
 export class EntityManager {
   private idCounter = 0;
-  private entities: Record<string, Entity> = {};
+  private entityMap: Record<string, Entity> = {};
+  private entityList: Entity[] = [];
 
   constructor(
     private gameEngine: GameEngine,
   ) {}
 
   get<TEntity extends Entity>(name: string): TEntity {
-    if (!this.entities[name]) {
+    if (!this.entityMap[name]) {
       throw new Error(`Can't find ${Entity.name} '${name}' in ${this.constructor.name} '${EntityManager.name}'`);
     }
 
-    return this.entities[name] as TEntity;
+    return this.entityMap[name] as TEntity;
   }
 
   find<TEntity extends Entity>(constructor: EntityConstructor<TEntity>): TEntity[] {
-    return Object.values(this.entities).filter(entity => entity instanceof constructor) as TEntity[];
+    return this.entityList.filter(entity => entity instanceof constructor) as TEntity[];
   }
 
   filter(predicate: FilterPredicate<Entity>): Entity[] {
-    return Object.values(this.entities).filter(predicate);
+    return this.entityList.filter(predicate);
   }
 
   findOne<TEntity extends Entity>(constructor: EntityConstructor<TEntity>): TEntity {
@@ -41,7 +42,8 @@ export class EntityManager {
     const entity = new constructor(this.gameEngine, name);
     console.log(this.constructor.name, 'create', constructor.name, name);
 
-    this.entities[name] = entity
+    this.entityMap[name] = entity;
+    this.entityList.push(entity);
 
     return entity;
   }

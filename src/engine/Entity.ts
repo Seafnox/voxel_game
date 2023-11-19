@@ -8,7 +8,8 @@ export interface EntityConstructor<TEntity extends Entity> {
 }
 
 export class Entity extends TopicEmitter {
-  private controllers: Record<string, Controller> = {};
+  private controllerList: Controller[] = [];
+  private controllerMap: Record<string, Controller> = {};
   private _isActive = false;
   private _properties: Record<string, unknown> = {};
 
@@ -52,8 +53,6 @@ export class Entity extends TopicEmitter {
   }
 
   setProperty<T>(name: string, value: T, specialEventName?: string) {
-    // console.log(this.constructorName, this.name, 'setProperty', name, value, specialEventName);
-
     const prev = this._properties[name];
     this._properties[name] = value;
 
@@ -82,14 +81,15 @@ export class Entity extends TopicEmitter {
   create<TController extends Controller>(constructor: ControllerConstructor<TController>, as?: Function): TController {
     const name = as?.name || constructor.name;
     const controller = new constructor(this._gameEngine, this, name);
-    this.controllers[controller.name] = controller;
+    this.controllerMap[controller.name] = controller;
+    this.controllerList.push(controller);
 
     return controller;
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   get<TController extends Controller>(constructor: Function): TController {
-    return this.controllers[constructor.name] as TController;
+    return this.controllerMap[constructor.name] as TController;
   }
 
   broadcast<TEventData>(eventName: string, eventData: TEventData) {
@@ -97,6 +97,6 @@ export class Entity extends TopicEmitter {
   }
 
   update(deltaTime: number) {
-    Object.values(this.controllers).forEach(component => component.update && component.update(deltaTime));
+    this.controllerList.forEach(component => component.update(deltaTime));
   }
 }

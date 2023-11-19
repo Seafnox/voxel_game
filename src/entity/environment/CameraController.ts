@@ -1,3 +1,5 @@
+import { RotationProperty } from 'src/entity/user/ActivityRotationController';
+import { PositionProperty } from 'src/entity/user/PositionController';
 import { WindowEventSystem, WindowTopic, WindowResizeEvent } from 'src/system/WindowEventSystem';
 import { Controller } from 'src/engine/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
@@ -6,6 +8,8 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { VisualEntity } from '../VisualEntity';
 
 export const CameraRotationProperty = 'rotation';
+export const CameraPositionProperty = 'position';
+
 export class CameraController extends Controller<VisualEntity> {
   private target: VisualEntity | undefined;
   private currentLookAt: Vector3 = new Vector3();
@@ -23,6 +27,7 @@ export class CameraController extends Controller<VisualEntity> {
     super(engine, entity, name);
 
     this.entity.registerProperty(CameraRotationProperty, new Quaternion(0,0,0,1));
+    this.entity.registerProperty(CameraPositionProperty, new Vector3(0,0,0));
 
     const window = this.windowEventSystem.getWindow();
     this.camera = this.createCamera(window);
@@ -63,8 +68,8 @@ export class CameraController extends Controller<VisualEntity> {
   update(deltaTime: number) {
     if (!this.target) return;
     const entity = this.entity;
-    const targetPosition = this.target.getPosition();
-    const targetRotation = this.target.getProperty<Quaternion>(CameraRotationProperty);
+    const targetPosition = this.target.getProperty<Vector3>(PositionProperty)
+    const targetRotation = this.target.getProperty<Quaternion>(RotationProperty);
 
     const idealOffset = this.calculateIdealOffset(targetPosition, targetRotation);
     const idealLookAt = this.calculateIdealLookAt(targetPosition, targetRotation);
@@ -72,7 +77,7 @@ export class CameraController extends Controller<VisualEntity> {
     // const t = 0.05;
     // const t = 4.0 * deltaTime;
     const t = 1.0 - Math.pow(0.01, deltaTime / 1000);
-    const currentPosition = entity.getPosition().clone();
+    const currentPosition = entity.getProperty<Vector3>(CameraPositionProperty).clone();
     const currentLookAt = this.currentLookAt.clone();
     const currentRotation = new Quaternion();
 
@@ -80,7 +85,7 @@ export class CameraController extends Controller<VisualEntity> {
     currentLookAt.lerp(idealLookAt, t);
     currentRotation.setFromUnitVectors(currentPosition, currentLookAt);
 
-    entity.setPosition(currentPosition);
+    entity.setProperty(CameraPositionProperty, currentPosition);
     this.camera.position.copy(currentPosition);
 
     entity.setProperty(CameraRotationProperty, currentRotation);
