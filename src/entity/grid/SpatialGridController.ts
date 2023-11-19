@@ -2,10 +2,10 @@ import { Entity } from 'src/engine/Entity';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { PositionProperty } from 'src/entity/PositionController';
 import { Vector3 } from 'three';
-import { Controller } from '../engine/Controller';
-import { GameEngine } from '../engine/GameEngine';
-import { SurfaceFactor } from '../factor/surface/SurfaceFactor';
-import { SpatialClient, SpatialPoint } from './SpatialTyping';
+import { Controller } from 'src/engine/Controller';
+import { GameEngine } from 'src/engine/GameEngine';
+import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
+import { SpatialClient, SpatialPoint } from 'src/entity/grid/SpatialTyping';
 
 export class SpatialGridController extends Controller {
   private _client: SpatialClient;

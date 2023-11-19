@@ -1,5 +1,5 @@
 import { Factor } from '../../engine/Factor';
-import { SpatialHashGrid } from '../../grid/SpatialHashGrid';
+import { SpatialHashGrid } from '../../entity/grid/SpatialHashGrid';
 import { VMath } from '../../VMath';
 import { SurfaceMap, SurfacePoint, SurfaceBuilder } from './SurfaceBuilder';
 

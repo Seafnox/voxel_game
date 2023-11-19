@@ -26,7 +26,7 @@ import { SurfaceController } from './entity/environment/SurfaceController';
 import { StaticModelController } from './entity/models/StaticModelController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
-import { SpatialGridController } from './grid/SpatialGridController';
+import { SpatialGridController } from './entity/grid/SpatialGridController';
 import { WindowEventSystem, WindowTopic, WindowResizeEvent } from './system/WindowEventSystem';
 import { getHtmlElementByIdOrThrow } from './utils/getHtmlElementOrThrow';
 import { VMath } from './VMath';

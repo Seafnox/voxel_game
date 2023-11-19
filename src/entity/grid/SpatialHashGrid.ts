@@ -1,6 +1,6 @@
 import { Entity } from 'src/engine/Entity';
-import { VMath } from '../VMath';
-import { SpatialClient, SpatialNode, CellPosition, SpatialDimension, SpatialPoint } from './SpatialTyping';
+import { VMath } from 'src/VMath';
+import { SpatialClient, SpatialNode, CellPosition, SpatialDimension, SpatialPoint } from 'src/entity/grid/SpatialTyping';
 
 export class SpatialHashGrid {
   private _bounds: SpatialPoint[] = [];
