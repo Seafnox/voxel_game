@@ -4,7 +4,7 @@ import { ActivityAccelerationController } from 'src/entity/ActivityAccelerationC
 import { KeyboardActivityController } from 'src/entity/user/KeyboardActivityController';
 import { ActivityDecelerationController } from 'src/entity/ActivityDecelerationController';
 import { GravityAccelerationController } from 'src/entity/GravityAccelerationController';
-import { ActivityRotationController } from 'src/entity/ActivityRotationController';
+import { ActivityRotationController, RotationProperty } from 'src/entity/ActivityRotationController';
 import { PositionController, PositionProperty } from 'src/entity/PositionController';
 import { IdleUserState } from 'src/entity/user/states/IdleUserState';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
@@ -17,7 +17,7 @@ import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import {
   WebGLRenderer,
   Color,
-  Vector3,
+  Vector3, Quaternion,
 } from 'three';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './engine/Entity';
@@ -144,6 +144,8 @@ export class VoxelGame {
       );
 
       const cloudEntity = this.gameEngine.entities.create(Entity, `cloud_${i}`);
+      cloudEntity.setProperty(PositionProperty, pos);
+      cloudEntity.setProperty(RotationProperty, new Quaternion(0,0,0,1));
 
       const modelController = cloudEntity.create(StaticModelController);
       modelController.modelConfig = {
@@ -155,7 +157,6 @@ export class VoxelGame {
         receiveShadow: true,
       };
 
-      cloudEntity.setProperty(PositionProperty, pos);
     }
   }
 
@@ -181,6 +182,8 @@ export class VoxelGame {
       const pos = new Vector3(x,y,z);
 
       const tree = this.gameEngine.entities.create(Entity, `tree_${i}`);
+      tree.setProperty(PositionProperty, pos);
+      tree.setProperty(RotationProperty, new Quaternion(0,0,0,1));
 
       tree.create(SpatialGridController);
       const modelController = tree.create(StaticModelController);
@@ -194,7 +197,6 @@ export class VoxelGame {
         castShadow: true,
       };
 
-      tree.setProperty(PositionProperty, pos);
     }
   }
 
