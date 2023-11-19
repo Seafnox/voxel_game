@@ -1,20 +1,28 @@
+import { GameEngine } from 'src/engine/GameEngine';
+import { StateController } from 'src/entity/state/StateController';
+import { VisualEntity } from 'src/entity/VisualEntity';
 import { AnimationAction } from 'three';
-import { StateInput } from './StateInput';
-import { StateMachine } from './StateMachine';
-import { VisualEntity } from '../VisualEntity';
 
 export interface SimpleStateConstructor {
-  // eslint-disable-next-line @typescript-eslint/no-misused-new
-  new(controller: StateMachine, entity: VisualEntity): SimpleState;
+  new(
+    engine: GameEngine,
+    entity: VisualEntity,
+    controller: StateController,
+  ): SimpleState;
 }
 
-export interface SimpleState {
-  availableNext: SimpleState[] | undefined;
+export abstract class SimpleState {
+  constructor(
+    protected engine: GameEngine,
+    protected entity: VisualEntity,
+    protected controller: StateController,
+  ) {}
+
   action: AnimationAction | undefined;
 
-  exit(nextState: SimpleState): void;
+  abstract exit(nextState: SimpleState): void;
 
-  enter(prevState: SimpleState | undefined): void;
+  abstract enter(prevState: SimpleState | undefined): void;
 
-  validate(deltaTime: number, input: StateInput): void;
+  abstract validate(deltaTime: number): void;
 }

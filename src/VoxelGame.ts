@@ -1,10 +1,14 @@
 import { SkyController } from 'src/entity/environment/SkyController';
+import { StateController } from 'src/entity/state/StateController';
 import { ActivityAccelerationController } from 'src/entity/user/ActivityAccelerationController';
 import { KeyboardActivityController } from 'src/entity/user/KeyboardActivityController';
 import { ActivityDecelerationController } from 'src/entity/user/ActivityDecelerationController';
 import { GravityAccelerationController } from 'src/entity/user/GravityAccelerationController';
 import { ActivityRotationController } from 'src/entity/user/ActivityRotationController';
 import { PositionController, PositionProperty } from 'src/entity/user/PositionController';
+import { IdleUserState } from 'src/entity/user/states/IdleUserState';
+import { RunUserState } from 'src/entity/user/states/RunUserState';
+import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { VelocityController } from 'src/entity/user/VelocityController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
@@ -28,7 +32,6 @@ import { WindowEventSystem, WindowTopic, WindowResizeEvent } from './system/Wind
 import { getHtmlElementByIdOrThrow } from './utils/getHtmlElementOrThrow';
 import { VMath } from './VMath';
 import { CameraController } from './entity/environment/CameraController';
-import { UserCharacterController } from './entity/user/UserCharacterController';
 import { LogMethod } from './utils/logger/LogMethod';
 import { Level } from './utils/logger/Level';
 import { GltfModelController } from './entity/models/GltfModelController';
@@ -210,6 +213,7 @@ export class VoxelGame {
   private initPlayer() {
     const player = this.gameEngine.entities.create(VisualEntity, EntityName.Player);
     const modelController = player.create(GltfModelController, ModelController);
+    const stateController = player.create(StateController);
 
     player.create(KeyboardActivityController);
     player.create(GravityAccelerationController);
@@ -218,7 +222,6 @@ export class VoxelGame {
     player.create(ActivityRotationController);
     player.create(VelocityController);
     player.create(PositionController);
-    player.create(UserCharacterController);
     player.create(SpatialGridController);
 
     modelController.modelConfig = {
@@ -228,6 +231,12 @@ export class VoxelGame {
       receiveShadow: true,
       castShadow: true,
     };
+
+    stateController.addState(IdleUserState);
+    stateController.addState(WalkUserState);
+    stateController.addState(RunUserState);
+
+    stateController.setState(IdleUserState);
 
     // player.AddComponent(new EquipWeapon({anchor: 'RightHandIndex1'}));
     // player.AddComponent(new InventoryController(params));

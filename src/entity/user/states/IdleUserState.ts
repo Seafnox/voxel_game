@@ -1,25 +1,18 @@
-import { StateInput } from 'src/entity/state/StateInput';
+import { ActivityStatus } from 'src/entity/state/ActivityStatus';
+import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
+import { VelocityProperty } from 'src/entity/user/VelocityController';
 import { VMath } from 'src/VMath';
-import { AnimationAction } from 'three';
 import { VisualEntityTopic } from 'src/entity/VisualEntityTopic';
+import { Vector3 } from 'three';
 import { ModelController } from '../../models/ModelController';
-import { VisualEntity } from '../../VisualEntity';
 import { Disposable } from 'src/emitter/SimpleEmitter';
 import { SimpleState } from '../../state/SimpleState';
-import { StateMachine } from '../../state/StateMachine';
 
-export class IdleUserState implements SimpleState {
-  availableNext: SimpleState[] | undefined;
-  action: AnimationAction | undefined;
+export class IdleUserState extends SimpleState {
   animationName = 'idle';
   private modelDisposable?: Disposable;
-
-  constructor(
-    private controller: StateMachine,
-    private entity: VisualEntity,
-  ) {}
 
   enter(/* prevState: SimpleState | undefined */): void {
     if (this.entity.isModelReady) {
@@ -33,9 +26,12 @@ export class IdleUserState implements SimpleState {
     this.modelDisposable?.dispose();
   }
 
-  validate(deltaTime: number, input: StateInput): void {
-    if (input.velocity.length() > VMath.epsilon) {
-      if (!input.activityStatus.shift) {
+  validate(): void {
+    const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
+    const activity = this.entity.getProperty<ActivityStatus>(ActivityProperty);
+
+    if (velocity.length() > VMath.epsilon) {
+      if (!activity.shift) {
         this.controller.setState(WalkUserState);
         return;
       }

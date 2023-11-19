@@ -1,27 +1,20 @@
-import { StateMachine } from '../../state/StateMachine';
-import { AnimationAction } from 'three';
+import { ActivityStatus } from 'src/entity/state/ActivityStatus';
+import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
+import { VelocityProperty } from 'src/entity/user/VelocityController';
 import { VisualEntityTopic } from 'src/entity/VisualEntityTopic';
+import { Vector3 } from 'three';
 import { ModelController } from '../../models/ModelController';
-import { VisualEntity } from '../../VisualEntity';
 import { Disposable } from 'src/emitter/SimpleEmitter';
-import { StateInput } from '../../state/StateInput';
 import { SimpleState } from '../../state/SimpleState';
-import { VMath } from '../../../VMath';
+import { VMath } from 'src/VMath';
 import { IdleUserState } from './IdleUserState';
 import { WalkUserState } from './WalkUserState';
 
-export class RunUserState implements SimpleState {
-  availableNext: SimpleState[] | undefined;
-  action: AnimationAction | undefined;
+export class RunUserState extends SimpleState {
   animationName = 'run';
   private modelDisposable?: Disposable;
 
-  constructor(
-    private controller: StateMachine,
-    private entity: VisualEntity,
-  ) {}
-
-  enter(/* prevState: SimpleState | undefined */): void {
+  enter(): void {
     if (this.entity.isModelReady) {
       this.getModelAndRunAnimation();
       return;
@@ -33,13 +26,16 @@ export class RunUserState implements SimpleState {
     this.modelDisposable?.dispose();
   }
 
-  validate(deltaTime: number, input: StateInput): void {
-    if (input.velocity.length() <= VMath.epsilon) {
+  validate(): void {
+    const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
+    const activity = this.entity.getProperty<ActivityStatus>(ActivityProperty);
+
+    if (velocity.length() <= VMath.epsilon) {
       this.controller.setState(IdleUserState);
       return;
     }
 
-    if (!input.activityStatus.shift) {
+    if (!activity.shift) {
       this.controller.setState(WalkUserState);
     }
   }
