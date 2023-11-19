@@ -19,7 +19,7 @@ import {
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 import { GameEngine } from 'src/engine/GameEngine';
-import { ModelController } from 'src/entity/visualEntity/models/ModelController';
+import { ModelController, ModelProperty, ModelReadyProperty } from 'src/entity/models/ModelController';
 
 export interface CustomizableModelConfig {
   resourcePath: string;
@@ -57,7 +57,6 @@ export class FbxModelController extends ModelController {
 
   // TODO refactor code and replace identical code to abstract class method
   private onModelLoaded(model: Object3D) {
-    const entity = this.entity;
     const mixer = this.getMixerOrThrow();
 
     mixer.stopAllAction();
@@ -103,7 +102,8 @@ export class FbxModelController extends ModelController {
 
     this.mixer = new AnimationMixer(this.model);
 
-    entity.isModelReady = true;
+    this.entity.setProperty(ModelProperty, this.model);
+    this.entity.setProperty(ModelReadyProperty, true);
   }
 
   loadResources() {

@@ -2,16 +2,15 @@ import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { PositionProperty } from 'src/entity/PositionController';
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import skyFragment from 'src/resources/sky.fs';
 import skyVertex from 'src/resources/sky.vs';
 import { HemisphereLight, Mesh, SphereGeometry, ShaderMaterial, BackSide, Color, Vector3 } from 'three';
 
-export class SkyController extends Controller<VisualEntity> {
+export class SkyController extends Controller {
     private backgroundColor = 0xffffcc;
     private skyColor = 0x15c5FF;
-    private target: VisualEntity | undefined;
+    private target: Entity | undefined;
     private skySpere: Mesh;
     private skySphereLight: HemisphereLight;
 
@@ -20,10 +19,6 @@ export class SkyController extends Controller<VisualEntity> {
         entity: Entity,
         name: string,
     ) {
-        if (!(entity instanceof VisualEntity)) {
-            throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-        }
-
         super(engine, entity, name);
 
         this.skySpere = this.createSkySpere();
@@ -36,7 +31,7 @@ export class SkyController extends Controller<VisualEntity> {
         return this.engine.factors.find(SceneFactor);
     }
 
-    setTarget(targetEntity: VisualEntity) {
+    setTarget(targetEntity: Entity) {
         this.target = targetEntity;
     }
 

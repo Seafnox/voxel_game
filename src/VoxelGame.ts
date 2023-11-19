@@ -22,9 +22,8 @@ import {
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
-import { getVisualEntityOrThrow } from './entity/utils/getVisualEntityOrThrow';
 import { SurfaceController } from './entity/environment/SurfaceController';
-import { StaticModelController } from './entity/visualEntity/models/StaticModelController';
+import { StaticModelController } from './entity/models/StaticModelController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
 import { SpatialGridController } from './grid/SpatialGridController';
@@ -34,9 +33,8 @@ import { VMath } from './VMath';
 import { CameraController } from './entity/environment/CameraController';
 import { LogMethod } from './utils/logger/LogMethod';
 import { Level } from './utils/logger/Level';
-import { GltfModelController } from './entity/visualEntity/models/GltfModelController';
-import { ModelController } from './entity/visualEntity/models/ModelController';
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
+import { GltfModelController } from './entity/models/GltfModelController';
+import { ModelController } from './entity/models/ModelController';
 import { FpsController } from './entity/hud/FpsController';
 import { EntityName } from './engine/EntityName';
 import { HtmlElementId } from './HtmlElementId';
@@ -103,7 +101,7 @@ export class VoxelGame {
   }
 
   private initEnvironment(): void {
-    const environment = this.gameEngine.entities.create(VisualEntity, EntityName.Environment);
+    const environment = this.gameEngine.entities.create(Entity, EntityName.Environment);
 
     environment.create(CameraController);
     environment.create(LightController);
@@ -145,7 +143,7 @@ export class VoxelGame {
         (Math.random() * 2.0 - 1.0) * 500,
       );
 
-      const cloudEntity = this.gameEngine.entities.create(VisualEntity, `cloud_${i}`);
+      const cloudEntity = this.gameEngine.entities.create(Entity, `cloud_${i}`);
 
       const modelController = cloudEntity.create(StaticModelController);
       modelController.modelConfig = {
@@ -182,7 +180,7 @@ export class VoxelGame {
 
       const pos = new Vector3(x,y,z);
 
-      const tree = this.gameEngine.entities.create(VisualEntity, `tree_${i}`);
+      const tree = this.gameEngine.entities.create(Entity, `tree_${i}`);
 
       tree.create(SpatialGridController);
       const modelController = tree.create(StaticModelController);
@@ -211,7 +209,7 @@ export class VoxelGame {
 
   @LogMethod({level: Level.info})
   private initPlayer() {
-    const player = this.gameEngine.entities.create(VisualEntity, EntityName.Player);
+    const player = this.gameEngine.entities.create(Entity, EntityName.Player);
     const modelController = player.create(GltfModelController, ModelController);
     const stateController = player.create(StateController);
 
@@ -263,8 +261,8 @@ export class VoxelGame {
   }
 
   // TODO convert code to one time action or send responsibility in controller.
-  private focusEnvironmentOn(target: VisualEntity) {
-    const environment = getVisualEntityOrThrow(this, this.gameEngine.entities.get(EntityName.Environment));
+  private focusEnvironmentOn(target: Entity) {
+    const environment = this.gameEngine.entities.get(EntityName.Environment);
     environment.get<CameraController>(CameraController).setTarget(target);
     environment.get<LightController>(LightController).setTarget(target);
     environment.get<SkyController>(SkyController).setTarget(target);

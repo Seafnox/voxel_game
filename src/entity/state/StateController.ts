@@ -3,12 +3,11 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { SimpleStateConstructor, SimpleState } from 'src/entity/state/SimpleState';
 import { NoopState } from 'src/entity/state/NoopState';
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 
 export const ActiveStateProperty = 'activeState';
 
-export class StateController extends Controller<VisualEntity> {
+export class StateController extends Controller {
   private states: Record<string, SimpleStateConstructor> = {};
   defaultState: SimpleState;
 
@@ -17,10 +16,6 @@ export class StateController extends Controller<VisualEntity> {
     entity: Entity,
     name: string,
   ) {
-    if (!(entity instanceof VisualEntity)) {
-      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
-
     super(engine, entity, name);
 
     this.defaultState = new NoopState(engine, entity, this);

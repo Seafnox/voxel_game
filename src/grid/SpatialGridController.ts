@@ -1,14 +1,13 @@
 import { Entity } from 'src/engine/Entity';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { PositionProperty } from 'src/entity/PositionController';
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { Vector3 } from 'three';
 import { Controller } from '../engine/Controller';
 import { GameEngine } from '../engine/GameEngine';
 import { SurfaceFactor } from '../factor/surface/SurfaceFactor';
 import { SpatialClient, SpatialPoint } from './SpatialTyping';
 
-export class SpatialGridController extends Controller<VisualEntity> {
+export class SpatialGridController extends Controller {
   private _client: SpatialClient;
 
   constructor(
@@ -16,10 +15,6 @@ export class SpatialGridController extends Controller<VisualEntity> {
     entity: Entity,
     name: string,
   ) {
-    if (!(entity instanceof VisualEntity)) {
-      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
-
     super(engine, entity, name);
 
     const entityPosition = entity.getProperty<Vector3>(PositionProperty);

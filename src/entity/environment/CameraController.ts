@@ -5,13 +5,12 @@ import { Controller } from 'src/engine/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 
 export const CameraRotationProperty = 'rotation';
 export const CameraPositionProperty = 'position';
 
-export class CameraController extends Controller<VisualEntity> {
-  private target: VisualEntity | undefined;
+export class CameraController extends Controller {
+  private target: Entity | undefined;
   private currentLookAt: Vector3 = new Vector3();
   private readonly camera: PerspectiveCamera;
 
@@ -20,10 +19,6 @@ export class CameraController extends Controller<VisualEntity> {
     entity: Entity,
     name: string,
   ) {
-    if (!(entity instanceof VisualEntity)) {
-      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
-
     super(engine, entity, name);
 
     this.entity.registerProperty(CameraRotationProperty, new Quaternion(0,0,0,1));
@@ -47,7 +42,7 @@ export class CameraController extends Controller<VisualEntity> {
     return this.camera;
   }
 
-  setTarget(targetEntity: VisualEntity) {
+  setTarget(targetEntity: Entity) {
     this.target = targetEntity;
   }
 

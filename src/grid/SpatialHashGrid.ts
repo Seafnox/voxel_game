@@ -1,4 +1,4 @@
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
+import { Entity } from 'src/engine/Entity';
 import { VMath } from '../VMath';
 import { SpatialClient, SpatialNode, CellPosition, SpatialDimension, SpatialPoint } from './SpatialTyping';
 
@@ -26,7 +26,7 @@ export class SpatialHashGrid {
     return [xIndex, yIndex];
   }
 
-  NewClient(entity: VisualEntity, position: SpatialPoint, dimensions: SpatialDimension): SpatialClient {
+  NewClient(entity: Entity, position: SpatialPoint, dimensions: SpatialDimension): SpatialClient {
     const client: SpatialClient = {
       entity,
       position,

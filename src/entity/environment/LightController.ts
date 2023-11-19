@@ -4,11 +4,10 @@ import { Controller } from 'src/engine/Controller';
 import { DirectionalLight, Vector3 } from 'three';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 
-export class LightController extends Controller<VisualEntity> {
+export class LightController extends Controller {
   private lightColor = 0xeeffff;
-  private target: VisualEntity | undefined;
+  private target: Entity | undefined;
   private light: DirectionalLight;
 
   constructor(
@@ -16,10 +15,6 @@ export class LightController extends Controller<VisualEntity> {
     entity: Entity,
     name: string,
   ) {
-    if (!(entity instanceof VisualEntity)) {
-      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
-
     super(engine, entity, name);
 
     this.light = this.createLight();
@@ -31,7 +26,7 @@ export class LightController extends Controller<VisualEntity> {
     return this.engine.factors.find(SceneFactor);
   }
 
-  setTarget(targetEntity: VisualEntity) {
+  setTarget(targetEntity: Entity) {
     this.target = targetEntity;
   }
 

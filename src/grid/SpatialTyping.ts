@@ -1,4 +1,4 @@
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
+import { Entity } from 'src/engine/Entity';
 
 export type SpatialPoint = [number, number];
 export type SpatialDimension = [number, number];
@@ -19,7 +19,7 @@ export interface SpatialNode {
 export interface SpatialClient {
     position: SpatialPoint;
     dimensions: SpatialDimension;
-    entity: VisualEntity;
+    entity: Entity;
     _cells: SpatialCell;
     _queryId: number;
 }

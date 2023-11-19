@@ -4,14 +4,15 @@ import { Controller } from 'src/engine/Controller';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { RotationProperty } from 'src/entity/ActivityRotationController';
 import { PositionProperty } from 'src/entity/PositionController';
-import { VisualEntityProperty } from 'src/entity/visualEntity/VisualEntityProperty';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from 'src/utils/logger/LogMethod';
 import { Level } from 'src/utils/logger/Level';
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 
-export abstract class ModelController extends Controller<VisualEntity> {
+export const ModelProperty = 'model';
+export const ModelReadyProperty = 'modelReady';
+
+export abstract class ModelController extends Controller {
   protected model: Object3D | undefined;
   protected animationMap: Record<string, AnimationAction> = {};
   protected mixer: AnimationMixer | undefined;
@@ -23,14 +24,10 @@ export abstract class ModelController extends Controller<VisualEntity> {
     entity: Entity,
     name: string,
   ) {
-    if (!(entity instanceof VisualEntity)) {
-      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
-
     super(engine, entity, name);
 
-    this.entity.registerProperty(VisualEntityProperty.Model, undefined);
-    this.entity.registerProperty(VisualEntityProperty.IsModelReady, false);
+    this.entity.registerProperty(ModelProperty, undefined);
+    this.entity.registerProperty(ModelReadyProperty, false);
 
     this.entity.on(PositionProperty, this.onPositionChange.bind(this));
     this.entity.on(RotationProperty, this.onRotationChange.bind(this));
@@ -46,14 +43,6 @@ export abstract class ModelController extends Controller<VisualEntity> {
 
   protected abstract onPositionChange(m: UpdatePropertyEvent<Vector3>): void;
   protected abstract onRotationChange(m: UpdatePropertyEvent<Quaternion>): void;
-
-  protected getModelOrThrow(): Object3D {
-    if (!this.model) {
-      throw new Error(`Can't find 3d model for ${this.constructorName}`);
-    }
-
-    return this.model;
-  }
 
   protected getMixerOrThrow(): AnimationMixer {
     if (!this.mixer) {

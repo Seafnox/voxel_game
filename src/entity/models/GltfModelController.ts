@@ -3,11 +3,10 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { RotationProperty } from 'src/entity/ActivityRotationController';
 import { PositionProperty } from 'src/entity/PositionController';
-import { VisualEntityProperty } from 'src/entity/visualEntity/VisualEntityProperty';
 import { Vector3, Color, TextureLoader, Texture, AnimationMixer, Object3D, Mesh, LoadingManager, Quaternion, AnimationClip, SRGBColorSpace } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
-import { ModelController } from 'src/entity/visualEntity/models/ModelController';
+import { ModelController, ModelProperty, ModelReadyProperty } from 'src/entity/models/ModelController';
 
 export interface GltfModelConfig {
   resourcePath: string;
@@ -89,8 +88,8 @@ export class GltfModelController extends ModelController {
     this.mixer = new AnimationMixer(this.model);
 
     animations.forEach(animationClip => this.addAnimation(animationClip));
-    this.entity.isModelReady = true;
-    this.entity.setProperty(VisualEntityProperty.Model, this.model);
+    this.entity.setProperty(ModelProperty, this.model);
+    this.entity.setProperty(ModelReadyProperty, true);
   }
 
   loadResources(config: GltfModelConfig) {

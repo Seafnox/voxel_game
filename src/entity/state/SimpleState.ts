@@ -1,12 +1,12 @@
+import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { StateController } from 'src/entity/state/StateController';
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { AnimationAction } from 'three';
 
 export interface SimpleStateConstructor {
   new(
     engine: GameEngine,
-    entity: VisualEntity,
+    entity: Entity,
     controller: StateController,
   ): SimpleState;
 }
@@ -14,7 +14,7 @@ export interface SimpleStateConstructor {
 export abstract class SimpleState {
   constructor(
     protected engine: GameEngine,
-    protected entity: VisualEntity,
+    protected entity: Entity,
     protected controller: StateController,
   ) {}
 

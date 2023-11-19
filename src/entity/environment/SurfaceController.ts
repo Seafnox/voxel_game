@@ -1,13 +1,12 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { VisualEntity } from 'src/entity/visualEntity/VisualEntity';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
 import { Mesh, Vector3, BackSide, Texture, DataTexture, MeshStandardMaterial, MeshBasicMaterial } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 
-export class SurfaceController extends Controller<VisualEntity> {
+export class SurfaceController extends Controller {
   private surfaceFactor: SurfaceFactor;
   private sceneFactor: SceneFactor;
 
@@ -16,10 +15,6 @@ export class SurfaceController extends Controller<VisualEntity> {
     entity: Entity,
     name: string,
   ) {
-    if (!(entity instanceof VisualEntity)) {
-      throw new Error(`Can't make calculation for 3d Object in simple Entity. Use ${VisualEntity.name}`);
-    }
-
     super(engine, entity, name);
 
     this.surfaceFactor = this.engine.factors.find(SurfaceFactor);

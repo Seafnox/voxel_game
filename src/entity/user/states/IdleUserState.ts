@@ -4,9 +4,8 @@ import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { VelocityProperty } from 'src/entity/VelocityController';
 import { VMath } from 'src/VMath';
-import { VisualEntityTopic } from 'src/entity/visualEntity/VisualEntityTopic';
 import { Vector3 } from 'three';
-import { ModelController } from '../../visualEntity/models/ModelController';
+import { ModelController, ModelReadyProperty } from '../../models/ModelController';
 import { Disposable } from 'src/emitter/SimpleEmitter';
 import { SimpleState } from '../../state/SimpleState';
 
@@ -15,11 +14,11 @@ export class IdleUserState extends SimpleState {
   private modelDisposable?: Disposable;
 
   enter(/* prevState: SimpleState | undefined */): void {
-    if (this.entity.isModelReady) {
+    if (this.entity.getProperty<boolean>(ModelReadyProperty)) {
       this.getModelAndRunAnimation();
       return;
     }
-    this.modelDisposable = this.entity.on(VisualEntityTopic.UpdateModelReady, () => this.getModelAndRunAnimation());
+    this.modelDisposable = this.entity.on(ModelReadyProperty, () => this.getModelAndRunAnimation());
   }
 
   exit(/* nextState: SimpleState */): void {
