@@ -1,4 +1,5 @@
 import { SkyController } from 'src/entity/environment/SkyController';
+import { FbxModelController } from 'src/entity/models/FbxModelController';
 import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
 import { StateController } from 'src/entity/state/StateController';
 import { ActivityAccelerationController } from 'src/entity/ActivityAccelerationController';
@@ -24,7 +25,6 @@ import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
 import { SurfaceController } from './entity/environment/SurfaceController';
-import { StaticModelController } from './entity/models/StaticModelController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
 import { SpatialGridController } from './entity/grid/SpatialGridController';
@@ -144,10 +144,10 @@ export class VoxelGame {
       cloudEntity.setProperty(PositionProperty, pos);
       cloudEntity.setProperty(RotationProperty, new Quaternion(0,0,0,1));
 
-      const modelController = cloudEntity.create(StaticModelController);
+      const modelController = cloudEntity.create(GltfModelController);
       modelController.modelConfig = {
         resourcePath: './resources/clouds/',
-        resourceName: 'Cloud' + index + '.glb',
+        resourceModel: 'Cloud' + index + '.glb',
         scale: Math.random() * 5 + 10,
         emissive: new Color(this.cloudColor),
         castShadow: true,
@@ -183,10 +183,10 @@ export class VoxelGame {
       tree.setProperty(RotationProperty, new Quaternion(0,0,0,1));
 
       tree.create(SpatialGridController);
-      const modelController = tree.create(StaticModelController);
+      const modelController = tree.create(FbxModelController);
       modelController.modelConfig = {
         resourcePath: './resources/trees/',
-        resourceName: name + '_' + index + '.fbx',
+        resourceModel: name + '_' + index + '.fbx',
         scale: 0.25,
         emissive: new Color(this.darkEmissionLight),
         specular: new Color(this.lightAbsorptionMask),
