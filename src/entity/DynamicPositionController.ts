@@ -4,10 +4,11 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { RotationProperty } from 'src/entity/ActivityRotationController';
 import { VelocityProperty } from 'src/entity/VelocityController';
 import { isDifferentVector } from 'src/entity/utils/isDifferentVector';
+import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
 import { Vector3, Quaternion } from 'three';
 
 export const PositionProperty = 'position';
-export class PositionController extends Controller {
+export class DynamicPositionController extends Controller {
   private deltaTimeScalar = 1000;
   private defaultPosition = new Vector3(0, 0, 0);
   constructor(
@@ -18,6 +19,15 @@ export class PositionController extends Controller {
     super(engine, entity, name);
 
     this.entity.registerProperty(PositionProperty, this.defaultPosition);
+  }
+
+  private get surfaceFactor(): SurfaceFactor {
+    return this.engine.factors.find(SurfaceFactor);
+  }
+
+  setNearest(x: number, z: number) {
+    const y = this.surfaceFactor.getZCord(x, z);
+    this.entity.setProperty(PositionProperty, new Vector3(x,y,z));
   }
 
   update(deltaTime: number) {

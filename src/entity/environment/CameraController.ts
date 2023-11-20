@@ -1,5 +1,5 @@
 import { RotationProperty } from 'src/entity/ActivityRotationController';
-import { PositionProperty } from 'src/entity/PositionController';
+import { PositionProperty } from 'src/entity/DynamicPositionController';
 import { WindowEventSystem, WindowTopic, WindowResizeEvent } from 'src/system/WindowEventSystem';
 import { Controller } from 'src/engine/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';

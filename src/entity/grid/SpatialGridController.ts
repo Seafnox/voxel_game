@@ -1,6 +1,6 @@
 import { Entity } from 'src/engine/Entity';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { PositionProperty } from 'src/entity/PositionController';
+import { PositionProperty } from 'src/entity/DynamicPositionController';
 import { Vector3 } from 'three';
 import { Controller } from 'src/engine/Controller';
 import { GameEngine } from 'src/engine/GameEngine';

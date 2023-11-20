@@ -1,7 +1,7 @@
 import { Controller } from 'src/engine/Controller';
 import { EntityName } from 'src/engine/EntityName';
 import { RotationProperty } from 'src/entity/ActivityRotationController';
-import { PositionProperty } from 'src/entity/PositionController';
+import { PositionProperty } from 'src/entity/DynamicPositionController';
 import { VelocityProperty } from 'src/entity/VelocityController';
 import { HtmlElementId } from 'src/HtmlElementId';
 import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';

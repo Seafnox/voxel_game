@@ -1,4 +1,4 @@
-import { PositionProperty } from 'src/entity/PositionController';
+import { PositionProperty } from 'src/entity/DynamicPositionController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { Controller } from 'src/engine/Controller';
 import { DirectionalLight, Vector3 } from 'three';

@@ -5,7 +5,7 @@ import { KeyboardActivityController } from 'src/entity/user/KeyboardActivityCont
 import { ActivityDecelerationController } from 'src/entity/ActivityDecelerationController';
 import { GravityAccelerationController } from 'src/entity/GravityAccelerationController';
 import { ActivityRotationController, RotationProperty } from 'src/entity/ActivityRotationController';
-import { PositionController, PositionProperty } from 'src/entity/PositionController';
+import { DynamicPositionController, PositionProperty } from 'src/entity/DynamicPositionController';
 import { IdleUserState } from 'src/entity/user/states/IdleUserState';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
@@ -41,10 +41,6 @@ import { HtmlElementId } from './HtmlElementId';
 import { CameraHudController } from './entity/hud/CameraHudController';
 import { CharacterHudController } from './entity/hud/CharacterHudController';
 import { LightController } from './entity/environment/LightController';
-
-const initialPlayerPositionX = 25;
-const initialPlayerPositionY = 10;
-const initialPlayerPositionZ = 0;
 
 export class VoxelGame {
   private cloudColor = 0xaecfff;
@@ -221,7 +217,7 @@ export class VoxelGame {
     player.create(ActivityDecelerationController);
     player.create(ActivityRotationController);
     player.create(VelocityController);
-    player.create(PositionController);
+    player.create(DynamicPositionController).setNearest(0,0);
     player.create(SpatialGridController);
 
     modelController.modelConfig = {
@@ -252,12 +248,6 @@ export class VoxelGame {
     //   experience: 0,
     //   level: 1,
     // }));
-    // TODO make position height (y) by surface position
-    player.setProperty(PositionProperty, new Vector3(
-      initialPlayerPositionX,
-      initialPlayerPositionY,
-      initialPlayerPositionZ,
-    ));
     this.gameEngine.entities.activate(player);
     this.focusEnvironmentOn(player);
   }
