@@ -54,12 +54,13 @@ export abstract class ModelController extends Controller {
 
   @LogMethod({level: Level.info})
   protected setActiveAnimationTrusted(animationName: string) {
-    this.activeAnimation?.stop();
+    const prevAnimation = this.activeAnimation;
 
     this.activeAnimationName = animationName;
     this.activeAnimation = this.animationMap[animationName];
 
     this.activeAnimation.play();
+    prevAnimation?.stop();
   }
 
   addAnimation(animationClip: AnimationClip): void {

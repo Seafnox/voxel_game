@@ -1,9 +1,7 @@
-import { EntityActivity } from 'src/entity/EntityActivity';
-import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
+import { MinAnimatedVelocity, realVelocity, MinRunVelocity } from 'src/entity/user/UserConfig';
 import { VelocityProperty } from 'src/entity/VelocityController';
-import { VMath } from 'src/VMath';
 import { Vector3 } from 'three';
 import { ModelController, ModelReadyProperty } from '../../models/ModelController';
 import { Disposable } from 'src/emitter/SimpleEmitter';
@@ -26,11 +24,11 @@ export class IdleUserState extends SimpleState {
   }
 
   validate(): void {
-    const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
-    const activity = this.entity.getProperty<EntityActivity>(ActivityProperty);
+    const velocityVector = this.entity.getProperty<Vector3>(VelocityProperty);
+    const velocity = realVelocity(velocityVector)
 
-    if (velocity.length() > VMath.epsilon) {
-      if (!activity.shift) {
+    if (velocity > MinAnimatedVelocity) {
+      if (velocity >= MinRunVelocity) {
         this.controller.setState(WalkUserState);
         return;
       }
@@ -45,7 +43,7 @@ export class IdleUserState extends SimpleState {
       throw new Error(`No '${this.animationName}' animation in entity '${this.entity.name}' with animation list: [${modelController.getAnimationList().join(', ')}]`);
     }
 
-    setTimeout(() => modelController.setActiveAnimation(this.animationName));
+    modelController.setActiveAnimation(this.animationName);
   }
 }
 
