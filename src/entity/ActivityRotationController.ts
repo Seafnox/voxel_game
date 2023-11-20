@@ -1,12 +1,12 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { EntityActivity } from 'src/entity/EntityActivity';
-import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
+import { EntityActivity } from 'src/entity/properties/EntityActivity';
+import { ActivityProperty } from 'src/entity/properties/dynamic';
+import { RotationProperty } from 'src/entity/properties/visual';
 import { isDifferentQuaternion } from 'src/entity/utils/isDifferentQuaternion';
 import { Quaternion, Vector3 } from 'three';
 
-export const RotationProperty = 'rotation';
 export class ActivityRotationController extends Controller {
   private deltaTimeScalar = 1000;
   private rotationScalar = 1;

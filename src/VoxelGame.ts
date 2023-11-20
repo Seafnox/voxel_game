@@ -1,15 +1,16 @@
 import { SkyController } from 'src/entity/environment/SkyController';
+import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
 import { StateController } from 'src/entity/state/StateController';
 import { ActivityAccelerationController } from 'src/entity/ActivityAccelerationController';
 import { KeyboardActivityController } from 'src/entity/user/KeyboardActivityController';
 import { ActivityDecelerationController } from 'src/entity/ActivityDecelerationController';
 import { GravityAccelerationController } from 'src/entity/GravityAccelerationController';
-import { ActivityRotationController, RotationProperty } from 'src/entity/ActivityRotationController';
-import { DynamicPositionController, PositionProperty } from 'src/entity/DynamicPositionController';
+import { ActivityRotationController } from 'src/entity/ActivityRotationController';
+import { DynamicPositionController } from 'src/entity/DynamicPositionController';
 import { IdleUserState } from 'src/entity/user/states/IdleUserState';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
-import { VelocityController } from 'src/entity/VelocityController';
+import { DynamicVelocityController } from 'src/entity/DynamicVelocityController';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
@@ -216,7 +217,7 @@ export class VoxelGame {
     player.create(ActivityAccelerationController);
     player.create(ActivityDecelerationController);
     player.create(ActivityRotationController);
-    player.create(VelocityController);
+    player.create(DynamicVelocityController);
     player.create(DynamicPositionController).setNearest(0,0);
     player.create(SpatialGridController);
 

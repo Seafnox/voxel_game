@@ -1,14 +1,10 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { AccelerationProperty } from 'src/entity/ActivityAccelerationController';
-import { DecelerationProperty } from 'src/entity/ActivityDecelerationController';
-import { GravityAccelerationProperty } from 'src/entity/GravityAccelerationController';
+import { AccelerationProperty, DecelerationProperty, GravityAccelerationProperty, VelocityProperty } from 'src/entity/properties/dynamic';
 import { Vector3 } from 'three';
 
-export const VelocityProperty = 'velocity';
-
-export class VelocityController extends Controller {
+export class DynamicVelocityController extends Controller {
   private deltaTimeScalar = 1000;
   private defaultVelocity = new Vector3(0, 0, 0);
   constructor(

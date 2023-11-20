@@ -1,11 +1,10 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
+import { ActiveStateProperty } from 'src/entity/properties/state';
 import { SimpleStateConstructor, SimpleState } from 'src/entity/state/SimpleState';
 import { NoopState } from 'src/entity/state/NoopState';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
-
-export const ActiveStateProperty = 'activeState';
 
 export class StateController extends Controller {
   private states: Record<string, SimpleStateConstructor> = {};

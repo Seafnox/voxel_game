@@ -1,13 +1,12 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { RotationProperty } from 'src/entity/ActivityRotationController';
-import { VelocityProperty } from 'src/entity/VelocityController';
+import { VelocityProperty } from 'src/entity/properties/dynamic';
+import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
 import { isDifferentVector } from 'src/entity/utils/isDifferentVector';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
 import { Vector3, Quaternion } from 'three';
 
-export const PositionProperty = 'position';
 export class DynamicPositionController extends Controller {
   private deltaTimeScalar = 1000;
   private defaultPosition = new Vector3(0, 0, 0);

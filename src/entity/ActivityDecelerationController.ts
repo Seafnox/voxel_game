@@ -1,12 +1,9 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { EntityActivity } from 'src/entity/EntityActivity';
-import { ActivityProperty } from 'src/entity/user/KeyboardActivityController';
-import { VelocityProperty } from 'src/entity/VelocityController';
+import { EntityActivity } from 'src/entity/properties/EntityActivity';
+import { DecelerationProperty, VelocityProperty, ActivityProperty } from 'src/entity/properties/dynamic';
 import { Vector3 } from 'three';
-
-export const DecelerationProperty = 'deceleration';
 
 export class ActivityDecelerationController extends Controller {
   private defaultDeceleration = new Vector3(0.0, 0.0, 0.0);

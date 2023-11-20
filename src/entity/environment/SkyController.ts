@@ -1,7 +1,7 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { PositionProperty } from 'src/entity/DynamicPositionController';
+import { PositionProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import skyFragment from 'src/resources/sky.fs';
 import skyVertex from 'src/resources/sky.vs';

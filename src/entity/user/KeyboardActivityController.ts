@@ -1,10 +1,9 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { EntityActivity } from 'src/entity/EntityActivity';
+import { EntityActivity } from 'src/entity/properties/EntityActivity';
+import { ActivityProperty } from 'src/entity/properties/dynamic';
 import { KeyboardEventSystem, KeyboardTopic } from 'src/system/KeyboardEventSystem';
-
-export const ActivityProperty = 'activity';
 
 export class KeyboardActivityController extends Controller {
   defaultValue: EntityActivity = {

@@ -1,4 +1,4 @@
-import { CameraRotationProperty, CameraPositionProperty } from 'src/entity/environment/CameraController';
+import { CameraPositionProperty, CameraRotationProperty } from 'src/entity/properties/camera';
 import { Vector3, Quaternion } from 'three';
 import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
 import {Controller} from 'src/engine/Controller';

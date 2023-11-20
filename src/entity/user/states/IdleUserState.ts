@@ -1,9 +1,10 @@
+import { ModelReadyProperty } from 'src/entity/properties/visual';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { MinAnimatedVelocity, realVelocity, MinRunVelocity } from 'src/entity/user/UserConfig';
-import { VelocityProperty } from 'src/entity/VelocityController';
+import { VelocityProperty } from 'src/entity/properties/dynamic';
 import { Vector3 } from 'three';
-import { ModelController, ModelReadyProperty } from '../../models/ModelController';
+import { ModelController } from '../../models/ModelController';
 import { Disposable } from 'src/emitter/SimpleEmitter';
 import { SimpleState } from '../../state/SimpleState';
 

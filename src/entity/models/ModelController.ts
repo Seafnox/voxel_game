@@ -2,15 +2,12 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { Controller } from 'src/engine/Controller';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { RotationProperty } from 'src/entity/ActivityRotationController';
-import { PositionProperty } from 'src/entity/DynamicPositionController';
+import { RotationProperty, ModelReadyProperty, ModelProperty } from 'src/entity/properties/visual';
+import { PositionProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { AnimationAction, AnimationClip, AnimationMixer, Object3D, Vector3, Quaternion } from 'three';
 import { LogMethod } from 'src/utils/logger/LogMethod';
 import { Level } from 'src/utils/logger/Level';
-
-export const ModelProperty = 'model';
-export const ModelReadyProperty = 'modelReady';
 
 export abstract class ModelController extends Controller {
   protected model: Object3D | undefined;

@@ -1,12 +1,12 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { PositionProperty } from 'src/entity/DynamicPositionController';
+import { GravityAccelerationProperty } from 'src/entity/properties/dynamic';
+import { PositionProperty } from 'src/entity/properties/visual';
 import { GravityFactor } from 'src/factor/GravityFactor';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
 import { Vector3 } from 'three';
 
-export const GravityAccelerationProperty = 'gravityAcceleration';
 export class GravityAccelerationController extends Controller {
   private defaultAcceleration = new Vector3(0.0, 0.0, 0.0);
   private allowedDistance = 0.1;

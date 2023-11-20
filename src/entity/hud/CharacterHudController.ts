@@ -1,8 +1,7 @@
 import { Controller } from 'src/engine/Controller';
 import { EntityName } from 'src/engine/EntityName';
-import { RotationProperty } from 'src/entity/ActivityRotationController';
-import { PositionProperty } from 'src/entity/DynamicPositionController';
-import { VelocityProperty } from 'src/entity/VelocityController';
+import { RotationProperty, PositionProperty } from 'src/entity/properties/visual';
+import { VelocityProperty } from 'src/entity/properties/dynamic';
 import { HtmlElementId } from 'src/HtmlElementId';
 import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
 import { Vector3, Quaternion } from 'three';
