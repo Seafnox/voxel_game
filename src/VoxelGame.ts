@@ -5,7 +5,6 @@ import { StateController } from 'src/entity/state/StateController';
 import { ActivityAccelerationController } from 'src/entity/ActivityAccelerationController';
 import { KeyboardActivityController } from 'src/entity/user/KeyboardActivityController';
 import { ActivityDecelerationController } from 'src/entity/ActivityDecelerationController';
-import { GravityAccelerationController } from 'src/entity/GravityAccelerationController';
 import { ActivityRotationController } from 'src/entity/ActivityRotationController';
 import { DynamicPositionController } from 'src/entity/DynamicPositionController';
 import { IdleUserState } from 'src/entity/user/states/IdleUserState';
@@ -213,7 +212,6 @@ export class VoxelGame {
     const stateController = player.create(StateController);
 
     player.create(KeyboardActivityController);
-    player.create(GravityAccelerationController);
     player.create(ActivityAccelerationController);
     player.create(ActivityDecelerationController);
     player.create(ActivityRotationController);

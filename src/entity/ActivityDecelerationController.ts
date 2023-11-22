@@ -7,7 +7,7 @@ import { Vector3 } from 'three';
 
 export class ActivityDecelerationController extends Controller {
   private defaultDeceleration = new Vector3(0.0, 0.0, 0.0);
-  private totalDeceleration = new Vector3(-5.0, -5.0, -5.0);
+  private totalDeceleration = new Vector3(-1, -0.1, -1);
   private extremeDecelerationScalar = 100;
 
   constructor(
