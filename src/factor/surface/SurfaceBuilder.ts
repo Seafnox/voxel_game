@@ -7,6 +7,8 @@ export type SurfaceMap = SurfacePoint[][];
 export interface SurfacePoint {
   color: RGBColor;
   value: number;
+  x: number;
+  y: number;
 }
 
 type Surface3dPosition = [number, number, number];
@@ -38,6 +40,8 @@ export class SurfaceBuilder {
         rgbMap[x][y] = {
           color: this.valueToColor(value),
           value,
+          x,
+          y,
         };
       }
     }

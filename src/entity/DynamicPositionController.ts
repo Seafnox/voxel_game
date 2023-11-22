@@ -56,6 +56,10 @@ export class DynamicPositionController extends Controller {
     supposedPosition.add(sideways);
 
     // TODO Add collision System
+    const surfaceY = this.surfaceFactor.getZCord(supposedPosition.x, supposedPosition.z);
+    if (supposedPosition.y < surfaceY) {
+      supposedPosition.y = surfaceY;
+    }
 
     if (isDifferentVector(position, supposedPosition)) {
       position.copy(supposedPosition);
