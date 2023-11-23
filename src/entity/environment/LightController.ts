@@ -29,7 +29,7 @@ export class LightController extends Controller {
     return this.engine.factors.find(SceneFactor);
   }
 
-  // TODO change to targetable controller ans entity subscription
+  // TODO change to targetable controller and entity subscription
   setTarget(targetEntity: Entity) {
     this.target = targetEntity;
     this.targetDisposable?.dispose();

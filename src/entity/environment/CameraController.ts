@@ -43,6 +43,7 @@ export class CameraController extends Controller {
     return this.camera;
   }
 
+  // TODO change to targetable controller and entity subscription
   setTarget(targetEntity: Entity) {
     this.target = targetEntity;
   }

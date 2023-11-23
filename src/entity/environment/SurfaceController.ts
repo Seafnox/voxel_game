@@ -24,11 +24,11 @@ export class SurfaceController extends Controller {
     this.sceneFactor.add(this.createSurfaceMesh());
   }
 
+  // TODO FEATURE add target position check and entity subscription
   private createSurfaceMesh(): Mesh {
     const geometry = this.createSurfaceGeometry();
     const texture = this.createSurfaceTexture();
     const material = new MeshStandardMaterial({
-      color: 0xFFFFFF,
       map: texture,
       side: BackSide,
     });

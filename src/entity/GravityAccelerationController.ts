@@ -54,7 +54,7 @@ export class GravityAccelerationController extends Controller {
     return this.entity.getProperty(PositionProperty);
   }
 
-  // TODO make nearest surface point calculation based on gravity Vector
+  // TODO FEATURE make nearest surface point calculation based on gravity Vector
   private get nearestSurfacePosition(): Vector3 {
     const position = this.entityPosition.clone();
     position.y = this.surfaceFactor.getZCord(position.x, position.z);
