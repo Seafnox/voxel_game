@@ -10,7 +10,6 @@ export interface EntityConstructor<TEntity extends Entity> {
 export class Entity extends TopicEmitter {
   private controllerList: Controller[] = [];
   private controllerMap: Record<string, Controller> = {};
-  private _isActive = false;
   private _properties: Record<string, unknown> = {};
 
   constructor(
@@ -18,14 +17,6 @@ export class Entity extends TopicEmitter {
     protected _name: string,
   ) {
     super();
-  }
-
-  get isActive(): boolean {
-    return this._isActive;
-  }
-
-  set isActive(value: boolean) {
-    this._isActive = value;
   }
 
   get engine(): GameEngine {
@@ -94,9 +85,5 @@ export class Entity extends TopicEmitter {
 
   broadcast<TEventData>(eventName: string, eventData: TEventData) {
     this.emit(eventName, eventData);
-  }
-
-  update(deltaTime: number) {
-    this.controllerList.forEach(component => component.update(deltaTime));
   }
 }

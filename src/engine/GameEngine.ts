@@ -20,9 +20,4 @@ export class GameEngine {
   get factors(): FactorManager {
     return this.factorManager;
   }
-
-  // TODO change to Watching system
-  update(deltaTime: number) {
-    this.entities.filter(entity => entity.isActive).forEach(entity => entity.update(deltaTime));
-  }
 }

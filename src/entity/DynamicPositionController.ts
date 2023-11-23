@@ -5,6 +5,7 @@ import { VelocityProperty } from 'src/entity/properties/dynamic';
 import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
 import { isDifferentVector } from 'src/entity/utils/isDifferentVector';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
+import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import { Vector3, Quaternion } from 'three';
 
 export class DynamicPositionController extends Controller {
@@ -18,6 +19,8 @@ export class DynamicPositionController extends Controller {
     super(engine, entity, name);
 
     this.entity.registerProperty(PositionProperty, this.defaultPosition);
+//    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
 
   private get surfaceFactor(): SurfaceFactor {
@@ -29,7 +32,7 @@ export class DynamicPositionController extends Controller {
     this.entity.setProperty(PositionProperty, new Vector3(x,y,z));
   }
 
-  update(deltaTime: number) {
+  tick(deltaTime: number) {
     const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
     const position = this.entity.getProperty<Vector3>(PositionProperty);
     const rotation = this.entity.getProperty<Quaternion>(RotationProperty);

@@ -1,5 +1,6 @@
 import { CameraRotationProperty, CameraPositionProperty } from 'src/entity/properties/camera';
 import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
+import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import { WindowEventSystem, WindowTopic, WindowResizeEvent } from 'src/system/WindowEventSystem';
 import { Controller } from 'src/engine/Controller';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
@@ -29,6 +30,9 @@ export class CameraController extends Controller {
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
     });
+
+    //    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
 
   get windowEventSystem(): WindowEventSystem {
@@ -43,21 +47,21 @@ export class CameraController extends Controller {
     this.target = targetEntity;
   }
 
-  calculateIdealOffset(targerPosition: Vector3, targetRotation: Quaternion): Vector3 {
+  private calculateIdealOffset(targerPosition: Vector3, targetRotation: Quaternion): Vector3 {
     const idealOffset = new Vector3(-0, 10, -15);
     idealOffset.applyQuaternion(targetRotation);
     idealOffset.add(targerPosition);
     return idealOffset;
   }
 
-  calculateIdealLookAt(targerPosition: Vector3, targetRotation: Quaternion): Vector3 {
+  private calculateIdealLookAt(targerPosition: Vector3, targetRotation: Quaternion): Vector3 {
     const idealLookAt = new Vector3(0, 5, 20);
     idealLookAt.applyQuaternion(targetRotation);
     idealLookAt.add(targerPosition);
     return idealLookAt;
   }
 
-  update(deltaTime: number) {
+  private tick(deltaTime: number) {
     if (!this.target) return;
     const entity = this.entity;
     const targetPosition = this.target.getProperty<Vector3>(PositionProperty)

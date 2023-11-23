@@ -3,6 +3,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { EntityActivity } from 'src/entity/properties/EntityActivity';
 import { DecelerationProperty, VelocityProperty, ActivityProperty } from 'src/entity/properties/dynamic';
+import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import { Vector3 } from 'three';
 
 export class ActivityDecelerationController extends Controller {
@@ -18,6 +19,8 @@ export class ActivityDecelerationController extends Controller {
     super(engine, entity, name);
 
     this.entity.registerProperty(DecelerationProperty, this.defaultDeceleration);
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
 
   private get velocity(): Vector3 {
@@ -28,7 +31,11 @@ export class ActivityDecelerationController extends Controller {
     return this.entity.getProperty(ActivityProperty);
   }
 
-  update() {
+  init() {
+    this.tick();
+  }
+
+  tick() {
     const status = this.activityStatus;
     const velocity = this.velocity;
     const deceleration = this.totalDeceleration.clone();

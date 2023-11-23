@@ -5,6 +5,7 @@ import { EntityActivity } from 'src/entity/properties/EntityActivity';
 import { ActivityProperty } from 'src/entity/properties/dynamic';
 import { RotationProperty } from 'src/entity/properties/visual';
 import { isDifferentQuaternion } from 'src/entity/utils/isDifferentQuaternion';
+import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import { Quaternion, Vector3 } from 'three';
 
 export class ActivityRotationController extends Controller {
@@ -20,9 +21,11 @@ export class ActivityRotationController extends Controller {
     super(engine, entity, name);
 
     this.entity.registerProperty(RotationProperty, this.defaultRotation);
+//    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
 
-  update(deltaTime: number) {
+  tick(deltaTime: number) {
     const activityStatus = this.entity.getProperty<EntityActivity>(ActivityProperty);
     const rotationMultiplier = new Quaternion();
     const rotationDirection = new Vector3(0, 1, 0);

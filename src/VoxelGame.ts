@@ -85,14 +85,11 @@ export class VoxelGame {
 
   // TODO MOVE into some Entity i think
   private subscribeRender() {
-    const tickSystem = this.gameEngine.systems.find(TickSystem);
     const cameraController = this.gameEngine.entities.get(EntityName.Environment).get<CameraController>(CameraController);
 
-    tickSystem.on<number>(TickSystemEvent.Tick, event => {
+    this.gameEngine.systems.find(TickSystem).on<number>(TickSystemEvent.Tick, () => {
       const scene = this.gameEngine.factors.find(SceneFactor).value;
       this.renderer.render(scene, cameraController.getCamera());
-      // TODO change to Watching system
-      this.gameEngine.update(event);
     })
   }
 
@@ -103,8 +100,6 @@ export class VoxelGame {
     environment.create(LightController);
     environment.create(SurfaceController);
     environment.create(SkyController);
-
-    this.gameEngine.entities.activate(environment);
   }
 
   @LogMethod({level: Level.info})
@@ -247,7 +242,6 @@ export class VoxelGame {
     //   experience: 0,
     //   level: 1,
     // }));
-    this.gameEngine.entities.activate(player);
     this.focusEnvironmentOn(player);
   }
 
@@ -286,6 +280,5 @@ export class VoxelGame {
     gui.create(FpsController);
     gui.create(CameraHudController);
     gui.create(CharacterHudController);
-    this.gameEngine.entities.activate(gui);
   }
 }

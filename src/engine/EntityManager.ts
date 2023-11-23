@@ -48,16 +48,6 @@ export class EntityManager {
     return entity;
   }
 
-  activate(entity: Entity) {
-    console.log(this.constructor.name, 'activate', entity.constructor.name, entity.name);
-    entity.isActive = true;
-  }
-
-  disactivate(entity: Entity) {
-    console.log(this.constructor.name, 'disactivate', entity.constructor.name, entity.name);
-    entity.isActive = false;
-  }
-
   private generateName(prefix: string) {
     this.idCounter += 1;
 

@@ -1,6 +1,8 @@
+import { Disposable } from 'src/emitter/SimpleEmitter';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
+import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { PositionProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import skyFragment from 'src/resources/sky.fs';
@@ -11,6 +13,7 @@ export class SkyController extends Controller {
     private backgroundColor = 0xffffcc;
     private skyColor = 0x15c5FF;
     private target: Entity | undefined;
+    private targetDisposable?: Disposable;
     private skySpere: Mesh;
     private skySphereLight: HemisphereLight;
 
@@ -21,7 +24,7 @@ export class SkyController extends Controller {
     ) {
         super(engine, entity, name);
 
-        this.skySpere = this.createSkySpere();
+        this.skySpere = this.createSkySphere();
         this.skySphereLight = this.createSkySphereLight();
 
         this.sceneFactor.add(this.skySpere, this.skySphereLight);
@@ -31,24 +34,23 @@ export class SkyController extends Controller {
         return this.engine.factors.find(SceneFactor);
     }
 
+    // TODO change to targetable controller ans entity subscription
     setTarget(targetEntity: Entity) {
         this.target = targetEntity;
+        this.targetDisposable?.dispose();
+        this.targetDisposable = this.target.on<UpdatePropertyEvent<Vector3>>(PositionProperty, this.targetPropertyChange.bind(this));
     }
 
-    update() {
-        if (!this.target) return;
-
-        const targetPosition = this.target.getProperty<Vector3>(PositionProperty);
-
-        this.skySpere.position.x = targetPosition.x;
-        this.skySpere.position.z = targetPosition.z;
+    private targetPropertyChange(event: UpdatePropertyEvent<Vector3>) {
+      this.skySpere.position.x = event.next.x;
+      this.skySpere.position.z = event.next.z;
     }
 
     private createSkySphereLight(): HemisphereLight {
         return new HemisphereLight(this.skyColor, this.backgroundColor, 0.6);
     }
 
-    private createSkySpere(): Mesh {
+    private createSkySphere(): Mesh {
         const skyGeo = new SphereGeometry(2000, 32, 32);
         const skyMat = new ShaderMaterial({
             uniforms: {

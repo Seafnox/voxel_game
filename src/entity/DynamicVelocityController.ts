@@ -3,6 +3,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { AccelerationProperty, DecelerationProperty, VelocityProperty } from 'src/entity/properties/dynamic';
 import { GravityFactor } from 'src/factor/GravityFactor';
+import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import { Vector3 } from 'three';
 
 export class DynamicVelocityController extends Controller {
@@ -16,13 +17,15 @@ export class DynamicVelocityController extends Controller {
     super(engine, entity, name);
 
     this.entity.registerProperty(VelocityProperty, this.defaultVelocity);
+//    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
 
   get gravityAcceleration(): Vector3 {
     return this.engine.factors.find(GravityFactor).value.clone();
   }
 
-  update(deltaTime: number) {
+  tick(deltaTime: number) {
     const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
 
     const frameAcceleration = this.entity.getProperty<Vector3>(AccelerationProperty).clone();

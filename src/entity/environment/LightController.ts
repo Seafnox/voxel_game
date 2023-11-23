@@ -1,3 +1,5 @@
+import { Disposable } from 'src/emitter/SimpleEmitter';
+import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { PositionProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { Controller } from 'src/engine/Controller';
@@ -8,6 +10,7 @@ import { GameEngine } from 'src/engine/GameEngine';
 export class LightController extends Controller {
   private lightColor = 0xeeffff;
   private target: Entity | undefined;
+  private targetDisposable?: Disposable;
   private light: DirectionalLight;
 
   constructor(
@@ -26,19 +29,18 @@ export class LightController extends Controller {
     return this.engine.factors.find(SceneFactor);
   }
 
+  // TODO change to targetable controller ans entity subscription
   setTarget(targetEntity: Entity) {
     this.target = targetEntity;
+    this.targetDisposable?.dispose();
+    this.targetDisposable = this.target.on<UpdatePropertyEvent<Vector3>>(PositionProperty, this.targetPropertyChange.bind(this));
   }
 
-  update() {
-    if (!this.target) return;
+  private targetPropertyChange(event: UpdatePropertyEvent<Vector3>) {
+    this.light.target.position.copy(event.next);
 
-    const targetPosition = this.target.getProperty<Vector3>(PositionProperty);
-    this.light.target.position.copy(targetPosition);
-
-    this.light.position.x = targetPosition.x;
-    this.light.position.z = targetPosition.z;
-
+    this.light.position.x = event.next.x;
+    this.light.position.z = event.next.z;
   }
 
   private createLight(): DirectionalLight {

@@ -27,6 +27,4 @@ export abstract class Controller<TEntity extends Entity = Entity> {
   get constructorName(): string {
     return this.constructor.name;
   }
-
-  update(deltaTime: number): void {}
 }

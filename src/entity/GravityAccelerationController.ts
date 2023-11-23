@@ -5,6 +5,7 @@ import { GravityAccelerationProperty } from 'src/entity/properties/dynamic';
 import { PositionProperty } from 'src/entity/properties/visual';
 import { GravityFactor } from 'src/factor/GravityFactor';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
+import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import { Vector3 } from 'three';
 
 export class GravityAccelerationController extends Controller {
@@ -20,6 +21,33 @@ export class GravityAccelerationController extends Controller {
     super(engine, entity, name);
 
     this.entity.registerProperty(GravityAccelerationProperty, this.defaultAcceleration);
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
+  }
+
+  init() {
+    this.tick();
+  }
+
+  tick() {
+    const acceleration = this.gravity.clone();
+    const playerPosition = this.entityPosition.clone();
+    const surfacePosition = this.nearestSurfacePosition.clone();
+
+    if (this.playerOnSurface(playerPosition, surfacePosition)) {
+      acceleration.multiplyScalar(0);
+    } else {
+      if (this.playerUnderSurface(playerPosition, surfacePosition)) {
+        acceleration.multiplyScalar(-this.distanceMultiplier);
+      }
+
+      acceleration.multiplyScalar(Math.min(
+        this.getDistanceBetweenPlayerAndSurface(playerPosition, surfacePosition)*this.distanceMultiplier,
+        acceleration.length()
+      ))
+    }
+
+    this.entity.setProperty(GravityAccelerationProperty, acceleration);
   }
 
   private get entityPosition(): Vector3 {
@@ -40,27 +68,6 @@ export class GravityAccelerationController extends Controller {
 
   private get gravity(): Vector3 {
     return this.engine.factors.find(GravityFactor).value;
-  }
-
-  update() {
-    const acceleration = this.gravity.clone();
-    const playerPosition = this.entityPosition.clone();
-    const surfacePosition = this.nearestSurfacePosition.clone();
-
-    if (this.playerOnSurface(playerPosition, surfacePosition)) {
-      acceleration.multiplyScalar(0);
-    } else {
-      if (this.playerUnderSurface(playerPosition, surfacePosition)) {
-        acceleration.multiplyScalar(-this.distanceMultiplier);
-      }
-
-      acceleration.multiplyScalar(Math.min(
-        this.getDistanceBetweenPlayerAndSurface(playerPosition, surfacePosition)*this.distanceMultiplier,
-        acceleration.length()
-      ))
-    }
-
-    this.entity.setProperty(GravityAccelerationProperty, acceleration);
   }
 
   private playerOnSurface(playerPosition: Vector3, surfacePosition: Vector3): boolean {

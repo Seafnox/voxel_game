@@ -4,6 +4,7 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { RotationProperty, ModelReadyProperty, ModelProperty, PositionProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
+import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import { Level } from 'src/utils/logger/Level';
 import { LogMethod } from 'src/utils/logger/LogMethod';
 import {
@@ -54,6 +55,8 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
 
     this.entity.on(PositionProperty, this.onPositionChange.bind(this));
     this.entity.on(RotationProperty, this.onRotationChange.bind(this));
+//    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
 
   get sceneFactor(): SceneFactor {
@@ -68,7 +71,30 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
     this.loadModels(config);
   }
 
+  @LogMethod({level: Level.info})
+  setActiveAnimation(animationName: string) {
+    const animations = this.animationMap;
+
+    if (!animations[animationName]) {
+      console.warn(`Can't find animation '${animationName}' in list [${Object.keys(animations).join(', ')}]`);
+      return;
+    }
+
+    this.setActiveAnimationTrusted(animationName);
+  }
+
+  protected tick(deltaTime: number) {
+    this.mixer?.update(deltaTime / 1000);
+  }
+
   protected abstract loadModels(config: TConfig): void;
+
+  protected addAnimation(animationClip: AnimationClip): void {
+    const mixer = this.getMixerOrThrow();
+
+    console.log(this.constructorName, 'Add animation', this.entity.name, animationClip.name);
+    this.animationMap[animationClip.name] = mixer.clipAction(animationClip);
+  }
 
   protected onPositionChange(event: UpdatePropertyEvent<Vector3>) {
     this.model?.position.copy(event.next);
@@ -150,28 +176,5 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
 
     this.activeAnimation.play();
     prevAnimation?.stop();
-  }
-
-  addAnimation(animationClip: AnimationClip): void {
-    const mixer = this.getMixerOrThrow();
-
-    console.log(this.constructorName, 'Add animation', this.entity.name, animationClip.name);
-    this.animationMap[animationClip.name] = mixer.clipAction(animationClip);
-  }
-
-  @LogMethod({level: Level.info})
-  setActiveAnimation(animationName: string) {
-    const animations = this.animationMap;
-
-    if (!animations[animationName]) {
-      console.warn(`Can't find animation '${animationName}' in list [${Object.keys(animations).join(', ')}]`);
-      return;
-    }
-
-    this.setActiveAnimationTrusted(animationName);
-  }
-
-  update(deltaTime: number) {
-    this.mixer?.update(deltaTime / 1000);
   }
 }
