@@ -132,7 +132,7 @@ export class SurfaceFactor implements Factor<SurfaceMap> {
     const empty: SurfacePoint = {
       x: xMap,
       y: yMap,
-      height: -1,
+      height: -0.1,
     };
 
     if (xMap > this.mapSize-1 || yMap > this.mapSize-1) {
