@@ -1,9 +1,10 @@
-import { Factor } from 'src/engine/Factor';
-import { SpatialHashGrid } from 'src/entity/grid/SpatialHashGrid';
-import { VMath } from 'src/VMath';
-import { SurfaceMap, SurfacePoint, SurfaceBuilder } from './SurfaceBuilder';
+import { Factor } from '../../engine/Factor';
+import { RGBColor } from './RGBColor';
+import { SurfaceEntry, surfaceEntries } from './TempSurfaceConstant';
+import { VMath } from '../../VMath';
+import { SurfaceMap, SurfaceBuilder, SurfacePoint } from './SurfaceBuilder';
 
-export interface SurfaceLocation {
+export interface SurfaceMapLocation {
   leftTop: SurfacePoint;
   leftBottom: SurfacePoint;
   rightTop: SurfacePoint;
@@ -17,17 +18,11 @@ export interface SurfaceLocation {
 export class SurfaceFactor implements Factor<SurfaceMap> {
   private _mapSize: number = 0;
   private _surfaceSize: number = 0;
-  private _gridSize: number = 0;
-  private _gridDimension: number = 0;
   private _surfaceScale: number = 0;
   private _surfaceMap: SurfaceMap = [];
-  private _grid: SpatialHashGrid = this.createSpatialGrid();
 
   get value(): SurfaceMap {
     return this._surfaceMap;
-  }
-  get grid(): SpatialHashGrid {
-    return this._grid;
   }
 
   get mapSize(): number {
@@ -45,16 +40,14 @@ export class SurfaceFactor implements Factor<SurfaceMap> {
   get surfaceMap(): SurfaceMap {
     return this._surfaceMap;
   }
+
   generateSurface(
     mapSize: number,
     surfaceSize: number,
   ) {
     this._mapSize = mapSize;
     this._surfaceSize = surfaceSize;
-    this._gridSize = this.surfaceSize / 4;
-    this._gridDimension = this.surfaceSize / this.mapSize;
     this._surfaceScale = this.surfaceSize / this.mapSize;
-    this._grid = this.createSpatialGrid();
     const surfaceBuilder = new SurfaceBuilder(0.003 * this._surfaceScale);
     this._surfaceMap = surfaceBuilder.getSurfaceMap(this.mapSize, this.mapSize);
   }
@@ -62,85 +55,104 @@ export class SurfaceFactor implements Factor<SurfaceMap> {
   getZCord(xCord: number, yCord: number): number {
     return this.getZCordByLocation(this.getSurfaceLocation(xCord, yCord))
   }
+
+  getSurfaceMapHeight(x: number, y: number): number {
+    return this.getHeightByLocation(this.getSurfaceMapLocation(x, y));
+  }
+
+  getSurfaceMapColor(x: number, y: number): RGBColor {
+    return this.heightToColor(this.getSurfaceMapHeight(x, y));
+  }
+
   getCordToMap(cord: number): number {
     return cord * (this.mapSize/this.surfaceSize) + this.mapSize/2;
   }
 
-  getSurfaceLocation(xCord: number, yCord: number): SurfaceLocation {
+  getMapToCord(mapCord: number): number {
+    return mapCord * (this.surfaceSize/this.mapSize) - this.surfaceSize/2;
+  }
+
+  getSurfaceLocation(xCord: number, yCord: number): SurfaceMapLocation {
     const x = this.getCordToMap(xCord);
     const y = this.getCordToMap(yCord);
+
+    return this.getSurfaceMapLocation(x,y);
+  }
+
+  getSurfaceMapLocation(x: number, y: number): SurfaceMapLocation {
     const bottomX = Math.floor(x);
     const leftY = Math.floor(y);
-    const topX = bottomX + 1;
-    const rightY = leftY + 1;
+    const topX = bottomX === x ? x : bottomX + 1;
+    const rightY = leftY === y ? y : leftY + 1;
 
     return {
-      leftTop: this.getSurfacePoint(topX, leftY),
-      leftBottom: this.getSurfacePoint(bottomX, leftY),
-      rightTop: this.getSurfacePoint(topX, rightY),
-      rightBottom: this.getSurfacePoint(bottomX, rightY),
+      leftTop: this.getSurfacePosition(topX, leftY),
+      leftBottom: this.getSurfacePosition(bottomX, leftY),
+      rightTop: this.getSurfacePosition(topX, rightY),
+      rightBottom: this.getSurfacePosition(bottomX, rightY),
       position: {x,y},
     }
-
   }
 
-  getSurfacePoint(xMap: number, yMap: number): SurfacePoint {
-    if (xMap > this.mapSize-1 || yMap > this.mapSize-1) {
-      return this.getEmptyPoint(xMap, yMap);
-    }
-
-    if (xMap < 0 || yMap < 0) {
-      return this.getEmptyPoint(xMap, yMap);
-    }
-
-    return this._surfaceMap[xMap][yMap];
+  private heightToColor(height: number): RGBColor {
+    const surfaceEntry: SurfaceEntry | undefined = surfaceEntries.find(surfaceKV => surfaceKV[0] > height);
+    return surfaceEntry?.[1] || [0, 0, 0]; // бездна;
   }
 
-  getEmptyPoint(x: number, y: number): SurfacePoint {
-    return {
-      value: 0,
-      color: [0,0,0],
-      x,
-      y,
-    }
-  }
-
-  getZCordByLocation(area: SurfaceLocation): number {
-    const bottomDiff = Math.abs(area.position.x - area.leftBottom.x);
+  private getHeightByLocation(area: SurfaceMapLocation): number {
+    const {x: leftX, y: bottomY} = area.leftBottom;
+    const bottomDiff = Math.abs(area.position.x - leftX);
     const topDiff = 1 - bottomDiff;
-    const leftDiff = Math.abs(area.position.y - area.leftBottom.y);
+    const leftDiff = Math.abs(area.position.y - bottomY);
     const rightDiff = 1 - leftDiff;
-    const leftTopZ = this.getZCordByPoint(area.leftTop);
-    const leftBottomZ = this.getZCordByPoint(area.leftBottom);
-    const rightTopZ = this.getZCordByPoint(area.rightTop);
-    const rightBottomZ = this.getZCordByPoint(area.rightBottom);
+    const leftTopHeight = area.leftTop.height;
+    const leftBottomHeight = area.leftBottom.height;
+    const rightTopHeight = area.rightTop.height;
+    const rightBottomHeight = area.rightBottom.height;
 
     if (bottomDiff + leftDiff < 1) {
       return [
-        leftTopZ * bottomDiff,
-        leftBottomZ * rightDiff,
-        - leftBottomZ * bottomDiff,
-        rightBottomZ * leftDiff,
+        leftTopHeight * bottomDiff,
+        leftBottomHeight * rightDiff,
+        - leftBottomHeight * bottomDiff,
+        rightBottomHeight * leftDiff,
       ].reduce((a, b) => a + b, 0);
 
     }
 
     return [
-      leftTopZ * rightDiff,
-      rightTopZ * leftDiff,
-      - rightTopZ * topDiff,
-      rightBottomZ * topDiff,
+      leftTopHeight * rightDiff,
+      rightTopHeight * leftDiff,
+      - rightTopHeight * topDiff,
+      rightBottomHeight * topDiff,
     ].reduce((a, b) => a + b, 0);
   }
 
-  getZCordByPoint(point: SurfacePoint): number {
-    return VMath.lerp(point.value, -150, 150);
+  private getSurfacePosition(xMap: number, yMap: number): SurfacePoint {
+    const empty: SurfacePoint = {
+      x: xMap,
+      y: yMap,
+      height: -1,
+    };
+
+    if (xMap > this.mapSize-1 || yMap > this.mapSize-1) {
+      return empty;
+    }
+
+    if (xMap < 0 || yMap < 0) {
+      return empty;
+    }
+
+    return this._surfaceMap[xMap][yMap];
   }
 
-  private createSpatialGrid(): SpatialHashGrid {
-    return new SpatialHashGrid(
-      [[-this._gridSize, -this._gridSize], [this._gridSize, this._gridSize]],
-      [this._gridDimension, this._gridDimension]
-    );
+  private getZCordByLocation(area: SurfaceMapLocation): number {
+    const {x, y} = area.position;
+    const height = this.getHeightByLocation(area);
+    return this.getZCordByPosition({x, y, height});
+  }
+
+  private getZCordByPosition({height}: SurfacePoint): number {
+    return VMath.lerp(height, -150, 150);
   }
 }
