@@ -56,14 +56,15 @@ export class SurfaceController extends Controller {
 
   private createSurfaceGeometry(): ParametricGeometry {
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
-      const x = (percentX - 0.5) * (this.surfaceFactor.mapSize-1) * this.surfaceFactor.surfaceScale;
-      const y = (percentY - 0.5) * (this.surfaceFactor.mapSize-1) * this.surfaceFactor.surfaceScale;
+      const x = this.surfaceFactor.getMapToCord(percentX * this.surfaceFactor.mapSize);
+      const y = this.surfaceFactor.getMapToCord(percentY * this.surfaceFactor.mapSize);
       const z = this.surfaceFactor.getZCord(x,y);
       target.set(x, z, y);
     };
     return new ParametricGeometry(calculatePoint, this.surfaceFactor.mapSize*2, this.surfaceFactor.mapSize*2);
   }
 
+  // TODO make more smooth texture
   private createSurfaceTexture(): Texture {
     const size = this.surfaceFactor.mapSize * this.surfaceFactor.mapSize;
     const data = new Uint8Array( 4 * size );
@@ -71,7 +72,7 @@ export class SurfaceController extends Controller {
     for ( let x = 0; x < this.surfaceFactor.mapSize; x++ ) {
       for ( let y = 0; y < this.surfaceFactor.mapSize; y++ ) {
         const stride = (y * this.surfaceFactor.mapSize + x) * 4;
-        const color = this.surfaceFactor.getSurfacePoint(x,y).color;
+        const color = this.surfaceFactor.getSurfaceMapColor(x,y);
         data[ stride ] = color[0];
         data[ stride + 1 ] = color[1];
         data[ stride + 2 ] = color[2];

@@ -1,17 +1,12 @@
 import { createNoise3D, NoiseFunction3D } from 'simplex-noise';
-import { RGBColor } from './RGBColor';
-import { surfaceEntries, SurfaceEntry } from './TempSurfaceConstant';
 
 export type SurfaceMap = SurfacePoint[][];
 
 export interface SurfacePoint {
-  color: RGBColor;
-  value: number;
   x: number;
   y: number;
+  height: number;
 }
-
-type Surface3dPosition = [number, number, number];
 
 export class SurfaceBuilder {
 
@@ -31,18 +26,13 @@ export class SurfaceBuilder {
     ];
   }
 
-  getSurfaceMap(mapWidth: number, mapHeight: number): SurfacePoint[][] {
-    const rgbMap: SurfacePoint[][] = [];
+  getSurfaceMap(mapWidth: number, mapHeight: number): SurfaceMap {
+    const rgbMap: SurfaceMap = [];
     for (let x = 0; x < mapWidth; x++) {
       rgbMap[x] = [];
       for (let y = 0; y < mapHeight; y++) {
-        const value = this.getValue(...this.xyToXyz(mapWidth, mapHeight, x, y));
-        rgbMap[x][y] = {
-          color: this.valueToColor(value),
-          value,
-          x,
-          y,
-        };
+        const height = this.getValue(this.xyToXyz(mapWidth, mapHeight, x, y));
+        rgbMap[x][y] = {x, y, height};
       }
     }
     return rgbMap;
@@ -53,24 +43,18 @@ export class SurfaceBuilder {
     return (x, y, z) => (simplex(x * zoom, y * zoom, z * zoom) + 1) * scalar / 120;
   }
 
-  private getValue(...[x, y, z]: Surface3dPosition) {
-    return this.simplexes.map(s => s(x, y, z)).reduce((a, b) => a + b, 0);
+  private getValue({x, y, height}: SurfacePoint) {
+    return this.simplexes.map(s => s(x, y, height)).reduce((a, b) => a + b, 0);
   }
 
-  private valueToColor(value: number): RGBColor {
-    // return [value * 255, value * 255, value * 255]
-    const surfaceEntry: SurfaceEntry | undefined = surfaceEntries.find(surfaceKV => surfaceKV[0] > value);
-    return surfaceEntry?.[1] || [0, 0, 0]; // бездна;
-  }
-
-  private xyToXyz(mapWidth: number, mapHeight: number, coordX: number, coordY: number): Surface3dPosition {
+  private xyToXyz(mapWidth: number, mapHeight: number, coordX: number, coordY: number): SurfacePoint {
     const w = (coordX + 0.5) / mapWidth;
     const h = (coordY + 0.5) / mapHeight;
     const x = Math.cos(h * Math.PI);
     const hr = w * 2 * Math.PI;
     const r = Math.sqrt(1 - h * h);
     const y = r * Math.cos(hr);
-    const z = r * Math.sin(hr);
-    return [x, y, z];
+    const height = r * Math.sin(hr);
+    return {x, y, height};
   }
 }

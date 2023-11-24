@@ -12,6 +12,7 @@ import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { DynamicVelocityController } from 'src/entity/DynamicVelocityController';
 import { SceneFactor } from 'src/factor/SceneFactor';
+import { SpatialFactor } from 'src/factor/SpatialFactor';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
@@ -74,6 +75,8 @@ export class VoxelGame {
     this.gameEngine.factors.create(GravityFactor);
     this.gameEngine.factors.create(SurfaceFactor)
       .generateSurface(500, 5000);
+    this.gameEngine.factors.create(SpatialFactor)
+      .generateGrid(1000, 10);
   }
 
   private initSystems() {
