@@ -1,6 +1,6 @@
 import { Disposable } from 'src/emitter/SimpleEmitter';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { PositionProperty } from 'src/entity/properties/visual';
+import { PositionProperty, FocusEntityProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { Controller } from 'src/engine/Controller';
 import { DirectionalLight, Vector3 } from 'three';
@@ -9,7 +9,6 @@ import { GameEngine } from 'src/engine/GameEngine';
 
 export class LightController extends Controller {
   private lightColor = 0xeeffff;
-  private target: Entity | undefined;
   private targetDisposable?: Disposable;
   private light: DirectionalLight;
 
@@ -23,20 +22,25 @@ export class LightController extends Controller {
     this.light = this.createLight();
 
     this.sceneFactor.add(this.light, this.light.target);
+    this.entity.on(FocusEntityProperty, this.onTargetChange.bind(this));
   }
 
   get sceneFactor(): SceneFactor {
     return this.engine.factors.find(SceneFactor);
   }
 
-  // TODO change to targetable controller and entity subscription
-  setTarget(targetEntity: Entity) {
-    this.target = targetEntity;
+  private onTargetChange(event: UpdatePropertyEvent<Entity | undefined>) {
     this.targetDisposable?.dispose();
-    this.targetDisposable = this.target.on<UpdatePropertyEvent<Vector3>>(PositionProperty, this.targetPropertyChange.bind(this));
+    if (event.next) {
+      this.targetDisposable = event.next?.on<UpdatePropertyEvent<Vector3>>(PositionProperty, this.targetPositionChange.bind(this));
+      this.targetPositionChange({
+        prev: undefined,
+        next: event.next?.getProperty<Vector3>(PositionProperty),
+      })
+    }
   }
 
-  private targetPropertyChange(event: UpdatePropertyEvent<Vector3>) {
+  private targetPositionChange(event: UpdatePropertyEvent<Vector3>) {
     this.light.target.position.copy(event.next);
 
     this.light.position.x = event.next.x;

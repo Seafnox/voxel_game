@@ -1,5 +1,6 @@
+import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { CameraRotationProperty, CameraPositionProperty } from 'src/entity/properties/camera';
-import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
+import { PositionProperty, RotationProperty, FocusEntityProperty } from 'src/entity/properties/visual';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import { WindowEventSystem, WindowTopic, WindowResizeEvent } from 'src/system/WindowEventSystem';
 import { Controller } from 'src/engine/Controller';
@@ -31,8 +32,9 @@ export class CameraController extends Controller {
       this.camera.updateProjectionMatrix();
     });
 
-    //    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
+//    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
+    this.entity.on(FocusEntityProperty, this.onTargetChange.bind(this));
   }
 
   get windowEventSystem(): WindowEventSystem {
@@ -43,9 +45,8 @@ export class CameraController extends Controller {
     return this.camera;
   }
 
-  // TODO change to targetable controller and entity subscription
-  setTarget(targetEntity: Entity) {
-    this.target = targetEntity;
+  private onTargetChange(event: UpdatePropertyEvent<Entity | undefined>) {
+    this.target = event.next;
   }
 
   private calculateIdealOffset(targerPosition: Vector3, targetRotation: Quaternion): Vector3 {

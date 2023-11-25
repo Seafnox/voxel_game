@@ -3,7 +3,7 @@ import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { PositionProperty } from 'src/entity/properties/visual';
+import { PositionProperty, FocusEntityProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import skyFragment from 'src/resources/sky.fs';
 import skyVertex from 'src/resources/sky.vs';
@@ -12,7 +12,6 @@ import { HemisphereLight, Mesh, SphereGeometry, ShaderMaterial, BackSide, Color,
 export class SkyController extends Controller {
   private backgroundColor = 0xffffcc;
   private skyColor = 0x15c5FF;
-  private target: Entity | undefined;
   private targetDisposable?: Disposable;
   private skySpere: Mesh;
   private skySphereLight: HemisphereLight;
@@ -28,20 +27,25 @@ export class SkyController extends Controller {
     this.skySphereLight = this.createSkySphereLight();
 
     this.sceneFactor.add(this.skySpere, this.skySphereLight);
+    this.entity.on(FocusEntityProperty, this.onTargetChange.bind(this));
   }
 
   get sceneFactor(): SceneFactor {
     return this.engine.factors.find(SceneFactor);
   }
 
-  // TODO change to targetable controller and entity subscription
-  setTarget(targetEntity: Entity) {
-    this.target = targetEntity;
+  private onTargetChange(event: UpdatePropertyEvent<Entity | undefined>) {
     this.targetDisposable?.dispose();
-    this.targetDisposable = this.target.on<UpdatePropertyEvent<Vector3>>(PositionProperty, this.targetPropertyChange.bind(this));
+    if (event.next) {
+      this.targetDisposable = event.next?.on<UpdatePropertyEvent<Vector3>>(PositionProperty, this.targetPositionChange.bind(this));
+      this.targetPositionChange({
+        prev: undefined,
+        next: event.next?.getProperty<Vector3>(PositionProperty),
+      })
+    }
   }
 
-  private targetPropertyChange(event: UpdatePropertyEvent<Vector3>) {
+  private targetPositionChange(event: UpdatePropertyEvent<Vector3>) {
     this.skySpere.position.x = event.next.x;
     this.skySpere.position.z = event.next.z;
   }

@@ -1,4 +1,5 @@
 import { SkyController } from 'src/entity/environment/SkyController';
+import { FocusableController } from 'src/entity/FocusableController';
 import { FbxModelController } from 'src/entity/models/FbxModelController';
 import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
 import { StateController } from 'src/entity/state/StateController';
@@ -99,6 +100,7 @@ export class VoxelGame {
   private initEnvironment(): void {
     const environment = this.gameEngine.entities.create(Entity, EntityName.Environment);
 
+    environment.create(FocusableController);
     environment.create(CameraController);
     environment.create(LightController);
     environment.create(SurfaceController);
@@ -248,12 +250,9 @@ export class VoxelGame {
     this.focusEnvironmentOn(player);
   }
 
-  // TODO convert code to one time action or send responsibility in controller.
   private focusEnvironmentOn(target: Entity) {
     const environment = this.gameEngine.entities.get(EntityName.Environment);
-    environment.get<CameraController>(CameraController).setTarget(target);
-    environment.get<LightController>(LightController).setTarget(target);
-    environment.get<SkyController>(SkyController).setTarget(target);
+    environment.get<FocusableController>(FocusableController).focusOn(target);
   }
 
   @LogMethod({level: Level.info})
