@@ -66,12 +66,15 @@ export class SurfaceController extends Controller {
 
   // TODO make more smooth texture
   private createSurfaceTexture(): Texture {
-    const size = this.surfaceFactor.mapSize * this.surfaceFactor.mapSize;
-    const data = new Uint8Array( 4 * size );
+    const mapSize = this.surfaceFactor.mapSize;
+    const scale = 16;
+    const colorScale = 4;
+    const imageSize = mapSize * mapSize;
+    const data = new Uint8Array( colorScale * imageSize * scale * scale );
 
-    for ( let x = 0; x < this.surfaceFactor.mapSize; x++ ) {
-      for ( let y = 0; y < this.surfaceFactor.mapSize; y++ ) {
-        const stride = (y * this.surfaceFactor.mapSize + x) * 4;
+    for ( let x = 0; x < mapSize; x += 1/scale ) {
+      for ( let y = 0; y < mapSize; y += 1/scale ) {
+        const stride = (y * mapSize * scale + x) * colorScale * scale;
         const color = this.surfaceFactor.getSurfaceMapColor(x,y);
         data[ stride ] = color[0];
         data[ stride + 1 ] = color[1];
@@ -81,7 +84,7 @@ export class SurfaceController extends Controller {
     }
 
     // used the buffer to create a DataTexture
-    const texture = new DataTexture( data, this.surfaceFactor.mapSize, this.surfaceFactor.mapSize );
+    const texture = new DataTexture( data, mapSize * scale, mapSize * scale);
     texture.needsUpdate = true;
 
     return texture;
