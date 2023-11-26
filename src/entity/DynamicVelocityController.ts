@@ -8,7 +8,7 @@ import { Vector3 } from 'three';
 
 export class DynamicVelocityController extends Controller {
   private deltaTimeScalar = 1000;
-  private defaultVelocity = new Vector3(0, 0, 0);
+  private defaultVelocity = new Vector3(0, -100, 0);
   constructor(
     engine: GameEngine,
     entity: Entity,
