@@ -43,6 +43,7 @@ export class SurfaceController extends Controller {
   private createSurfaceWireframeMesh(): Mesh {
     const geometry = this.createSurfaceGeometry();
     const material = new MeshBasicMaterial({
+      color: 0x000000,
       wireframe: true,
       wireframeLinewidth: 4,
     });
