@@ -55,13 +55,14 @@ export class SurfaceController extends Controller {
   }
 
   private createSurfaceGeometry(): ParametricGeometry {
+    const mapSize = this.surfaceFactor.mapSize;
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
-      const x = this.surfaceFactor.getMapToCord(percentX * (this.surfaceFactor.mapSize-1));
-      const y = this.surfaceFactor.getMapToCord(percentY * (this.surfaceFactor.mapSize-1));
+      const x = this.surfaceFactor.getMapToCord(percentX * (mapSize));
+      const y = this.surfaceFactor.getMapToCord(percentY * (mapSize));
       const z = this.surfaceFactor.getZCord(x,y);
       target.set(x, z, y);
     };
-    return new ParametricGeometry(calculatePoint, this.surfaceFactor.mapSize, this.surfaceFactor.mapSize);
+    return new ParametricGeometry(calculatePoint, mapSize, mapSize);
   }
 
   // TODO make more smooth texture
