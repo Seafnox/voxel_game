@@ -3,8 +3,9 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
-import { Mesh, Vector3, BackSide, Texture, DataTexture, MeshStandardMaterial, MeshBasicMaterial } from 'three';
+import { Mesh, Vector3, BackSide, Texture, DataTexture, MeshStandardMaterial, MeshBasicMaterial, DoubleSide } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
+import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 
 export class SurfaceController extends Controller {
   private surfaceFactor: SurfaceFactor;
@@ -22,6 +23,24 @@ export class SurfaceController extends Controller {
 
     this.sceneFactor.add(this.createSurfaceWireframeMesh());
     this.sceneFactor.add(this.createSurfaceMesh());
+    this.sceneFactor.add(this.createWaterMesh());
+  }
+
+  private createWaterMesh(): Mesh {
+    const geometry = this.createWaterGeometry();
+    const material = new MeshPhongMaterial({
+      color: 0x66aaff,
+      side: DoubleSide,
+      transparent: true,
+      opacity: .8,
+      flatShading: true,
+    });
+    const surfaceMesh = new Mesh(geometry, material);
+
+    surfaceMesh.castShadow = false;
+    surfaceMesh.receiveShadow = true;
+
+    return surfaceMesh;
   }
 
   // TODO FEATURE add target position check and entity subscription
@@ -43,7 +62,7 @@ export class SurfaceController extends Controller {
   private createSurfaceWireframeMesh(): Mesh {
     const geometry = this.createSurfaceGeometry();
     const material = new MeshBasicMaterial({
-      color: 0x000000,
+      color: 0x666666,
       wireframe: true,
       wireframeLinewidth: 4,
     });
@@ -53,6 +72,17 @@ export class SurfaceController extends Controller {
     surfaceMesh.receiveShadow = true;
 
     return surfaceMesh;
+  }
+
+  private createWaterGeometry(): ParametricGeometry {
+    const mapSize = this.surfaceFactor.mapSize;
+    const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
+      const x = this.surfaceFactor.getMapToCord(percentX * (mapSize));
+      const y = this.surfaceFactor.getMapToCord(percentY * (mapSize));
+      const z = Math.random() * 2 - 8;
+      target.set(x, z, y);
+    };
+    return new ParametricGeometry(calculatePoint, mapSize, mapSize);
   }
 
   private createSurfaceGeometry(): ParametricGeometry {
