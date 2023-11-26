@@ -16,13 +16,13 @@ export class SurfaceBuilder {
     mapSize: number,
   ) {
     this.simplexes = [
-      this.newSimplex(1 * mapSize, 0.5), // 2 * 10 / 10
-      this.newSimplex(2 * mapSize, 0.525), // 2 * 200 / 210
-      this.newSimplex(4 * mapSize, 1.55), // 2 * 100 / 310
-      this.newSimplex(8 * mapSize, 3.6), // 2 * 50 / 360
-      this.newSimplex(16 * mapSize, 9.5), // 2 * 20 / 380
-      this.newSimplex(32 * mapSize, 19.5), // 2 * 10 / 390
-      this.newSimplex(64 * mapSize, 39.5), // 2 * 5 / 395
+      this.newSimplex(1 * mapSize, 0.00625), // 2 * 10 / 10
+      this.newSimplex(2 * mapSize, 0.0175), // 2 * 200 / 210
+      this.newSimplex(4 * mapSize, 0.025), // 2 * 100 / 310
+      this.newSimplex(8 * mapSize, 0.045), // 2 * 50 / 360
+      this.newSimplex(16 * mapSize, 0.15), // 2 * 20 / 380
+      this.newSimplex(32 * mapSize, 0.155), // 2 * 10 / 390
+      this.newSimplex(64 * mapSize, 0.30), // 2 * 5 / 395
     ];
   }
 
@@ -31,7 +31,7 @@ export class SurfaceBuilder {
     for (let x = 0; x < mapWidth; x++) {
       rgbMap[x] = [];
       for (let y = 0; y < mapHeight; y++) {
-        const height = this.getValue(this.xyToXyz(mapWidth, mapHeight, x, y));
+        const height = this.getHeight(this.xyToXyz(mapWidth, mapHeight, x, y)) * (1 + Math.random()*0.02);
         rgbMap[x][y] = {x, y, height};
       }
     }
@@ -40,10 +40,10 @@ export class SurfaceBuilder {
 
   private newSimplex(zoom: number, scalar: number): NoiseFunction3D {
     const simplex = createNoise3D();
-    return (x, y, z) => (simplex(x * zoom, y * zoom, z * zoom) + 1) * scalar / 120;
+    return (x, y, z) => (simplex(x * zoom, y * zoom, z * zoom) + 1) * scalar;
   }
 
-  private getValue({x, y, height}: SurfacePoint) {
+  private getHeight({x, y, height}: SurfacePoint) {
     return this.simplexes.map(s => s(x, y, height)).reduce((a, b) => a + b, 0);
   }
 
