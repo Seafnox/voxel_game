@@ -75,7 +75,7 @@ export class VoxelGame {
     this.gameEngine.factors.create(SceneFactor);
     this.gameEngine.factors.create(GravityFactor);
     this.gameEngine.factors.create(SurfaceFactor)
-      .generateSurface(500, 5000);
+      .generateSurface(400, 4000);
     this.gameEngine.factors.create(SpatialFactor)
       .generateGrid(1000, 10);
   }
