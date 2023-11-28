@@ -1,5 +1,7 @@
 export class VMath {
   static epsilon: number = 0.02;
+  static superEpsilon: number = 0.002;
+  static megaEpsilon: number = 0.00002;
 
   static rand_range(min: number, max: number) {
     return VMath.lerp(Math.random(), min, max);

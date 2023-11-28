@@ -35,10 +35,12 @@ export class ActivityRotationController extends Controller {
 
     if (activityStatus.left) {
       rotationMultiplier.setFromAxisAngle(rotationDirection, rotationAngle);
+//      console.log('left', rotationAngle, rotationMultiplier.toArray().toString());
     }
 
     if (activityStatus.right) {
       rotationMultiplier.setFromAxisAngle(rotationDirection, -rotationAngle);
+//      console.log('right', rotationAngle, rotationMultiplier.toArray().toString());
     }
 
     calculatedRotation.multiply(rotationMultiplier);
