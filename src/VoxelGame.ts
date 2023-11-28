@@ -1,3 +1,5 @@
+import { CollisionFactor } from 'src/collision/CollisionFactor';
+import { CollisionModelController } from 'src/entity/CollisionModelController';
 import { SkyController } from 'src/entity/environment/SkyController';
 import { FocusableController } from 'src/entity/FocusableController';
 import { FbxModelController } from 'src/entity/models/FbxModelController';
@@ -78,6 +80,7 @@ export class VoxelGame {
       .generateSurface(400, 4000);
     this.gameEngine.factors.create(SpatialFactor)
       .generateGrid(1000, 10);
+    this.gameEngine.factors.create(CollisionFactor);
   }
 
   private initSystems() {
@@ -180,8 +183,17 @@ export class VoxelGame {
       const tree = this.gameEngine.entities.create(Entity, `tree_${i}`);
       tree.setProperty(PositionProperty, pos);
       tree.setProperty(RotationProperty, new Quaternion(0,0,0,1));
-
       tree.create(SpatialGridController);
+      tree.create(CollisionModelController)
+        .add({
+          size: new Vector3(10, 55, 10),
+          offset: new Vector3(0, -5, 0),
+        })
+        .add({
+          size: new Vector3(50, 10, 50),
+          offset: new Vector3(0, 50, 0),
+        });
+
       const modelController = tree.create(FbxModelController);
       modelController.modelConfig = {
         resourcePath: './resources/trees/',
@@ -218,6 +230,10 @@ export class VoxelGame {
     player.create(DynamicVelocityController);
     player.create(DynamicPositionController).setNearest(0,0);
     player.create(SpatialGridController);
+    player.create(CollisionModelController)
+      .add({
+        size: new Vector3(6, 9.5, 6),
+      });
 
     modelController.modelConfig = {
       resourcePath: './resources/units/',

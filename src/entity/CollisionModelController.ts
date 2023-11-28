@@ -4,7 +4,8 @@ import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { PositionProperty } from 'src/entity/properties/visual';
-import { Vector3 } from 'three';
+import { SceneFactor } from 'src/factor/SceneFactor';
+import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial } from 'three';
 
 export interface CollisionBoxConfig {
   size: Vector3;
@@ -15,6 +16,7 @@ export class CollisionModelController extends Controller {
   private _boxes: CollisionBox[] = [];
   private _boxConfigs: Record<string, CollisionBoxConfig> = {};
   private idCounter = 0;
+  private _meshes: Record<string, Mesh> = {};
 
   constructor(
     engine: GameEngine,
@@ -26,41 +28,56 @@ export class CollisionModelController extends Controller {
     this.entity.on(PositionProperty, this.positionChanges.bind(this));
   }
 
-  get entityName(): string {
-    return this.entity.name;
-  }
-
-  get entityPosition(): Vector3 {
-    return this.entity.getProperty<Vector3>(PositionProperty);
-  }
-
-  get collisionFactor(): CollisionFactor {
-    return this.engine.factors.find(CollisionFactor);
-  }
-
   get boxes(): CollisionBox[] {
     return this._boxes;
   }
 
+  private get entityName(): string {
+    return this.entity.name;
+  }
+
+  private get entityPosition(): Vector3 {
+    return this.entity.getProperty<Vector3>(PositionProperty).clone();
+  }
+
+  private get collisionFactor(): CollisionFactor {
+    return this.engine.factors.find(CollisionFactor);
+  }
+
+  private get sceneFactor(): SceneFactor {
+    return this.engine.factors.find(SceneFactor);
+  }
+
   add(config: CollisionBoxConfig): this {
     const boxName = this.generateName(`${this.entityName}_Box`);
-    const boxPosition = this.calculateBoxPosition(config.offset);
+    const boxPosition = this.calculateBoxPosition(config);
 
     const box = new CollisionBox(boxName, boxPosition, config.size);
+    const boxGeometry = new BoxGeometry(config.size.x, config.size.y, config.size.z);
+    const boxMaterial = new MeshBasicMaterial({
+      color: 0x000000,
+      wireframe: true,
+    })
+    const meshBox = new Mesh(boxGeometry, boxMaterial);
+    meshBox.position.copy(box.position);
 
     this.collisionFactor.register(box);
+    this.sceneFactor.add(meshBox);
     this._boxes.push(box);
+    this._meshes[boxName] = meshBox;
     this._boxConfigs[boxName] = config;
 
     return this;
   }
 
-  private calculateBoxPosition(offset?: Vector3): Vector3 {
+  private calculateBoxPosition(config: CollisionBoxConfig): Vector3 {
     const boxPosition = this.entityPosition;
 
-    if (offset) {
-      boxPosition.add(offset);
+    if (config.offset) {
+      boxPosition.add(config.offset);
     }
+
+    boxPosition.y += config.size.y/2;
 
     return boxPosition;
   }
@@ -68,7 +85,9 @@ export class CollisionModelController extends Controller {
   private positionChanges() {
     this._boxes.forEach(box => {
       const config = this._boxConfigs[box.name];
-      box.position = this.calculateBoxPosition(config.offset);
+      const meshBox = this._meshes[box.name];
+      box.position = this.calculateBoxPosition(config);
+      meshBox.position.copy(box.position);
     })
   }
 
