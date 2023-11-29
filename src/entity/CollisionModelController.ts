@@ -32,10 +32,6 @@ export class CollisionModelController extends Controller {
     return this._boxes;
   }
 
-  private get entityName(): string {
-    return this.entity.name;
-  }
-
   private get entityPosition(): Vector3 {
     return this.entity.getProperty<Vector3>(PositionProperty).clone();
   }

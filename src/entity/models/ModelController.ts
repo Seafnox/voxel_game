@@ -161,14 +161,14 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
 
   protected getMixerOrThrow(): AnimationMixer {
     if (!this.mixer) {
-      throw new Error(`Can't find 3d model mixer for ${this.constructorName}`);
+      throw new Error(`Can't find 3d model mixer for ${this.constructorName} in '${this.entityName}'`);
     }
 
     return this.mixer;
   }
 
   protected setActiveAnimationTrusted(animationName: string) {
-    console.log(this.constructorName, 'Set Active Animation', this.entity.name, animationName);
+    console.log(this.constructorName, 'Set Active Animation', this.entityName, animationName);
     const prevAnimation = this.activeAnimation;
 
     this.activeAnimationName = animationName;

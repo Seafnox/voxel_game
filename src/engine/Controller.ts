@@ -24,7 +24,11 @@ export abstract class Controller<TEntity extends Entity = Entity> {
     return this._engine;
   }
 
-  get constructorName(): string {
+  protected get entityName(): string {
+    return this.entity.name;
+  }
+
+  protected get constructorName(): string {
     return this.constructor.name;
   }
 }
