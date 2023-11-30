@@ -16,12 +16,8 @@ import {
   Vector3,
   Quaternion,
   Color,
-  Group,
-  Texture,
-  TextureLoader,
   Mesh,
   Material,
-  SRGBColorSpace,
 } from 'three';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 
@@ -107,9 +103,12 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
     this.model?.quaternion.copy(event.next);
   }
 
-  protected onTargetLoaded(obj: Group, config: TConfig) {
-    this.model = obj;
+  protected onTargetLoaded(model: Object3D, animations: AnimationClip[], config: TConfig) {
+    this.model = model;
     this.sceneFactor.add(this.model);
+    this.animationMap = {};
+    this.mixer = new AnimationMixer(this.model);
+    animations.forEach(animationClip => this.addAnimation(animationClip));
 
     this.model.scale.setScalar(config.scale);
     const entityPosition = this.entity.getProperty<Vector3>(PositionProperty);

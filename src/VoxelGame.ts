@@ -154,8 +154,7 @@ export class VoxelGame {
 
       const modelController = cloudEntity.create(GltfModelController);
       modelController.modelConfig = {
-        resourcePath: './resources/clouds/',
-        resourceModel: 'Cloud' + index + '.glb',
+        resourcePath: './resources/clouds/Cloud' + index + '.glb',
         scale: Math.random() * 5 + 10,
         emissive: new Color(this.cloudColor),
         castShadow: true,
@@ -192,8 +191,7 @@ export class VoxelGame {
 
       const modelController = tree.create(FbxModelController);
       modelController.modelConfig = {
-        resourcePath: './resources/',
-        resourceModel: name + '.fbx',
+        resourcePath: './resources/' + name + '.fbx',
         scale: 0.25,
         emissive: new Color(this.darkEmissionLight),
         specular: new Color(this.lightAbsorptionMask),
@@ -232,8 +230,7 @@ export class VoxelGame {
       });
 
     modelController.modelConfig = {
-      resourcePath: './resources/units/',
-      resourceModel: 'guard.glb',
+      resourcePath: './resources/units/guard.glb',
       scale: 15,
       receiveShadow: true,
       castShadow: true,

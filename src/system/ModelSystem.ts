@@ -1,5 +1,5 @@
 import { EventSystem } from 'src/engine/EventSystem';
-import { Group, LoadingManager, AnimationClip } from 'three';
+import { LoadingManager, AnimationClip, Object3D } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 
@@ -14,7 +14,7 @@ export const enum ModelProgressState {
 }
 
 export interface ModelState {
-  model: Group;
+  model: Object3D;
   animations: AnimationClip[];
 }
 
@@ -45,6 +45,7 @@ export class ModelSystem extends EventSystem {
         onProgress: progress => this.emit<ProgressEvent>(ModelEvent.Progress, progress),
         onError: error => {
           console.error(error);
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           this.modelStates[modelName] = new Error(`Failed to load model '${modelName}' from file '${resourceLink}'. Reason: ${error}`)
           this.modelInProgress[modelName] = ModelProgressState.Error;
           this.emit(modelName, this.modelStates[modelName]);
@@ -71,7 +72,9 @@ export class ModelSystem extends EventSystem {
       });
     }
 
-    return Promise.reject(new Error(`Can't find registered model: '${modelName}' in list [${Object.keys(this.modelStates)}] and list [${Object.keys(this.modelInProgress)}]`));
+    return Promise.reject(
+      new Error(`Can't find registered model: '${modelName}' in list [${Object.keys(this.modelStates).join(', ')}] and list [${Object.keys(this.modelInProgress).join(', ')}]`)
+    );
   }
 
   private load(resourceLink: string, config: LoaderConfig): void {
@@ -79,7 +82,7 @@ export class ModelSystem extends EventSystem {
       const loader = new FBXLoader(config.manager);
       loader.load(
         resourceLink,
-        (fbxModel: Group) => {
+        (fbxModel: Object3D) => {
           config.onReady({
             model: fbxModel,
             animations: fbxModel.animations,
@@ -88,6 +91,8 @@ export class ModelSystem extends EventSystem {
         config.onProgress,
         config.onError
       );
+
+      return;
     }
 
     if (resourceLink.endsWith('glb') || resourceLink.endsWith('gltf')) {
@@ -103,6 +108,8 @@ export class ModelSystem extends EventSystem {
         config.onProgress,
         config.onError,
       );
+
+      return;
     }
 
 
