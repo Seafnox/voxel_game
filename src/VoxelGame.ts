@@ -20,6 +20,7 @@ import { SceneFactor } from 'src/factor/SceneFactor';
 import { SpatialFactor } from 'src/factor/SpatialFactor';
 import { FontSystem } from 'src/system/FontSystem';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
+import { ModelSystem } from 'src/system/ModelSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import {
@@ -92,6 +93,7 @@ export class VoxelGame {
     this.gameEngine.systems.create(KeyboardEventSystem);
     this.gameEngine.systems.create(MouseEventSystem);
     this.gameEngine.systems.create(FontSystem);
+    this.gameEngine.systems.create(ModelSystem);
   }
 
   // TODO MOVE into some Entity i think

@@ -1,5 +1,5 @@
-import { AnimationMixer, LoadingManager } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { ModelState } from 'src/system/ModelSystem';
+import { AnimationMixer } from 'three';
 import { ModelController, ModelConfig } from 'src/entity/models/ModelController';
 
 export interface GltfModelConfig extends ModelConfig {
@@ -7,22 +7,16 @@ export interface GltfModelConfig extends ModelConfig {
 
 export class GltfModelController extends ModelController<GltfModelConfig> {
   loadModels(config: GltfModelConfig) {
-    const model = config.resourceModel;
-
-    if (!model.endsWith('glb') && !model.endsWith('gltf')) {
-      throw new Error(`Can't find loader for such type of file: ${model}`);
-    }
-
     this.mixer?.stopAllAction();
-
-    const loader = new GLTFLoader();
-    loader.setPath(config.resourcePath);
-    loader.load(model, (glb) => {
-
+    const modelName = config.resourcePath.split('/').reverse()[0];
+    this.modelSystem.register(modelName, config.resourcePath);
+    this.modelSystem.get(modelName).then((modelState: ModelState | Error) => {
+      if (modelState instanceof Error) return;
+      const model = modelState.model.clone(true);
       this.animationMap = {};
-      this.mixer = new AnimationMixer(glb.scene);
-      glb.animations.forEach(animationClip => this.addAnimation(animationClip));
-      this.onTargetLoaded(glb.scene, config);
+      this.mixer = new AnimationMixer(model);
+      modelState.animations.forEach(animationClip => this.addAnimation(animationClip.clone()));
+      this.onTargetLoaded(model, config);
     });
   }
 }

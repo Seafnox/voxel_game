@@ -4,6 +4,7 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { RotationProperty, ModelReadyProperty, ModelProperty, PositionProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
+import { ModelSystem } from 'src/system/ModelSystem';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import { Level } from 'src/utils/logger/Level';
 import { LogMethod } from 'src/utils/logger/LogMethod';
@@ -26,9 +27,7 @@ import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 
 export interface ModelConfig {
   resourcePath: string;
-  resourceModel: string;
   scale: number;
-  resourceTexture?: string;
   specular?: Color;
   emissive?: Color;
   receiveShadow?: boolean;
@@ -57,6 +56,10 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
     this.entity.on(RotationProperty, this.onRotationChange.bind(this));
 //    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
+  }
+
+  get modelSystem(): ModelSystem {
+    return this.engine.systems.find(ModelSystem);
   }
 
   get sceneFactor(): SceneFactor {
@@ -114,13 +117,6 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
     this.model.position.copy(entityPosition);
     this.model.quaternion.copy(entityRotation);
 
-    let texture: Texture | null = null;
-    if (config.resourceTexture) {
-      const texLoader = new TextureLoader();
-      texture = texLoader.load(config.resourceTexture);
-      texture.colorSpace = SRGBColorSpace;
-    }
-
     this.model.traverse(modelObject => {
       const modelMesh = modelObject as Mesh;
       const materials: Material[] = modelMesh.material instanceof Array ? modelMesh.material : [modelMesh.material];
@@ -128,10 +124,6 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
       // FIXME fake type declaration
       for (const material of (materials as MeshPhongMaterial[])) {
         if (material) {
-          if (texture) {
-            material.map = texture;
-          }
-
           if (config.specular) {
             material.specular = config.specular;
           }

@@ -1,35 +1,30 @@
-import { AnimationClip, LoadingManager, AnimationMixer } from 'three';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
+import { ModelState } from 'src/system/ModelSystem';
+import { LoadingManager, AnimationMixer } from 'three';
 import { ModelController, ModelConfig } from 'src/entity/models/ModelController';
 
 export interface FbxModelConfig extends ModelConfig {
-  resourceAnimations?: Record<string, string>;
+  resourceAnimationModels?: Record<string, string>;
 }
 
 export class FbxModelController extends ModelController<FbxModelConfig> {
   loadModels(config: FbxModelConfig) {
-    const model = config.resourceModel;
-
-    if (!model.endsWith('fbx')) {
-      throw new Error(`Can't find loader for such type of file: ${model}`);
-    }
-
     this.mixer?.stopAllAction();
-    const manager = new LoadingManager();
-    const loader = new FBXLoader(manager);
-    loader.setPath(config.resourcePath);
-    loader.load( model, (fbxModel) => {
-      this.animationMap = {};
-      this.mixer = new AnimationMixer(fbxModel);
-      Object.entries(config.resourceAnimations || {}).forEach(([key, fileName]) => {
-        loader.load(fileName, (fbx) => this.onAnimationLoaded(key, fbx.animations[0]));
-      });
-      manager.onLoad = () => this.onTargetLoaded(fbxModel, config);
-    });
-  }
 
-  onAnimationLoaded(key: string, animationClip: AnimationClip) {
-    console.log('Found animation', key, animationClip.name);
-    this.animationMap[animationClip.name] = this.mixer!.clipAction(animationClip);
+    const manager = new LoadingManager();
+    const modelName = config.resourcePath.split('/').reverse()[0];
+
+    this.modelSystem.register(modelName, config.resourcePath, manager);
+    this.modelSystem.get(modelName).then((modelState: ModelState | Error) => {
+      if (modelState instanceof Error) return;
+      const model = modelState.model.clone(true);
+      this.animationMap = {};
+      this.mixer = new AnimationMixer(model);
+      // FIXME refactor animation loading
+//      Object.entries(config.resourceAnimations || {}).forEach(([key, fileName]) => {
+//        loader.load(fileName, (fbx) => this.onAnimationLoaded(key, fbx.animations[0]));
+//      });
+      modelState.animations.forEach(animationClip => this.addAnimation(animationClip.clone()));
+      this.onTargetLoaded(model, config);
+    });
   }
 }
