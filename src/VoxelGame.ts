@@ -4,6 +4,7 @@ import { CollisionModelController } from 'src/entity/CollisionModelController';
 import { SkyController } from 'src/entity/environment/SkyController';
 import { FocusableController } from 'src/entity/FocusableController';
 import { FbxModelController } from 'src/entity/models/FbxModelController';
+import { NameController } from 'src/entity/NameController';
 import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
 import { StateController } from 'src/entity/state/StateController';
 import { ActivityAccelerationController } from 'src/entity/ActivityAccelerationController';
@@ -83,6 +84,7 @@ export class VoxelGame {
     this.gameEngine.factors.create(SpatialFactor)
       .generateGrid(1000, 10);
     this.gameEngine.factors.create(CollisionFactor);
+    this.gameEngine.factors.create(FontFactor);
   }
 
   private initSystems() {
@@ -175,7 +177,7 @@ export class VoxelGame {
       const tree = this.gameEngine.entities.create(Entity, `${name}_${i}`);
       tree.setProperty(PositionProperty, pos);
       tree.setProperty(RotationProperty, new Quaternion(0,0,0,1));
-      tree.create(SpatialGridController);
+      tree.create(NameController);
       tree.create(CollisionModelController)
         .add({
           size: new Vector3(10, 55, 10),
