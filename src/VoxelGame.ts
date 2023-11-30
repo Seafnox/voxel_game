@@ -16,9 +16,9 @@ import { IdleUserState } from 'src/entity/user/states/IdleUserState';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { DynamicVelocityController } from 'src/entity/DynamicVelocityController';
-import { FontFactor } from 'src/factor/FontFactor';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { SpatialFactor } from 'src/factor/SpatialFactor';
+import { FontSystem } from 'src/system/FontSystem';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
@@ -84,7 +84,6 @@ export class VoxelGame {
     this.gameEngine.factors.create(SpatialFactor)
       .generateGrid(1000, 10);
     this.gameEngine.factors.create(CollisionFactor);
-    this.gameEngine.factors.create(FontFactor);
   }
 
   private initSystems() {
@@ -92,6 +91,7 @@ export class VoxelGame {
     this.gameEngine.systems.create(WindowEventSystem);
     this.gameEngine.systems.create(KeyboardEventSystem);
     this.gameEngine.systems.create(MouseEventSystem);
+    this.gameEngine.systems.create(FontSystem);
   }
 
   // TODO MOVE into some Entity i think

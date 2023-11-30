@@ -1,11 +1,11 @@
 import { GameEngine } from 'src/engine/GameEngine';
-import { System } from 'src/engine/System';
+import { EventSystem } from 'src/engine/EventSystem';
 
 export const enum MouseTopic {
   MouseUp = 'mouseup',
 }
 
-export class MouseEventSystem extends System {
+export class MouseEventSystem extends EventSystem {
   constructor(
     engine: GameEngine,
     name: string,

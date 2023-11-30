@@ -1,12 +1,12 @@
 import { GameEngine } from 'src/engine/GameEngine';
-import { System } from 'src/engine/System';
+import { EventSystem } from 'src/engine/EventSystem';
 
 export const enum TickSystemEvent {
   Init = 'init',
   Tick = 'tick',
 }
 
-export class TickSystem extends System {
+export class TickSystem extends EventSystem {
   private prevTick: number | undefined;
 
   constructor(

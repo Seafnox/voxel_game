@@ -1,25 +1,16 @@
 import { TopicEmitter } from 'src/emitter/TopicEmitter';
 import { GameEngine } from 'src/engine/GameEngine';
 
-export interface SystemConstructor<TSystem extends System> {
+export interface EventSystemConstructor<TSystem extends EventSystem> {
   new(gameEngine: GameEngine, name: string): TSystem
 }
 
-export class System extends TopicEmitter {
-  protected _isActive = true;
+export class EventSystem extends TopicEmitter {
   constructor(
     protected _gameEngine: GameEngine,
     protected _name: string,
   ) {
     super();
-  }
-
-  get isActive(): boolean {
-    return this._isActive;
-  }
-
-  set isActive(value: boolean) {
-    this._isActive = value;
   }
 
   get name(): string {

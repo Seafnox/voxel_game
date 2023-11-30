@@ -1,25 +1,25 @@
 import { GameEngine } from 'src/engine/GameEngine';
-import { System, SystemConstructor } from 'src/engine/System';
+import { EventSystem, EventSystemConstructor } from 'src/engine/EventSystem';
 import { FilterPredicate } from './FilterPredicate';
 
 export class SystemManager {
-  private systemMap: Record<string, System> = {};
-  private systemList: System[] = [];
+  private systemMap: Record<string, EventSystem> = {};
+  private systemList: EventSystem[] = [];
   private idCounter = 0;
 
   constructor(
     private gameEngine: GameEngine,
   ) {}
 
-  get(name: string): System {
+  get(name: string): EventSystem {
     if (!this.systemMap[name]) {
-      throw new Error(`Can't find ${System.name} '${name}' in ${this.constructor.name} '${SystemManager.name}'`);
+      throw new Error(`Can't find ${EventSystem.name} '${name}' in ${this.constructor.name} '${SystemManager.name}'`);
     }
 
     return this.systemMap[name];
   }
 
-  find<TSystem extends System>(constructor: SystemConstructor<TSystem>): TSystem {
+  find<TSystem extends EventSystem>(constructor: EventSystemConstructor<TSystem>): TSystem {
     const first = this.systemMap[constructor.name];
 
     if (!first) {
@@ -29,11 +29,11 @@ export class SystemManager {
     return first as TSystem;
   }
 
-  filter(predicate: FilterPredicate<System>): System[] {
+  filter(predicate: FilterPredicate<EventSystem>): EventSystem[] {
     return this.systemList.filter(predicate);
   }
 
-  create<TSystem extends System>(constructor: SystemConstructor<TSystem>): TSystem {
+  create<TSystem extends EventSystem>(constructor: EventSystemConstructor<TSystem>): TSystem {
     const name = constructor.name;
     const system = new constructor(this.gameEngine, name);
     console.log(this.constructor.name, 'create', constructor.name);
@@ -42,16 +42,6 @@ export class SystemManager {
     this.systemList.push(system);
 
     return system;
-  }
-
-  activate(system: System) {
-    console.log(this.constructor.name, 'activate', system.constructor.name, system.name);
-    system.isActive = true;
-  }
-
-  disactivate(system: System) {
-    console.log(this.constructor.name, 'disactivate', system.constructor.name, system.name);
-    system.isActive = false;
   }
 
   private generateName(prefix: string) {

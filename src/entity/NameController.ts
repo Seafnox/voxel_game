@@ -2,8 +2,8 @@ import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { PositionProperty } from 'src/entity/properties/visual';
-import { FontFactor } from 'src/factor/FontFactor';
 import { SceneFactor } from 'src/factor/SceneFactor';
+import { FontSystem } from 'src/system/FontSystem';
 import { Vector3, Mesh } from 'three';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 import { Font } from 'three/examples/jsm/loaders/FontLoader';
@@ -32,15 +32,13 @@ export class NameController extends Controller {
     return this.engine.factors.find(SceneFactor);
   }
 
-  private get fontFactor(): FontFactor {
-    return this.engine.factors.find(FontFactor);
+  private get fontSystem(): FontSystem {
+    return this.engine.systems.find(FontSystem);
   }
 
   private loadFont() {
-    this.fontFactor.registerFont(this.fontName, 'resources/fonts/droid_sans_mono_regular.typeface.json');
-    this.fontFactor.on<Font>(this.fontName, font => {
-      this.drawText(font);
-    });
+    this.fontSystem.register(this.fontName, 'resources/fonts/droid_sans_mono_regular.typeface.json');
+    this.fontSystem.on<Font>(this.fontName, font => this.drawText(font));
   }
 
   private drawText(font: Font) {

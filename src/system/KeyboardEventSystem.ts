@@ -1,12 +1,12 @@
 import { GameEngine } from 'src/engine/GameEngine';
-import { System } from 'src/engine/System';
+import { EventSystem } from 'src/engine/EventSystem';
 
 export const enum KeyboardTopic {
   KeyDown = 'keyDown',
   KeyUp = 'keyUp',
 }
 
-export class KeyboardEventSystem extends System {
+export class KeyboardEventSystem extends EventSystem {
   constructor(
     engine: GameEngine,
     name: string,

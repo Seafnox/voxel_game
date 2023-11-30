@@ -1,16 +1,15 @@
-import { TopicEmitter } from 'src/emitter/TopicEmitter';
-import { Factor } from 'src/engine/Factor';
+import { EventSystem } from 'src/engine/EventSystem';
 import { Font, FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 
-export const enum FontFactorTopic {
+export const enum FontEvent {
   Progress = 'progress',
 }
 
-export class FontFactor extends TopicEmitter implements Factor {
+export class FontSystem extends EventSystem {
   private _fonts: Record<string, Font> = {};
   private _fontInProgress: Record<string, boolean> = {};
 
-  registerFont(fontName: string, resourceLink: string) {
+  register(fontName: string, resourceLink: string) {
     if (fontName in this._fontInProgress) return;
     if (fontName in this._fonts) return;
 
@@ -18,9 +17,9 @@ export class FontFactor extends TopicEmitter implements Factor {
     const loader = new FontLoader();
     loader.load(
       resourceLink,
-      font => this.addFont(fontName, font),
+      font => this.add(fontName, font),
       progress => {
-        this.emit<ProgressEvent>(FontFactorTopic.Progress, progress)
+        this.emit<ProgressEvent>(FontEvent.Progress, progress)
       },
       error => {
         console.error(error);
@@ -29,7 +28,7 @@ export class FontFactor extends TopicEmitter implements Factor {
     );
   }
 
-  private addFont(fontName: string, font: Font) {
+  private add(fontName: string, font: Font) {
     this._fonts[fontName] = font;
     this.emit<Font>(fontName, font);
   }

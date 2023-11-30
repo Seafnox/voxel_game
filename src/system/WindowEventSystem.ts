@@ -1,5 +1,5 @@
 import { GameEngine } from '../engine/GameEngine';
-import { System } from '../engine/System';
+import { EventSystem } from 'src/engine/EventSystem';
 
 export const enum WindowTopic {
     Resize = 'resize',
@@ -7,7 +7,7 @@ export const enum WindowTopic {
 
 export type WindowResizeEvent  = UIEvent;
 
-export class WindowEventSystem extends System {
+export class WindowEventSystem extends EventSystem {
     constructor(
         ganeEngine: GameEngine,
         name: string,
