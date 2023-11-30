@@ -1,7 +1,7 @@
 import { Factor } from 'src/engine/Factor';
 import { Scene, Color, FogExp2, Object3D } from 'three';
 
-export class SceneFactor implements Factor<Scene> {
+export class SceneFactor implements Factor {
   private _scene: Scene;
   private fogColor = 0x6982ab;
   private backgroundColor = 0xeeffff;
@@ -10,7 +10,7 @@ export class SceneFactor implements Factor<Scene> {
     this._scene = this.createScene();
   }
 
-  get value(): Scene {
+  get scene(): Scene {
     return this._scene;
   }
 

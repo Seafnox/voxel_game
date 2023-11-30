@@ -23,7 +23,7 @@ export class SpatialGridController extends Controller {
       entityPosition.z,
     ];
 
-    this._client = this.spatialFactor.value.NewClient(entity, pos, [1, 1]);
+    this._client = this.spatialFactor.grid.NewClient(entity, pos, [1, 1]);
     entity.on(PositionProperty, this.onPositionChange.bind(this));
   }
 
@@ -35,13 +35,13 @@ export class SpatialGridController extends Controller {
     if (!this._client) return;
 
     this._client.position = [event.next.x, event.next.z];
-    this.spatialFactor.value.UpdateClient(this._client);
+    this.spatialFactor.grid.UpdateClient(this._client);
   }
 
   FindNearbyEntities(range: number): SpatialClient[] {
     const position = this.entity.getProperty<Vector3>(PositionProperty);
 
-    const results = this.spatialFactor.value.FindNear(
+    const results = this.spatialFactor.grid.FindNear(
       [position.x, position.z],
         [range, range]
     );

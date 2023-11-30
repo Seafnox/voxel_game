@@ -22,7 +22,7 @@ export class DynamicVelocityController extends Controller {
   }
 
   get gravityAcceleration(): Vector3 {
-    return this.engine.factors.find(GravityFactor).value.clone();
+    return this.engine.factors.find(GravityFactor).gravity.clone();
   }
 
   tick(deltaTime: number) {

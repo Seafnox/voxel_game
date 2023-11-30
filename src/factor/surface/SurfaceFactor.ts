@@ -15,13 +15,13 @@ export interface SurfaceMapLocation {
   };
 }
 
-export class SurfaceFactor implements Factor<SurfaceMap> {
+export class SurfaceFactor implements Factor {
   private _mapSize: number = 0;
   private _surfaceSize: number = 0;
   private _surfaceScale: number = 0;
   private _surfaceMap: SurfaceMap = [];
 
-  get value(): SurfaceMap {
+  get surfaceMap(): SurfaceMap {
     return this._surfaceMap;
   }
 
@@ -35,10 +35,6 @@ export class SurfaceFactor implements Factor<SurfaceMap> {
 
   get surfaceScale(): number {
     return this._surfaceScale;
-  }
-
-  get surfaceMap(): SurfaceMap {
-    return this._surfaceMap;
   }
 
   generateSurface(

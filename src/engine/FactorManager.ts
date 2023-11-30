@@ -2,10 +2,10 @@ import { FilterPredicate } from './FilterPredicate';
 import { Factor, FactorConstructor } from './Factor';
 
 export class FactorManager {
-  private factorMap: Record<string, Factor<unknown>> = {};
-  private factorList: Factor<unknown>[] = [];
+  private factorMap: Record<string, Factor> = {};
+  private factorList: Factor[] = [];
 
-  get<TValue, TFactor extends Factor<TValue>>(name: string): TFactor {
+  get<TFactor extends Factor>(name: string): TFactor {
     if (!this.factorMap[name]) {
       throw new Error(`Can't find Factor '${name}' in ${this.constructor.name} '${FactorManager.name}'`);
     }
@@ -13,7 +13,7 @@ export class FactorManager {
     return this.factorMap[name] as TFactor;
   }
 
-  find<TValue, TFactor extends Factor<TValue>>(constructor: FactorConstructor<TValue, TFactor>): TFactor {
+  find<TFactor extends Factor>(constructor: FactorConstructor<TFactor>): TFactor {
     const first = this.factorMap[constructor.name];
 
     if (!first) {
@@ -23,11 +23,11 @@ export class FactorManager {
     return first as TFactor;
   }
 
-  filter(predicate: FilterPredicate<Factor<unknown>>): Factor<unknown>[] {
+  filter(predicate: FilterPredicate<Factor>): Factor[] {
     return this.factorList.filter(predicate);
   }
 
-  create<TValue, TFactor extends Factor<TValue>>(constructor: FactorConstructor<TValue, TFactor>): TFactor {
+  create<TFactor extends Factor>(constructor: FactorConstructor<TFactor>): TFactor {
     const name = constructor.name;
     const factor = new constructor();
     console.log(this.constructor.name, 'create', constructor.name, name);

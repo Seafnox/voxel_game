@@ -99,7 +99,7 @@ export class VoxelGame {
     const cameraController = this.gameEngine.entities.get(EntityName.Environment).get<CameraController>(CameraController);
 
     this.gameEngine.systems.find(TickSystem).on<number>(TickSystemEvent.Tick, () => {
-      const scene = this.gameEngine.factors.find(SceneFactor).value;
+      const scene = this.gameEngine.factors.find(SceneFactor).scene;
       this.renderer.render(scene, cameraController.getCamera());
     })
   }

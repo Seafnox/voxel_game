@@ -2,7 +2,7 @@ import { SurfaceFactor } from './SurfaceFactor';
 
 const surfaceFactor = new SurfaceFactor();
 surfaceFactor.generateSurface(50, 150);
-const map = surfaceFactor.value;
+const map = surfaceFactor.surfaceMap;
 
 const colorMap: Record<string, string> = {
   '000':       '\x1b[40m\x1b[30m_ _\x1b[0m', // бездна

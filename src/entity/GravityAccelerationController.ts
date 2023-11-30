@@ -67,7 +67,7 @@ export class GravityAccelerationController extends Controller {
   }
 
   private get gravity(): Vector3 {
-    return this.engine.factors.find(GravityFactor).value;
+    return this.engine.factors.find(GravityFactor).gravity;
   }
 
   private playerOnSurface(playerPosition: Vector3, surfacePosition: Vector3): boolean {

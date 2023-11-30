@@ -1,10 +1,10 @@
 import { Factor } from 'src/engine/Factor';
 import { SpatialHashGrid } from 'src/entity/grid/SpatialHashGrid';
 
-export class SpatialFactor implements Factor<SpatialHashGrid> {
+export class SpatialFactor implements Factor {
   private _grid: SpatialHashGrid = this.createSpatialGrid(0,0);
 
-  get value(): SpatialHashGrid {
+  get grid(): SpatialHashGrid {
     return this._grid;
   }
 

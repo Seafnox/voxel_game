@@ -6,13 +6,9 @@ export const enum FontFactorTopic {
   Progress = 'progress',
 }
 
-export class FontFactor extends TopicEmitter implements Factor<Font[]> {
+export class FontFactor extends TopicEmitter implements Factor {
   private _fonts: Record<string, Font> = {};
   private _fontInProgress: Record<string, boolean> = {};
-
-  get value(): Font[] {
-    return Object.values(this._fonts);
-  }
 
   registerFont(fontName: string, resourceLink: string) {
     if (fontName in this._fontInProgress) return;
