@@ -1,3 +1,4 @@
+import { availableTrees } from 'src/availableTrees';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { CollisionModelController } from 'src/entity/CollisionModelController';
 import { SkyController } from 'src/entity/environment/SkyController';
@@ -14,6 +15,7 @@ import { IdleUserState } from 'src/entity/user/states/IdleUserState';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { DynamicVelocityController } from 'src/entity/DynamicVelocityController';
+import { FontFactor } from 'src/factor/FontFactor';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { SpatialFactor } from 'src/factor/SpatialFactor';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
@@ -162,25 +164,15 @@ export class VoxelGame {
   @LogMethod({level: Level.info})
   private initThrees() {
     const surfaceFactor = this.gameEngine.factors.find(SurfaceFactor);
-    const names = [
-      'BirchTree',
-      'BirchTree_Dead',
-      'CommonTree',
-      'CommonTree_Dead',
-      'PineTree',
-      'Willow',
-      'Willow_Dead',
-    ];
     for (let i = 0; i < 100; ++i) {
-      const name = names[VMath.rand_int(0, names.length - 1)];
-      const index = VMath.rand_int(1, 5);
+      const name = availableTrees[VMath.rand_int(0, availableTrees.length - 1)];
       const x = (Math.random() * 2.0 - 1.0) * 500;
       const z = (Math.random() * 2.0 - 1.0) * 500;
       const y = surfaceFactor.getZCord(x,z);
 
       const pos = new Vector3(x,y,z);
 
-      const tree = this.gameEngine.entities.create(Entity, `tree_${i}`);
+      const tree = this.gameEngine.entities.create(Entity, `${name}_${i}`);
       tree.setProperty(PositionProperty, pos);
       tree.setProperty(RotationProperty, new Quaternion(0,0,0,1));
       tree.create(SpatialGridController);
@@ -196,8 +188,8 @@ export class VoxelGame {
 
       const modelController = tree.create(FbxModelController);
       modelController.modelConfig = {
-        resourcePath: './resources/trees/',
-        resourceModel: name + '_' + index + '.fbx',
+        resourcePath: './resources/',
+        resourceModel: name + '.fbx',
         scale: 0.25,
         emissive: new Color(this.darkEmissionLight),
         specular: new Color(this.lightAbsorptionMask),
