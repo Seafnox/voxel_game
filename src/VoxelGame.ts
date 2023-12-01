@@ -19,6 +19,7 @@ import { DynamicVelocityController } from 'src/entity/DynamicVelocityController'
 import { CameraFactor } from 'src/factor/CameraFactor';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { SpatialFactor } from 'src/factor/SpatialFactor';
+import { SunLightFactor } from 'src/factor/SunLightFactor';
 import { FontSystem } from 'src/system/FontSystem';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { ModelSystem } from 'src/system/ModelSystem';
@@ -47,7 +48,7 @@ import { EntityName } from './engine/EntityName';
 import { HtmlElementId } from './HtmlElementId';
 import { CameraHudController } from './entity/hud/CameraHudController';
 import { CharacterHudController } from './entity/hud/CharacterHudController';
-import { LightController } from './entity/environment/LightController';
+import { LightFocusController } from 'src/entity/environment/LightFocusController';
 
 export class VoxelGame {
   private cloudColor = 0xaecfff;
@@ -79,6 +80,7 @@ export class VoxelGame {
 
   private initFactors() {
     this.gameEngine.factors.create(SceneFactor);
+    this.gameEngine.factors.create(SunLightFactor);
     this.gameEngine.factors.create(CameraFactor);
     this.gameEngine.factors.create(GravityFactor);
     this.gameEngine.factors.create(SurfaceFactor)
@@ -110,7 +112,6 @@ export class VoxelGame {
     const environment = this.gameEngine.entities.create(Entity, EntityName.Environment);
 
     environment.create(FocusableController);
-    environment.create(LightController);
     environment.create(SurfaceController);
     environment.create(SkyController);
   }
@@ -223,6 +224,7 @@ export class VoxelGame {
     player.create(ActivityRotationController);
     player.create(DynamicVelocityController);
     player.create(DynamicPositionController).setNearest(0,0);
+    player.create(LightFocusController);
     player.create(CameraFocusController);
     player.create(CollisionModelController)
       .add({
