@@ -16,6 +16,7 @@ import { IdleUserState } from 'src/entity/user/states/IdleUserState';
 import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { DynamicVelocityController } from 'src/entity/DynamicVelocityController';
+import { CameraFactor } from 'src/factor/CameraFactor';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { SpatialFactor } from 'src/factor/SpatialFactor';
 import { FontSystem } from 'src/system/FontSystem';
@@ -26,7 +27,8 @@ import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
 import {
   WebGLRenderer,
   Color,
-  Vector3, Quaternion,
+  Vector3,
+  Quaternion,
 } from 'three';
 import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './engine/Entity';
@@ -34,13 +36,10 @@ import { GameEngine } from './engine/GameEngine';
 import { SurfaceController } from './entity/environment/SurfaceController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
-import { SpatialGridController } from './entity/grid/SpatialGridController';
 import { WindowEventSystem, WindowTopic, WindowResizeEvent } from './system/WindowEventSystem';
 import { getHtmlElementByIdOrThrow } from './utils/getHtmlElementOrThrow';
 import { VMath } from './VMath';
-import { CameraController } from './entity/environment/CameraController';
-import { LogMethod } from './utils/logger/LogMethod';
-import { Level } from './utils/logger/Level';
+import { CameraFocusController } from 'src/entity/environment/CameraFocusController';
 import { GltfModelController } from './entity/models/GltfModelController';
 import { ModelController } from './entity/models/ModelController';
 import { FpsController } from './entity/hud/FpsController';
@@ -66,6 +65,7 @@ export class VoxelGame {
     this.initSystems();
 
     this.configureThreeJs();
+    this.configureCamera();
 
     this.initEnvironment();
 
@@ -79,6 +79,7 @@ export class VoxelGame {
 
   private initFactors() {
     this.gameEngine.factors.create(SceneFactor);
+    this.gameEngine.factors.create(CameraFactor);
     this.gameEngine.factors.create(GravityFactor);
     this.gameEngine.factors.create(SurfaceFactor)
       .generateSurface(400, 4000);
@@ -98,11 +99,10 @@ export class VoxelGame {
 
   // TODO MOVE into some Entity i think
   private subscribeRender() {
-    const cameraController = this.gameEngine.entities.get(EntityName.Environment).get<CameraController>(CameraController);
-
     this.gameEngine.systems.find(TickSystem).on<number>(TickSystemEvent.Tick, () => {
       const scene = this.gameEngine.factors.find(SceneFactor).scene;
-      this.renderer.render(scene, cameraController.getCamera());
+      const camera = this.gameEngine.factors.find(CameraFactor).camera;
+      this.renderer.render(scene, camera);
     })
   }
 
@@ -110,13 +110,11 @@ export class VoxelGame {
     const environment = this.gameEngine.entities.create(Entity, EntityName.Environment);
 
     environment.create(FocusableController);
-    environment.create(CameraController);
     environment.create(LightController);
     environment.create(SurfaceController);
     environment.create(SkyController);
   }
 
-  @LogMethod({level: Level.info})
   private configureThreeJs() {
     const windowEventSystem = this.gameEngine.systems.find<WindowEventSystem>(WindowEventSystem);
     const window = windowEventSystem.getWindow();
@@ -138,7 +136,12 @@ export class VoxelGame {
     })
   }
 
-  @LogMethod({level: Level.info})
+  private configureCamera() {
+    const windowEventSystem = this.gameEngine.systems.find<WindowEventSystem>(WindowEventSystem);
+    const window = windowEventSystem.getWindow();
+    this.gameEngine.factors.find(CameraFactor).updateAspect(window.innerWidth / window.innerHeight);
+  }
+
   private initClouds() {
     for (let i = 0; i < 25; ++i) {
       const index = VMath.rand_int(1, 3);
@@ -164,7 +167,6 @@ export class VoxelGame {
     }
   }
 
-  @LogMethod({level: Level.info})
   private initThrees() {
     const surfaceFactor = this.gameEngine.factors.find(SurfaceFactor);
     for (let i = 0; i < 100; ++i) {
@@ -202,7 +204,6 @@ export class VoxelGame {
     }
   }
 
-  @LogMethod({level: Level.info})
   private initUnits() {
     this.initPlayer();
     this.initNPC();
@@ -211,7 +212,6 @@ export class VoxelGame {
     this.initItems();
   }
 
-  @LogMethod({level: Level.info})
   private initPlayer() {
     const player = this.gameEngine.entities.create(Entity, EntityName.Player);
     const modelController = player.create(GltfModelController, ModelController);
@@ -223,7 +223,7 @@ export class VoxelGame {
     player.create(ActivityRotationController);
     player.create(DynamicVelocityController);
     player.create(DynamicPositionController).setNearest(0,0);
-    player.create(SpatialGridController);
+    player.create(CameraFocusController);
     player.create(CollisionModelController)
       .add({
         size: new Vector3(6, 9.5, 6),
@@ -264,27 +264,22 @@ export class VoxelGame {
     environment.get<FocusableController>(FocusableController).focusOn(target);
   }
 
-  @LogMethod({level: Level.info})
   private initNPC() {
     // TODO create when dynamic objects could be created
   }
 
-  @LogMethod({level: Level.info})
   private initEnemies() {
     // TODO create when dynamic objects could be created
   }
 
-  @LogMethod({level: Level.info})
   private initQuestPlaces() {
     // TODO create when dynamic objects could be created
   }
 
-  @LogMethod({level: Level.info})
   private initItems() {
     // TODO create when dynamic objects could be created
   }
 
-  @LogMethod({level: Level.info})
   private initGui() {
     const gui = this.gameEngine.entities.create(Entity);
 

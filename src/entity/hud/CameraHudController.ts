@@ -1,11 +1,9 @@
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { CameraPositionProperty, CameraRotationProperty } from 'src/entity/properties/camera';
+import { CameraFactor } from 'src/factor/CameraFactor';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
-import { Vector3, Quaternion } from 'three';
 import { getHtmlElementByIdOrThrow } from 'src/utils/getHtmlElementOrThrow';
 import {Controller} from 'src/engine/Controller';
-import {EntityName} from 'src/engine/EntityName';
 import {HtmlElementId} from 'src/HtmlElementId';
 
 export class CameraHudController extends Controller {
@@ -21,16 +19,16 @@ export class CameraHudController extends Controller {
   }
 
   tick(): void {
-    const cameraEntity = this.entity.engine.entities.get(EntityName.Environment);
+    const cameraFactor = this.engine.factors.find(CameraFactor);
     const cameraPositionWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CameraPosition);
     const cameraRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CameraRotation);
 
-    const prettyPosition = cameraEntity.getProperty<Vector3>(CameraPositionProperty)
+    const prettyPosition = cameraFactor.camera.position
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
     cameraPositionWrapper.innerText = `[${prettyPosition.join(', ')}]`;
 
-    const prettyRotation = cameraEntity.getProperty<Quaternion>(CameraRotationProperty)
+    const prettyRotation = cameraFactor.camera.quaternion
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
     cameraRotationWrapper.innerText = `[${prettyRotation.join(', ')}]`;
