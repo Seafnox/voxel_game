@@ -1,7 +1,7 @@
 import { availableTrees } from 'src/availableTrees';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { CollisionModelController } from 'src/entity/CollisionModelController';
-import { SkyController } from 'src/entity/environment/SkyController';
+import { SkyFocusController } from 'src/entity/environment/SkyFocusController';
 import { FocusableController } from 'src/entity/FocusableController';
 import { FbxModelController } from 'src/entity/models/FbxModelController';
 import { NameController } from 'src/entity/NameController';
@@ -18,6 +18,7 @@ import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { DynamicVelocityController } from 'src/entity/DynamicVelocityController';
 import { CameraFactor } from 'src/factor/CameraFactor';
 import { SceneFactor } from 'src/factor/SceneFactor';
+import { SkyFactor } from 'src/factor/SkyFactor';
 import { SpatialFactor } from 'src/factor/SpatialFactor';
 import { SunLightFactor } from 'src/factor/SunLightFactor';
 import { FontSystem } from 'src/system/FontSystem';
@@ -81,6 +82,7 @@ export class VoxelGame {
   private initFactors() {
     this.gameEngine.factors.create(SceneFactor);
     this.gameEngine.factors.create(SunLightFactor);
+    this.gameEngine.factors.create(SkyFactor);
     this.gameEngine.factors.create(CameraFactor);
     this.gameEngine.factors.create(GravityFactor);
     this.gameEngine.factors.create(SurfaceFactor)
@@ -111,9 +113,7 @@ export class VoxelGame {
   private initEnvironment(): void {
     const environment = this.gameEngine.entities.create(Entity, EntityName.Environment);
 
-    environment.create(FocusableController);
     environment.create(SurfaceController);
-    environment.create(SkyController);
   }
 
   private configureThreeJs() {
@@ -225,6 +225,7 @@ export class VoxelGame {
     player.create(DynamicVelocityController);
     player.create(DynamicPositionController).setNearest(0,0);
     player.create(LightFocusController);
+    player.create(SkyFocusController);
     player.create(CameraFocusController);
     player.create(CollisionModelController)
       .add({
