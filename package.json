@@ -41,6 +41,7 @@
   "dependencies": {
     "normalize.css": "~8.0.1",
     "simplex-noise": "^4.0.1",
-    "three": "~0.158.0"
+    "three": "~0.158.0",
+    "typescript": "~5.1.6"
   }
 }
