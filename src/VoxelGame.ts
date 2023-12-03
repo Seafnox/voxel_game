@@ -2,7 +2,7 @@ import { availableTrees } from 'src/availableTrees';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { CollisionModelController } from 'src/entity/CollisionModelController';
 import { RenderController } from 'src/entity/environment/RenderController';
-import { SkyFocusController } from 'src/entity/environment/SkyFocusController';
+import { SkyFocusController } from 'src/entity/SkyFocusController';
 import { FbxModelController } from 'src/entity/models/FbxModelController';
 import { NameController } from 'src/entity/NameController';
 import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
@@ -39,14 +39,14 @@ import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
 import { WindowEventSystem } from './system/WindowEventSystem';
 import { VMath } from './VMath';
-import { CameraFocusController } from 'src/entity/environment/CameraFocusController';
+import { CameraFocusController } from 'src/entity/CameraFocusController';
 import { GltfModelController } from './entity/models/GltfModelController';
 import { ModelController } from './entity/models/ModelController';
 import { FpsController } from './entity/hud/FpsController';
 import { EntityName } from './engine/EntityName';
 import { CameraHudController } from './entity/hud/CameraHudController';
 import { CharacterHudController } from './entity/hud/CharacterHudController';
-import { LightFocusController } from 'src/entity/environment/LightFocusController';
+import { LightFocusController } from 'src/entity/LightFocusController';
 
 export class VoxelGame {
   private cloudColor = 0xaecfff;
