@@ -6,8 +6,6 @@ import { RotationProperty, ModelReadyProperty, ModelProperty, PositionProperty }
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { ModelSystem } from 'src/system/ModelSystem';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
-import { Level } from 'src/utils/logger/Level';
-import { LogMethod } from 'src/utils/logger/LogMethod';
 import {
   AnimationAction,
   AnimationClip,
@@ -70,7 +68,6 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
     this.loadModels(config);
   }
 
-  @LogMethod({level: Level.info})
   setActiveAnimation(animationName: string) {
     const animations = this.animationMap;
 
