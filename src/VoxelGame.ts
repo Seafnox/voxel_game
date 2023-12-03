@@ -1,7 +1,7 @@
 import { CloudBuilder } from 'src/builder/CloudBuilder';
 import { TreeBuilder } from 'src/builder/TreeBuilder';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
-import { CollisionModelController } from 'src/entity/CollisionModelController';
+import { CollisionModelController } from 'src/collision/CollisionModelController';
 import { RenderController } from 'src/entity/environment/RenderController';
 import { SkyFocusController } from 'src/entity/SkyFocusController';
 import { StateController } from 'src/entity/state/StateController';

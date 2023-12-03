@@ -1,4 +1,4 @@
-import { CollisionUnitConfig } from 'src/entity/CollisionModelController';
+import { CollisionUnitConfig } from 'src/collision/CollisionModelController';
 import { ModelType } from 'src/entity/models/ModelType';
 import { Vector3 } from 'three';
 

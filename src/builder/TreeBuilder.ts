@@ -1,7 +1,7 @@
 import { trees } from 'src/builder/TreeConfig';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { CollisionModelController } from 'src/entity/CollisionModelController';
+import { CollisionModelController } from 'src/collision/CollisionModelController';
 import { FbxModelController } from 'src/entity/models/FbxModelController';
 import { ModelController } from 'src/entity/models/ModelController';
 import { NameController } from 'src/entity/NameController';
