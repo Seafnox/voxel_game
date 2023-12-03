@@ -7,14 +7,14 @@ import { PositionProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial } from 'three';
 
-export interface CollisionBoxConfig {
+export interface CollisionUnitConfig {
   size: Vector3;
   offset?: Vector3;
 }
 
 export class CollisionModelController extends Controller {
-  private _boxes: CollisionBox[] = [];
-  private _boxConfigs: Record<string, CollisionBoxConfig> = {};
+  private _units: CollisionBox[] = [];
+  private _unitConfigs: Record<string, CollisionUnitConfig> = {};
   private idCounter = 0;
   private _meshes: Record<string, Mesh> = {};
 
@@ -28,8 +28,8 @@ export class CollisionModelController extends Controller {
     this.entity.on(PositionProperty, this.positionChanges.bind(this));
   }
 
-  get boxes(): CollisionBox[] {
-    return this._boxes;
+  get units(): CollisionBox[] {
+    return this._units;
   }
 
   private get entityPosition(): Vector3 {
@@ -44,46 +44,46 @@ export class CollisionModelController extends Controller {
     return this.engine.factors.find(SceneFactor);
   }
 
-  add(config: CollisionBoxConfig): this {
-    const boxName = this.generateName(`${this.entityName}_Box`);
-    const boxPosition = this.calculateBoxPosition(config);
+  add(config: CollisionUnitConfig): this {
+    const unitName = this.generateName(`${this.entityName}_Box`);
+    const unitPosition = this.calculateUnitPosition(config);
 
-    const box = new CollisionBox(boxName, boxPosition, config.size);
+    const unit = new CollisionBox(unitName, unitPosition, config.size);
     const boxGeometry = new BoxGeometry(config.size.x, config.size.y, config.size.z);
-    const boxMaterial = new MeshBasicMaterial({
+    const unitMaterial = new MeshBasicMaterial({
       color: 0x000000,
       wireframe: true,
     })
-    const meshBox = new Mesh(boxGeometry, boxMaterial);
-    meshBox.position.copy(box.position);
+    const unitMesh = new Mesh(boxGeometry, unitMaterial);
+    unitMesh.position.copy(unit.position);
 
-    this.collisionFactor.register(box);
-    this.sceneFactor.add(meshBox);
-    this._boxes.push(box);
-    this._meshes[boxName] = meshBox;
-    this._boxConfigs[boxName] = config;
+    this.collisionFactor.register(unit);
+    this.sceneFactor.add(unitMesh);
+    this._units.push(unit);
+    this._meshes[unitName] = unitMesh;
+    this._unitConfigs[unitName] = config;
 
     return this;
   }
 
-  private calculateBoxPosition(config: CollisionBoxConfig): Vector3 {
-    const boxPosition = this.entityPosition;
+  private calculateUnitPosition(config: CollisionUnitConfig): Vector3 {
+    const entityPosition = this.entityPosition;
 
     if (config.offset) {
-      boxPosition.add(config.offset);
+      entityPosition.add(config.offset);
     }
 
-    boxPosition.y += config.size.y/2;
+    entityPosition.y += config.size.y/2;
 
-    return boxPosition;
+    return entityPosition;
   }
 
   private positionChanges() {
-    this._boxes.forEach(box => {
-      const config = this._boxConfigs[box.name];
-      const meshBox = this._meshes[box.name];
-      box.position = this.calculateBoxPosition(config);
-      meshBox.position.copy(box.position);
+    this._units.forEach(unit => {
+      const config = this._unitConfigs[unit.name];
+      const unitMesh = this._meshes[unit.name];
+      unit.position = this.calculateUnitPosition(config);
+      unitMesh.position.copy(unit.position);
     })
   }
 

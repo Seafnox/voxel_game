@@ -1,11 +1,9 @@
-import { availableTrees } from 'src/availableTrees';
+import { CloudBuilder } from 'src/builder/CloudBuilder';
+import { TreeBuilder } from 'src/builder/TreeBuilder';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { CollisionModelController } from 'src/entity/CollisionModelController';
 import { RenderController } from 'src/entity/environment/RenderController';
 import { SkyFocusController } from 'src/entity/SkyFocusController';
-import { FbxModelController } from 'src/entity/models/FbxModelController';
-import { NameController } from 'src/entity/NameController';
-import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
 import { StateController } from 'src/entity/state/StateController';
 import { ActivityAccelerationController } from 'src/entity/ActivityAccelerationController';
 import { KeyboardActivityController } from 'src/entity/user/KeyboardActivityController';
@@ -27,18 +25,13 @@ import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { ModelSystem } from 'src/system/ModelSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
 import { TickSystem } from 'src/system/TickSystem';
-import {
-  Color,
-  Vector3,
-  Quaternion,
-} from 'three';
+import { Vector3 } from 'three';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
 import { SurfaceController } from './entity/environment/SurfaceController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
 import { WindowEventSystem } from './system/WindowEventSystem';
-import { VMath } from './VMath';
 import { CameraFocusController } from 'src/entity/CameraFocusController';
 import { GltfModelController } from './entity/models/GltfModelController';
 import { ModelController } from './entity/models/ModelController';
@@ -49,9 +42,6 @@ import { CharacterHudController } from './entity/hud/CharacterHudController';
 import { LightFocusController } from 'src/entity/LightFocusController';
 
 export class VoxelGame {
-  private cloudColor = 0xaecfff;
-  private lightAbsorptionMask = 0x000000;
-  private darkEmissionLight = 0x000000;
 
   private engine = new GameEngine();
 
@@ -102,64 +92,18 @@ export class VoxelGame {
   }
 
   private initClouds() {
+    const builder = new CloudBuilder(this.engine);
+
     for (let i = 0; i < 25; ++i) {
-      const index = VMath.rand_int(1, 3);
-      const pos = new Vector3(
-        (Math.random() * 2.0 - 1.0) * 500,
-        250,
-        (Math.random() * 2.0 - 1.0) * 500,
-      );
-
-      const cloudEntity = this.engine.entities.create(Entity, `cloud_${i}`);
-      cloudEntity.setProperty(PositionProperty, pos);
-      cloudEntity.setProperty(RotationProperty, new Quaternion(0,0,0,1));
-
-      const modelController = cloudEntity.create(GltfModelController);
-      modelController.modelConfig = {
-        resourcePath: './resources/clouds/Cloud' + index + '.glb',
-        scale: Math.random() * 5 + 10,
-        emissive: new Color(this.cloudColor),
-        castShadow: true,
-        receiveShadow: true,
-      };
-
+      builder.buildRandomCloud(i.toString());
     }
   }
 
   private initThrees() {
-    const surfaceFactor = this.engine.factors.find(SurfaceFactor);
+    const builder = new TreeBuilder(this.engine);
+
     for (let i = 0; i < 100; ++i) {
-      const name = availableTrees[VMath.rand_int(0, availableTrees.length - 1)];
-      const x = (Math.random() * 2.0 - 1.0) * 500;
-      const z = (Math.random() * 2.0 - 1.0) * 500;
-      const y = surfaceFactor.getZCord(x,z);
-
-      const pos = new Vector3(x,y,z);
-
-      const tree = this.engine.entities.create(Entity, `${name}_${i}`);
-      tree.setProperty(PositionProperty, pos);
-      tree.setProperty(RotationProperty, new Quaternion(0,0,0,1));
-      tree.create(NameController);
-      tree.create(CollisionModelController)
-        .add({
-          size: new Vector3(10, 55, 10),
-          offset: new Vector3(0, -5, 0),
-        })
-        .add({
-          size: new Vector3(50, 10, 50),
-          offset: new Vector3(0, 50, 0),
-        });
-
-      const modelController = tree.create(FbxModelController);
-      modelController.modelConfig = {
-        resourcePath: './resources/' + name + '.fbx',
-        scale: 0.25,
-        emissive: new Color(this.darkEmissionLight),
-        specular: new Color(this.lightAbsorptionMask),
-        receiveShadow: true,
-        castShadow: true,
-      };
-
+      builder.buildRandomTree(i.toString());
     }
   }
 
