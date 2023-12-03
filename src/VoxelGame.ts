@@ -1,6 +1,7 @@
 import { availableTrees } from 'src/availableTrees';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { CollisionModelController } from 'src/entity/CollisionModelController';
+import { RenderController } from 'src/entity/environment/RenderController';
 import { SkyFocusController } from 'src/entity/environment/SkyFocusController';
 import { FbxModelController } from 'src/entity/models/FbxModelController';
 import { NameController } from 'src/entity/NameController';
@@ -16,6 +17,7 @@ import { RunUserState } from 'src/entity/user/states/RunUserState';
 import { WalkUserState } from 'src/entity/user/states/WalkUserState';
 import { DynamicVelocityController } from 'src/entity/DynamicVelocityController';
 import { CameraFactor } from 'src/factor/CameraFactor';
+import { RendererFactor } from 'src/factor/RendererFactor';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { SkyFactor } from 'src/factor/SkyFactor';
 import { SpatialFactor } from 'src/factor/SpatialFactor';
@@ -24,28 +26,24 @@ import { FontSystem } from 'src/system/FontSystem';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { ModelSystem } from 'src/system/ModelSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
-import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
+import { TickSystem } from 'src/system/TickSystem';
 import {
-  WebGLRenderer,
   Color,
   Vector3,
   Quaternion,
 } from 'three';
-import { SRGBColorSpace, PCFSoftShadowMap } from 'three/src/constants';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
 import { SurfaceController } from './entity/environment/SurfaceController';
 import { GravityFactor } from './factor/GravityFactor';
 import { SurfaceFactor } from './factor/surface/SurfaceFactor';
-import { WindowEventSystem, WindowTopic, WindowResizeEvent } from './system/WindowEventSystem';
-import { getHtmlElementByIdOrThrow } from './utils/getHtmlElementOrThrow';
+import { WindowEventSystem } from './system/WindowEventSystem';
 import { VMath } from './VMath';
 import { CameraFocusController } from 'src/entity/environment/CameraFocusController';
 import { GltfModelController } from './entity/models/GltfModelController';
 import { ModelController } from './entity/models/ModelController';
 import { FpsController } from './entity/hud/FpsController';
 import { EntityName } from './engine/EntityName';
-import { HtmlElementId } from './HtmlElementId';
 import { CameraHudController } from './entity/hud/CameraHudController';
 import { CharacterHudController } from './entity/hud/CharacterHudController';
 import { LightFocusController } from 'src/entity/environment/LightFocusController';
@@ -55,17 +53,12 @@ export class VoxelGame {
   private lightAbsorptionMask = 0x000000;
   private darkEmissionLight = 0x000000;
 
-  private renderer = new WebGLRenderer({
-    antialias: true,
-  });
-
   private engine = new GameEngine();
 
   constructor() {
     this.initFactors();
     this.initSystems();
-
-    this.configureThreeJs();
+    this.initRenderer();
 
     this.initSurface();
 
@@ -73,11 +66,10 @@ export class VoxelGame {
     this.initThrees();
     this.initUnits();
     this.initGui();
-
-    this.subscribeRender();
   }
 
   private initFactors() {
+    this.engine.factors.create(RendererFactor);
     this.engine.factors.create(SceneFactor);
     this.engine.factors.create(SunLightFactor);
     this.engine.factors.create(SkyFactor);
@@ -99,40 +91,14 @@ export class VoxelGame {
     this.engine.systems.create(ModelSystem);
   }
 
-  // TODO MOVE into some Entity i think
-  private subscribeRender() {
-    this.engine.systems.find(TickSystem).on<number>(TickSystemEvent.Tick, () => {
-      const scene = this.engine.factors.find(SceneFactor).scene;
-      const camera = this.engine.factors.find(CameraFactor).camera;
-      this.renderer.render(scene, camera);
-    })
+  private initRenderer() {
+    const entity = this.engine.entities.create(Entity);
+    entity.create(RenderController);
   }
 
   private initSurface(): void {
-    const surface = this.engine.entities.create(Entity, EntityName.Surface);
-
-    surface.create(SurfaceController);
-  }
-
-  private configureThreeJs() {
-    const windowEventSystem = this.engine.systems.find<WindowEventSystem>(WindowEventSystem);
-    const window = windowEventSystem.getWindow();
-
-    this.renderer.outputColorSpace = SRGBColorSpace;
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = PCFSoftShadowMap;
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.domElement.id = HtmlElementId.Scene;
-
-    const container = getHtmlElementByIdOrThrow(HtmlElementId.Container);
-    container.appendChild(this.renderer.domElement);
-
-    windowEventSystem.on<WindowResizeEvent>(WindowTopic.Resize, event => {
-      const window = event.view!;
-      this.renderer.setPixelRatio(window.devicePixelRatio);
-      this.renderer.setSize(window.innerWidth, window.innerHeight);
-    })
+    const entity = this.engine.entities.create(Entity, EntityName.Surface);
+    entity.create(SurfaceController);
   }
 
   private initClouds() {
