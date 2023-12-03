@@ -60,16 +60,15 @@ export class VoxelGame {
     antialias: true,
   });
 
-  private gameEngine = new GameEngine();
+  private engine = new GameEngine();
 
   constructor() {
     this.initFactors();
     this.initSystems();
 
     this.configureThreeJs();
-    this.configureCamera();
 
-    this.initEnvironment();
+    this.initSurface();
 
     this.initClouds();
     this.initThrees();
@@ -80,44 +79,44 @@ export class VoxelGame {
   }
 
   private initFactors() {
-    this.gameEngine.factors.create(SceneFactor);
-    this.gameEngine.factors.create(SunLightFactor);
-    this.gameEngine.factors.create(SkyFactor);
-    this.gameEngine.factors.create(CameraFactor);
-    this.gameEngine.factors.create(GravityFactor);
-    this.gameEngine.factors.create(SurfaceFactor)
+    this.engine.factors.create(SceneFactor);
+    this.engine.factors.create(SunLightFactor);
+    this.engine.factors.create(SkyFactor);
+    this.engine.factors.create(CameraFactor);
+    this.engine.factors.create(GravityFactor);
+    this.engine.factors.create(SurfaceFactor)
       .generateSurface(400, 4000);
-    this.gameEngine.factors.create(SpatialFactor)
+    this.engine.factors.create(SpatialFactor)
       .generateGrid(1000, 10);
-    this.gameEngine.factors.create(CollisionFactor);
+    this.engine.factors.create(CollisionFactor);
   }
 
   private initSystems() {
-    this.gameEngine.systems.create(TickSystem);
-    this.gameEngine.systems.create(WindowEventSystem);
-    this.gameEngine.systems.create(KeyboardEventSystem);
-    this.gameEngine.systems.create(MouseEventSystem);
-    this.gameEngine.systems.create(FontSystem);
-    this.gameEngine.systems.create(ModelSystem);
+    this.engine.systems.create(TickSystem);
+    this.engine.systems.create(WindowEventSystem);
+    this.engine.systems.create(KeyboardEventSystem);
+    this.engine.systems.create(MouseEventSystem);
+    this.engine.systems.create(FontSystem);
+    this.engine.systems.create(ModelSystem);
   }
 
   // TODO MOVE into some Entity i think
   private subscribeRender() {
-    this.gameEngine.systems.find(TickSystem).on<number>(TickSystemEvent.Tick, () => {
-      const scene = this.gameEngine.factors.find(SceneFactor).scene;
-      const camera = this.gameEngine.factors.find(CameraFactor).camera;
+    this.engine.systems.find(TickSystem).on<number>(TickSystemEvent.Tick, () => {
+      const scene = this.engine.factors.find(SceneFactor).scene;
+      const camera = this.engine.factors.find(CameraFactor).camera;
       this.renderer.render(scene, camera);
     })
   }
 
-  private initEnvironment(): void {
-    const environment = this.gameEngine.entities.create(Entity, EntityName.Environment);
+  private initSurface(): void {
+    const surface = this.engine.entities.create(Entity, EntityName.Surface);
 
-    environment.create(SurfaceController);
+    surface.create(SurfaceController);
   }
 
   private configureThreeJs() {
-    const windowEventSystem = this.gameEngine.systems.find<WindowEventSystem>(WindowEventSystem);
+    const windowEventSystem = this.engine.systems.find<WindowEventSystem>(WindowEventSystem);
     const window = windowEventSystem.getWindow();
 
     this.renderer.outputColorSpace = SRGBColorSpace;
@@ -137,12 +136,6 @@ export class VoxelGame {
     })
   }
 
-  private configureCamera() {
-    const windowEventSystem = this.gameEngine.systems.find<WindowEventSystem>(WindowEventSystem);
-    const window = windowEventSystem.getWindow();
-    this.gameEngine.factors.find(CameraFactor).updateAspect(window.innerWidth / window.innerHeight);
-  }
-
   private initClouds() {
     for (let i = 0; i < 25; ++i) {
       const index = VMath.rand_int(1, 3);
@@ -152,7 +145,7 @@ export class VoxelGame {
         (Math.random() * 2.0 - 1.0) * 500,
       );
 
-      const cloudEntity = this.gameEngine.entities.create(Entity, `cloud_${i}`);
+      const cloudEntity = this.engine.entities.create(Entity, `cloud_${i}`);
       cloudEntity.setProperty(PositionProperty, pos);
       cloudEntity.setProperty(RotationProperty, new Quaternion(0,0,0,1));
 
@@ -169,7 +162,7 @@ export class VoxelGame {
   }
 
   private initThrees() {
-    const surfaceFactor = this.gameEngine.factors.find(SurfaceFactor);
+    const surfaceFactor = this.engine.factors.find(SurfaceFactor);
     for (let i = 0; i < 100; ++i) {
       const name = availableTrees[VMath.rand_int(0, availableTrees.length - 1)];
       const x = (Math.random() * 2.0 - 1.0) * 500;
@@ -178,7 +171,7 @@ export class VoxelGame {
 
       const pos = new Vector3(x,y,z);
 
-      const tree = this.gameEngine.entities.create(Entity, `${name}_${i}`);
+      const tree = this.engine.entities.create(Entity, `${name}_${i}`);
       tree.setProperty(PositionProperty, pos);
       tree.setProperty(RotationProperty, new Quaternion(0,0,0,1));
       tree.create(NameController);
@@ -214,7 +207,7 @@ export class VoxelGame {
   }
 
   private initPlayer() {
-    const player = this.gameEngine.entities.create(Entity, EntityName.Player);
+    const player = this.engine.entities.create(Entity, EntityName.Player);
     const modelController = player.create(GltfModelController, ModelController);
     const stateController = player.create(StateController);
 
@@ -263,7 +256,7 @@ export class VoxelGame {
   }
 
   private focusEnvironmentOn(target: Entity) {
-    const environment = this.gameEngine.entities.get(EntityName.Environment);
+    const environment = this.engine.entities.get(EntityName.Surface);
     environment.get<FocusableController>(FocusableController).focusOn(target);
   }
 
@@ -284,7 +277,7 @@ export class VoxelGame {
   }
 
   private initGui() {
-    const gui = this.gameEngine.entities.create(Entity);
+    const gui = this.engine.entities.create(Entity);
 
     gui.create(FpsController);
     gui.create(CameraHudController);

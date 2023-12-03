@@ -1,5 +1,5 @@
 export const enum EntityName {
-  Player = 'player',
-  Environment = 'environment',
-  Gui = 'gui',
+  Player = 'Player',
+  Surface = 'Surface',
+  Gui = 'Gui',
 }

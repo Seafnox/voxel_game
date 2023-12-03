@@ -20,6 +20,9 @@ export class CameraFocusController extends Controller {
       this.cameraFactor.updateAspect(window.innerWidth / window.innerHeight);
     });
 
+    const window = this.windowEventSystem.getWindow();
+    this.cameraFactor.updateAspect(window.innerWidth / window.innerHeight);
+
 //    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
