@@ -2,7 +2,6 @@ import { availableTrees } from 'src/availableTrees';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { CollisionModelController } from 'src/entity/CollisionModelController';
 import { SkyFocusController } from 'src/entity/environment/SkyFocusController';
-import { FocusableController } from 'src/entity/FocusableController';
 import { FbxModelController } from 'src/entity/models/FbxModelController';
 import { NameController } from 'src/entity/NameController';
 import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
@@ -252,12 +251,6 @@ export class VoxelGame {
     //   experience: 0,
     //   level: 1,
     // }));
-    this.focusEnvironmentOn(player);
-  }
-
-  private focusEnvironmentOn(target: Entity) {
-    const environment = this.engine.entities.get(EntityName.Surface);
-    environment.get<FocusableController>(FocusableController).focusOn(target);
   }
 
   private initNPC() {
