@@ -35,8 +35,12 @@ export const trees: TreeConfig[] = [
     path: './resources/pineTree/PineTree_3.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(9, 42, 9),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(5, 45, 5),
+        offset: new Vector3(-3, 32, -8),
       },
     ],
   },
@@ -46,8 +50,16 @@ export const trees: TreeConfig[] = [
     path: './resources/pineTree/PineTree_4.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(9, 35, 10),
+        offset: new Vector3(0, -5, 2),
+      },
+      {
+        size: new Vector3(6, 10, 9),
+        offset: new Vector3(0, 30, -2.5),
+      },
+      {
+        size: new Vector3(7, 40, 7),
+        offset: new Vector3(-3, 40, -6),
       },
     ],
   },
@@ -57,8 +69,8 @@ export const trees: TreeConfig[] = [
     path: './resources/pineTree/PineTree_5.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(8, 67, 8),
+        offset: new Vector3(-1, -5, 0),
       },
     ],
   },
