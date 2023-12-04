@@ -77,7 +77,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_1',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_1.fbx',
+    path: './resources/birchTree/BirchTree_1.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
@@ -88,7 +88,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_2',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_2.fbx',
+    path: './resources/birchTree/BirchTree_2.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
@@ -99,7 +99,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_3',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_3.fbx',
+    path: './resources/birchTree/BirchTree_3.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
@@ -110,7 +110,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_4',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_4.fbx',
+    path: './resources/birchTree/BirchTree_4.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
@@ -121,7 +121,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_5',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_5.fbx',
+    path: './resources/birchTree/BirchTree_5.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
@@ -132,7 +132,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_Dead_1',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_Dead_1.fbx',
+    path: './resources/birchTree/BirchTree_Dead_1.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
@@ -143,7 +143,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_Dead_2',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_Dead_2.fbx',
+    path: './resources/birchTree/BirchTree_Dead_2.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
@@ -154,7 +154,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_Dead_3',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_Dead_3.fbx',
+    path: './resources/birchTree/BirchTree_Dead_3.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
@@ -165,7 +165,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_Dead_4',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_Dead_4.fbx',
+    path: './resources/birchTree/BirchTree_Dead_4.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
@@ -176,7 +176,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'BirchTree_Dead_5',
     modelType: ModelType.FBX,
-    path: './resources/brichTree/BirchTree_Dead_5.fbx',
+    path: './resources/birchTree/BirchTree_Dead_5.fbx',
     collisionUnits: [
       {
         size: new Vector3(10, 55, 10),
