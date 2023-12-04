@@ -15,6 +15,10 @@ export class VMath {
     return normal * (max - min) + min;
   }
 
+  static revertLerp(real: number, min: number, max: number) {
+    return (real - min) / max;
+  }
+
   static sat(x: number) {
     return Math.min(Math.max(x, 0.0), 1.0);
   }
