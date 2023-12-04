@@ -80,8 +80,28 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_1.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(5, 20, 7),
+        offset: new Vector3(-2, -5, -2),
+      },
+      {
+        size: new Vector3(5, 10, 12),
+        offset: new Vector3(0, 15, -6),
+      },
+      {
+        size: new Vector3(6, 30, 6),
+        offset: new Vector3(5.5, 25, -0.5),
+      },
+      {
+        size: new Vector3(6, 14, 5),
+        offset: new Vector3(2, 23, -15),
+      },
+      {
+        size: new Vector3(6, 10, 13),
+        offset: new Vector3(2, 25, -25),
+      },
+      {
+        size: new Vector3(6, 18, 13),
+        offset: new Vector3(2, 35, -31),
       },
     ],
   },
@@ -91,8 +111,20 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_2.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(6, 24, 6),
+        offset: new Vector3(0, -5, 1),
+      },
+      {
+        size: new Vector3(6, 10, 6),
+        offset: new Vector3(0, 17, 7),
+      },
+      {
+        size: new Vector3(6, 10, 6),
+        offset: new Vector3(0, 26, 13),
+      },
+      {
+        size: new Vector3(15, 25, 17),
+        offset: new Vector3(-1, 36, 12),
       },
     ],
   },
@@ -102,8 +134,20 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_3.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 73, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(8, 12, 6),
+        offset: new Vector3(7, 26, 2),
+      },
+      {
+        size: new Vector3(6, 21, 12),
+        offset: new Vector3(6, 30, -9),
+      },
+      {
+        size: new Vector3(6, 30, 10),
+        offset: new Vector3(0, 48, -8),
       },
     ],
   },
@@ -113,8 +157,32 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_4.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(8, 17, 6),
+        offset: new Vector3(4, -5, 0),
+      },
+      {
+        size: new Vector3(6, 12, 7),
+        offset: new Vector3(2, 12, -3.5),
+      },
+      {
+        size: new Vector3(7, 38, 12),
+        offset: new Vector3(-1.5, 18, -13),
+      },
+      {
+        size: new Vector3(6, 17, 6),
+        offset: new Vector3(0, 50, -19),
+      },
+      {
+        size: new Vector3(6, 20, 22),
+        offset: new Vector3(-1, 30, -30),
+      },
+      {
+        size: new Vector3(6, 28, 8),
+        offset: new Vector3(0, 20, 4),
+      },
+      {
+        size: new Vector3(6, 16, 16),
+        offset: new Vector3(0, 30, 16),
       },
     ],
   },
@@ -124,8 +192,16 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_5.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(7, 90, 7),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(16, 20, 14),
+        offset: new Vector3(0, 85, 0),
+      },
+      {
+        size: new Vector3(7, 25, 14),
+        offset: new Vector3(2, 35, -10.5),
       },
     ],
   },
@@ -135,8 +211,28 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_Dead_1.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(5, 20, 7),
+        offset: new Vector3(-2, -5, -2),
+      },
+      {
+        size: new Vector3(5, 10, 12),
+        offset: new Vector3(0, 15, -6),
+      },
+      {
+        size: new Vector3(6, 30, 6),
+        offset: new Vector3(5.5, 25, -0.5),
+      },
+      {
+        size: new Vector3(6, 14, 5),
+        offset: new Vector3(2, 23, -15),
+      },
+      {
+        size: new Vector3(6, 10, 13),
+        offset: new Vector3(2, 25, -25),
+      },
+      {
+        size: new Vector3(6, 18, 13),
+        offset: new Vector3(2, 35, -31),
       },
     ],
   },
@@ -146,8 +242,20 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_Dead_2.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(6, 24, 6),
+        offset: new Vector3(0, -5, 1),
+      },
+      {
+        size: new Vector3(6, 10, 6),
+        offset: new Vector3(0, 17, 7),
+      },
+      {
+        size: new Vector3(6, 10, 6),
+        offset: new Vector3(0, 26, 13),
+      },
+      {
+        size: new Vector3(15, 25, 17),
+        offset: new Vector3(-1, 36, 12),
       },
     ],
   },
@@ -157,8 +265,20 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_Dead_3.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 73, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(8, 12, 6),
+        offset: new Vector3(7, 26, 2),
+      },
+      {
+        size: new Vector3(6, 21, 12),
+        offset: new Vector3(6, 30, -9),
+      },
+      {
+        size: new Vector3(6, 30, 10),
+        offset: new Vector3(0, 48, -8),
       },
     ],
   },
@@ -168,8 +288,32 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_Dead_4.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(8, 17, 6),
+        offset: new Vector3(4, -5, 0),
+      },
+      {
+        size: new Vector3(6, 12, 7),
+        offset: new Vector3(2, 12, -3.5),
+      },
+      {
+        size: new Vector3(7, 38, 12),
+        offset: new Vector3(-1.5, 18, -13),
+      },
+      {
+        size: new Vector3(6, 17, 6),
+        offset: new Vector3(0, 50, -19),
+      },
+      {
+        size: new Vector3(6, 20, 22),
+        offset: new Vector3(-1, 30, -30),
+      },
+      {
+        size: new Vector3(6, 28, 8),
+        offset: new Vector3(0, 20, 4),
+      },
+      {
+        size: new Vector3(6, 16, 16),
+        offset: new Vector3(0, 30, 16),
       },
     ],
   },
@@ -179,8 +323,16 @@ export const trees: TreeConfig[] = [
     path: './resources/birchTree/BirchTree_Dead_5.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(7, 90, 7),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(16, 20, 14),
+        offset: new Vector3(0, 85, 0),
+      },
+      {
+        size: new Vector3(7, 25, 14),
+        offset: new Vector3(2, 35, -10.5),
       },
     ],
   },
