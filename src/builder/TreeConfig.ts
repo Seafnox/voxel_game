@@ -342,8 +342,36 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_1.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 20, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(4, 5, 15),
+        offset: new Vector3(0, 15, 2),
+      },
+      {
+        size: new Vector3(4, 5, 6),
+        offset: new Vector3(0, 20, -7),
+      },
+      {
+        size: new Vector3(4, 5, 6),
+        offset: new Vector3(0, 20, 11),
+      },
+      {
+        size: new Vector3(4, 5, 5),
+        offset: new Vector3(0, 25, -10),
+      },
+      {
+        size: new Vector3(4, 5, 7),
+        offset: new Vector3(0, 25, 15),
+      },
+      {
+        size: new Vector3(25, 20, 26),
+        offset: new Vector3(-1, 30, -10),
+      },
+      {
+        size: new Vector3(15, 15, 15),
+        offset: new Vector3(0, 30, 21),
       },
     ],
   },
@@ -353,8 +381,20 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_2.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 45, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(28, 30, 28),
+        offset: new Vector3(0, 40, 0),
+      },
+      {
+        size: new Vector3(5, 12, 17),
+        offset: new Vector3(0, 18, 11),
+      },
+      {
+        size: new Vector3(23, 16, 17),
+        offset: new Vector3(0, 30, 21),
       },
     ],
   },
@@ -364,8 +404,16 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_3.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 50, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(10, 28, 15),
+        offset: new Vector3(0, 45, 0),
+      },
+      {
+        size: new Vector3(11, 20, 21),
+        offset: new Vector3(-8, 30, 2),
       },
     ],
   },
@@ -375,8 +423,12 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_4.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 40, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(19, 30, 25),
+        offset: new Vector3(-3, 35, -7),
       },
     ],
   },
@@ -386,8 +438,16 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_5.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 10, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(6, 23, 6),
+        offset: new Vector3(0, 5, 3),
+      },
+      {
+        size: new Vector3(21, 23, 30),
+        offset: new Vector3(-4, 28, 7),
       },
     ],
   },
@@ -397,8 +457,36 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_Dead_1.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 20, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(4, 5, 15),
+        offset: new Vector3(0, 15, 2),
+      },
+      {
+        size: new Vector3(4, 5, 6),
+        offset: new Vector3(0, 20, -7),
+      },
+      {
+        size: new Vector3(4, 5, 6),
+        offset: new Vector3(0, 20, 11),
+      },
+      {
+        size: new Vector3(4, 5, 5),
+        offset: new Vector3(0, 25, -10),
+      },
+      {
+        size: new Vector3(4, 5, 7),
+        offset: new Vector3(0, 25, 15),
+      },
+      {
+        size: new Vector3(25, 20, 26),
+        offset: new Vector3(-1, 30, -10),
+      },
+      {
+        size: new Vector3(15, 15, 15),
+        offset: new Vector3(0, 30, 21),
       },
     ],
   },
@@ -408,8 +496,20 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_Dead_2.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 45, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(28, 30, 28),
+        offset: new Vector3(0, 40, 0),
+      },
+      {
+        size: new Vector3(5, 12, 17),
+        offset: new Vector3(0, 18, 11),
+      },
+      {
+        size: new Vector3(23, 16, 17),
+        offset: new Vector3(0, 30, 21),
       },
     ],
   },
@@ -419,8 +519,16 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_Dead_3.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 50, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(10, 28, 15),
+        offset: new Vector3(0, 45, 0),
+      },
+      {
+        size: new Vector3(11, 20, 21),
+        offset: new Vector3(-8, 30, 2),
       },
     ],
   },
@@ -430,8 +538,12 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_Dead_4.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 40, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(19, 30, 25),
+        offset: new Vector3(-3, 35, -7),
       },
     ],
   },
@@ -441,8 +553,16 @@ export const trees: TreeConfig[] = [
     path: './resources/commonTree/CommonTree_Dead_5.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(6, 10, 6),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(6, 23, 6),
+        offset: new Vector3(0, 5, 3),
+      },
+      {
+        size: new Vector3(21, 23, 30),
+        offset: new Vector3(-4, 28, 7),
       },
     ],
   },
