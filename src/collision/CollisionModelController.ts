@@ -3,7 +3,7 @@ import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { PositionProperty } from 'src/entity/properties/visual';
+import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial } from 'three';
 
@@ -26,6 +26,7 @@ export class CollisionModelController extends Controller {
     super(engine, entity, name);
 
     this.entity.on(PositionProperty, this.positionChanges.bind(this));
+    this.entity.on(RotationProperty, this.rotationChanges.bind(this));
   }
 
   get units(): CollisionBox[] {
@@ -51,7 +52,7 @@ export class CollisionModelController extends Controller {
     const unit = new CollisionBox(unitName, unitPosition, config.size);
     const boxGeometry = new BoxGeometry(config.size.x, config.size.y, config.size.z);
     const unitMaterial = new MeshBasicMaterial({
-      color: 0x000000,
+      color: 0xff0000,
       wireframe: true,
     })
     const unitMesh = new Mesh(boxGeometry, unitMaterial);
@@ -86,6 +87,9 @@ export class CollisionModelController extends Controller {
       unitMesh.position.copy(unit.position);
     })
   }
+
+  // TODO need to control rotation for collision box
+  private rotationChanges() {  }
 
   private generateName(prefix: string) {
     this.idCounter += 1;
