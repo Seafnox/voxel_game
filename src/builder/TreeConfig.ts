@@ -572,8 +572,36 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_1.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(5, 15, 5),
+        offset: new Vector3(3, -5, 0),
+      },
+      {
+        size: new Vector3(5, 14, 5),
+        offset: new Vector3(3, 10, -2.5),
+      },
+      {
+        size: new Vector3(5, 30, 5),
+        offset: new Vector3(-2, 24, 2.5),
+      },
+      {
+        size: new Vector3(4, 7, 4),
+        offset: new Vector3(1, 17, -7),
+      },
+      {
+        size: new Vector3(4, 3, 4),
+        offset: new Vector3(1, 21, -11),
+      },
+      {
+        size: new Vector3(4, 35, 10),
+        offset: new Vector3(-1, 24, -16),
+      },
+      {
+        size: new Vector3(4, 5, 10),
+        offset: new Vector3(-1, 30, -26),
+      },
+      {
+        size: new Vector3(4, 15, 10),
+        offset: new Vector3(0, 35, -36),
       },
     ],
   },
@@ -583,8 +611,56 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_2.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 10, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(5, 4, 5),
+        offset: new Vector3(0, 5, -4),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(0, 9, -9),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(0, 11, -14),
+      },
+      {
+        size: new Vector3(5, 8, 5),
+        offset: new Vector3(0, 13, -19),
+      },
+      {
+        size: new Vector3(5, 20, 5),
+        offset: new Vector3(0, 21, -15),
+      },
+      {
+        size: new Vector3(15, 20, 20),
+        offset: new Vector3(-3, 41, -14),
+      },
+      {
+        size: new Vector3(5, 6, 5),
+        offset: new Vector3(0, 15, -24),
+      },
+      {
+        size: new Vector3(5, 4, 4),
+        offset: new Vector3(0, 19, -28.5),
+      },
+      {
+        size: new Vector3(15, 20, 20),
+        offset: new Vector3(-3, 35, -42),
+      },
+      {
+        size: new Vector3(5, 5, 9),
+        offset: new Vector3(-1, 30, -39),
+      },
+      {
+        size: new Vector3(5, 5, 5),
+        offset: new Vector3(-1, 25, -35),
+      },
+      {
+        size: new Vector3(5, 3, 3),
+        offset: new Vector3(-1, 22, -32),
       },
     ],
   },
@@ -594,8 +670,32 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_3.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 10, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(5, 4, 5),
+        offset: new Vector3(0, 5, -4),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(0, 9, -9),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(0, 11, -14),
+      },
+      {
+        size: new Vector3(5, 8, 5),
+        offset: new Vector3(0, 13, -19),
+      },
+      {
+        size: new Vector3(5, 5, 5),
+        offset: new Vector3(0, 16, -24),
+      },
+      {
+        size: new Vector3(5, 22, 24),
+        offset: new Vector3(0, 21, -23),
       },
     ],
   },
@@ -605,8 +705,40 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_4.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 10, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(5, 10, 5),
+        offset: new Vector3(0, 5, -3),
+      },
+      {
+        size: new Vector3(5, 18, 5),
+        offset: new Vector3(0, 10, -8),
+      },
+      {
+        size: new Vector3(5, 10, 5),
+        offset: new Vector3(-0.5, 18, -13),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(-0.5, 25, -18),
+      },
+      {
+        size: new Vector3(24, 27, 30),
+        offset: new Vector3(0, 28, -10),
+      },
+      {
+        size: new Vector3(10, 15, 13),
+        offset: new Vector3(0, 35, 11),
+      },
+      {
+        size: new Vector3(10, 10, 10),
+        offset: new Vector3(0, 35, -30),
+      },
+      {
+        size: new Vector3(10, 20, 8),
+        offset: new Vector3(0, 39, -39),
       },
     ],
   },
@@ -616,8 +748,16 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_5.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 27, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(5, 11, 13),
+        offset: new Vector3(3, 35, -9),
+      },
+      {
+        size: new Vector3(5, 15, 34),
+        offset: new Vector3(0, 22, 14),
       },
     ],
   },
@@ -627,8 +767,36 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_Dead_1.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
-        offset: new Vector3(0, -5, 0),
+        size: new Vector3(5, 15, 5),
+        offset: new Vector3(3, -5, 0),
+      },
+      {
+        size: new Vector3(5, 14, 5),
+        offset: new Vector3(3, 10, -2.5),
+      },
+      {
+        size: new Vector3(5, 30, 5),
+        offset: new Vector3(-2, 24, 2.5),
+      },
+      {
+        size: new Vector3(4, 7, 4),
+        offset: new Vector3(1, 17, -7),
+      },
+      {
+        size: new Vector3(4, 3, 4),
+        offset: new Vector3(1, 21, -11),
+      },
+      {
+        size: new Vector3(4, 35, 10),
+        offset: new Vector3(-1, 24, -16),
+      },
+      {
+        size: new Vector3(4, 5, 10),
+        offset: new Vector3(-1, 30, -26),
+      },
+      {
+        size: new Vector3(4, 15, 10),
+        offset: new Vector3(0, 35, -36),
       },
     ],
   },
@@ -638,8 +806,56 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_Dead_2.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 10, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(5, 4, 5),
+        offset: new Vector3(0, 5, -4),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(0, 9, -9),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(0, 11, -14),
+      },
+      {
+        size: new Vector3(5, 8, 5),
+        offset: new Vector3(0, 13, -19),
+      },
+      {
+        size: new Vector3(5, 20, 5),
+        offset: new Vector3(0, 21, -15),
+      },
+      {
+        size: new Vector3(15, 20, 20),
+        offset: new Vector3(-3, 41, -14),
+      },
+      {
+        size: new Vector3(5, 6, 5),
+        offset: new Vector3(0, 15, -24),
+      },
+      {
+        size: new Vector3(5, 4, 4),
+        offset: new Vector3(0, 19, -28.5),
+      },
+      {
+        size: new Vector3(15, 20, 20),
+        offset: new Vector3(-3, 35, -42),
+      },
+      {
+        size: new Vector3(5, 5, 9),
+        offset: new Vector3(-1, 30, -39),
+      },
+      {
+        size: new Vector3(5, 5, 5),
+        offset: new Vector3(-1, 25, -35),
+      },
+      {
+        size: new Vector3(5, 3, 3),
+        offset: new Vector3(-1, 22, -32),
       },
     ],
   },
@@ -649,8 +865,32 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_Dead_3.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 10, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(5, 4, 5),
+        offset: new Vector3(0, 5, -4),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(0, 9, -9),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(0, 11, -14),
+      },
+      {
+        size: new Vector3(5, 8, 5),
+        offset: new Vector3(0, 13, -19),
+      },
+      {
+        size: new Vector3(5, 5, 5),
+        offset: new Vector3(0, 16, -24),
+      },
+      {
+        size: new Vector3(5, 22, 24),
+        offset: new Vector3(0, 21, -23),
       },
     ],
   },
@@ -660,8 +900,40 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_Dead_4.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 10, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(5, 10, 5),
+        offset: new Vector3(0, 5, -3),
+      },
+      {
+        size: new Vector3(5, 18, 5),
+        offset: new Vector3(0, 10, -8),
+      },
+      {
+        size: new Vector3(5, 10, 5),
+        offset: new Vector3(-0.5, 18, -13),
+      },
+      {
+        size: new Vector3(5, 3, 5),
+        offset: new Vector3(-0.5, 25, -18),
+      },
+      {
+        size: new Vector3(24, 27, 30),
+        offset: new Vector3(0, 28, -10),
+      },
+      {
+        size: new Vector3(10, 15, 13),
+        offset: new Vector3(0, 35, 11),
+      },
+      {
+        size: new Vector3(10, 10, 10),
+        offset: new Vector3(0, 35, -30),
+      },
+      {
+        size: new Vector3(10, 20, 8),
+        offset: new Vector3(0, 39, -39),
       },
     ],
   },
@@ -671,8 +943,16 @@ export const trees: TreeConfig[] = [
     path: './resources/willowTree/Willow_Dead_5.fbx',
     collisionUnits: [
       {
-        size: new Vector3(10, 55, 10),
+        size: new Vector3(5, 27, 5),
         offset: new Vector3(0, -5, 0),
+      },
+      {
+        size: new Vector3(5, 11, 13),
+        offset: new Vector3(3, 35, -9),
+      },
+      {
+        size: new Vector3(5, 15, 34),
+        offset: new Vector3(0, 22, 14),
       },
     ],
   },
