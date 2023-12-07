@@ -18,7 +18,6 @@ import { CameraFactor } from 'src/factor/CameraFactor';
 import { RendererFactor } from 'src/factor/RendererFactor';
 import { SceneFactor } from 'src/factor/SceneFactor';
 import { SkyFactor } from 'src/factor/SkyFactor';
-import { SpatialFactor } from 'src/factor/SpatialFactor';
 import { SunLightFactor } from 'src/factor/SunLightFactor';
 import { FontSystem } from 'src/system/FontSystem';
 import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
@@ -67,8 +66,6 @@ export class VoxelGame {
     this.engine.factors.create(GravityFactor);
     this.engine.factors.create(SurfaceFactor)
       .generateSurface(400, 4000);
-    this.engine.factors.create(SpatialFactor)
-      .generateGrid(1000, 10);
     this.engine.factors.create(CollisionFactor);
   }
 
