@@ -1,10 +1,13 @@
+import { RandomFn } from 'simplex-noise/simplex-noise';
+
 export class VMath {
   static epsilon: number = 0.02;
   static superEpsilon: number = 0.002;
   static megaEpsilon: number = 0.00002;
+  static random: RandomFn = Math.random;
 
   static rand_range(min: number, max: number) {
-    return VMath.lerp(Math.random(), min, max);
+    return VMath.lerp(VMath.random(), min, max);
   }
 
   static rand_int(min: number, max: number) {

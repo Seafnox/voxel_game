@@ -25,6 +25,7 @@ import { ModelSystem } from 'src/system/ModelSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
 import { TickSystem } from 'src/system/TickSystem';
 import { PseudoRandomizer } from 'src/utils/PseudoRandomizer';
+import { VMath } from 'src/VMath';
 import { Vector3 } from 'three';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
@@ -45,10 +46,12 @@ export class VoxelGame {
 
   // FIXME import randomizer into engine and refactor Math.random
   private randomizer = new PseudoRandomizer(1152372536);
-  private engine = new GameEngine();
+  private random = this.randomizer.next.bind(this.randomizer);
+  private engine = new GameEngine(this.random);
 
   constructor() {
     console.log('World seed', this.randomizer.seed);
+    VMath.random = this.random;
 
     this.initFactors();
     this.initSystems();

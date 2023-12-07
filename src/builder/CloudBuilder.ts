@@ -15,9 +15,9 @@ export class CloudBuilder {
   buildRandomCloud(postfix: string) {
     const index = VMath.rand_int(1, 3);
     const pos = new Vector3(
-      (Math.random() * 2.0 - 1.0) * 500,
+      (this.engine.random() * 2.0 - 1.0) * 500,
       270,
-      (Math.random() * 2.0 - 1.0) * 500,
+      (this.engine.random() * 2.0 - 1.0) * 500,
     );
 
     const cloudEntity = this.engine.entities.create(Entity, `cloud_${postfix}`);
@@ -27,7 +27,7 @@ export class CloudBuilder {
     const modelController = cloudEntity.create(GltfModelController);
     modelController.modelConfig = {
       resourcePath: './resources/clouds/Cloud' + index + '.glb',
-      scale: Math.random() * 5 + 10,
+      scale: this.engine.random() * 5 + 10,
       emissive: new Color(this.cloudColor),
       castShadow: true,
       receiveShadow: true,

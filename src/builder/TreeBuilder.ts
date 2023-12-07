@@ -24,8 +24,8 @@ export class TreeBuilder {
 
   buildRandomTree(postfix: string) {
     const config = trees[VMath.rand_int(0, trees.length - 1)];
-    const x = (Math.random() * 2.0 - 1.0) * 500;
-    const z = (Math.random() * 2.0 - 1.0) * 500;
+    const x = (this.engine.random() * 2.0 - 1.0) * 500;
+    const z = (this.engine.random() * 2.0 - 1.0) * 500;
     const y = this.surfaceFactor.getZCord(x, z);
 
     const pos = new Vector3(x, y, z);

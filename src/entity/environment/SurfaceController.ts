@@ -79,7 +79,7 @@ export class SurfaceController extends Controller {
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
       const x = this.surfaceFactor.getMapToCord(percentX * (mapSize));
       const y = this.surfaceFactor.getMapToCord(percentY * (mapSize));
-      const z = Math.random() * 2 - 8;
+      const z = this.engine.random() * 2 - 8;
       target.set(x, z, y);
     };
     return new ParametricGeometry(calculatePoint, mapSize, mapSize);
