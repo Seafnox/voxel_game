@@ -1,7 +1,9 @@
+import { PseudoRandomizer } from 'src/utils/PseudoRandomizer';
 import { SurfaceFactor } from './SurfaceFactor';
 
 const surfaceFactor = new SurfaceFactor();
-surfaceFactor.generateSurface(50, 150);
+const randomizer = new PseudoRandomizer(123);
+surfaceFactor.generateSurface(randomizer.next.bind(randomizer),50, 150);
 const map = surfaceFactor.surfaceMap;
 
 const colorMap: Record<string, string> = {

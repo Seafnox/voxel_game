@@ -24,6 +24,7 @@ import { KeyboardEventSystem } from 'src/system/KeyboardEventSystem';
 import { ModelSystem } from 'src/system/ModelSystem';
 import { MouseEventSystem } from 'src/system/MouseEventSystem';
 import { TickSystem } from 'src/system/TickSystem';
+import { PseudoRandomizer } from 'src/utils/PseudoRandomizer';
 import { Vector3 } from 'three';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
@@ -42,9 +43,13 @@ import { LightFocusController } from 'src/entity/LightFocusController';
 
 export class VoxelGame {
 
+  // FIXME import randomizer into engine and refactor Math.random
+  private randomizer = new PseudoRandomizer(1152372536);
   private engine = new GameEngine();
 
   constructor() {
+    console.log('World seed', this.randomizer.seed);
+
     this.initFactors();
     this.initSystems();
     this.initRenderer();
@@ -65,7 +70,7 @@ export class VoxelGame {
     this.engine.factors.create(CameraFactor);
     this.engine.factors.create(GravityFactor);
     this.engine.factors.create(SurfaceFactor)
-      .generateSurface(400, 4000);
+      .generateSurface(this.randomizer.next.bind(this.randomizer), 400, 4000);
     this.engine.factors.create(CollisionFactor);
   }
 

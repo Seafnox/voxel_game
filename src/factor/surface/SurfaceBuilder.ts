@@ -1,4 +1,5 @@
 import { createNoise3D, NoiseFunction3D } from 'simplex-noise';
+import { RandomFn } from 'simplex-noise/simplex-noise';
 
 export type SurfaceMap = SurfacePoint[][];
 
@@ -13,16 +14,17 @@ export class SurfaceBuilder {
   private simplexes: NoiseFunction3D[];
 
   constructor(
+    private _randomFn: RandomFn,
     mapSize: number,
   ) {
     this.simplexes = [
-      this.newSimplex(1 * mapSize, 0.00625), // 2 * 10 / 10
-      this.newSimplex(2 * mapSize, 0.0175), // 2 * 200 / 210
-      this.newSimplex(4 * mapSize, 0.025), // 2 * 100 / 310
-      this.newSimplex(8 * mapSize, 0.045), // 2 * 50 / 360
-      this.newSimplex(16 * mapSize, 0.15), // 2 * 20 / 380
-      this.newSimplex(32 * mapSize, 0.155), // 2 * 10 / 390
-      this.newSimplex(64 * mapSize, 0.30), // 2 * 5 / 395
+      this.newSimplex(this._randomFn, 1 * mapSize, 0.00625), // 2 * 10 / 10
+      this.newSimplex(this._randomFn, 2 * mapSize, 0.0175), // 2 * 200 / 210
+      this.newSimplex(this._randomFn, 4 * mapSize, 0.025), // 2 * 100 / 310
+      this.newSimplex(this._randomFn, 8 * mapSize, 0.045), // 2 * 50 / 360
+      this.newSimplex(this._randomFn, 16 * mapSize, 0.15), // 2 * 20 / 380
+      this.newSimplex(this._randomFn, 32 * mapSize, 0.155), // 2 * 10 / 390
+      this.newSimplex(this._randomFn, 64 * mapSize, 0.30), // 2 * 5 / 395
     ];
   }
 
@@ -31,15 +33,15 @@ export class SurfaceBuilder {
     for (let x = 0; x < mapWidth; x++) {
       rgbMap[x] = [];
       for (let y = 0; y < mapHeight; y++) {
-        const height = this.getHeight(this.xyToXyz(mapWidth, mapHeight, x, y)) * (1 + Math.random()*0.02);
+        const height = this.getHeight(this.xyToXyz(mapWidth, mapHeight, x, y)) * (1 + this._randomFn()*0.02);
         rgbMap[x][y] = {x, y, height};
       }
     }
     return rgbMap;
   }
 
-  private newSimplex(zoom: number, scalar: number): NoiseFunction3D {
-    const simplex = createNoise3D();
+  private newSimplex(randomFn: RandomFn, zoom: number, scalar: number): NoiseFunction3D {
+    const simplex = createNoise3D(randomFn);
     return (x, y, z) => (simplex(x * zoom, y * zoom, z * zoom) + 1) * scalar;
   }
 

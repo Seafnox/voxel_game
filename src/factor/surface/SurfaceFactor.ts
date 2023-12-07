@@ -1,3 +1,4 @@
+import { RandomFn } from 'simplex-noise/simplex-noise';
 import { Factor } from '../../engine/Factor';
 import { RGBColor } from './RGBColor';
 import { SurfaceEntry, surfaceEntries } from './TempSurfaceConstant';
@@ -38,13 +39,14 @@ export class SurfaceFactor implements Factor {
   }
 
   generateSurface(
+    randomFn: RandomFn,
     mapSize: number,
     surfaceSize: number,
   ) {
     this._mapSize = mapSize;
     this._surfaceSize = surfaceSize;
     this._surfaceScale = this.surfaceSize / this.mapSize;
-    const surfaceBuilder = new SurfaceBuilder(0.003 * this._surfaceScale);
+    const surfaceBuilder = new SurfaceBuilder(randomFn, 0.003 * this._surfaceScale);
     this._surfaceMap = surfaceBuilder.getSurfaceMap(this.mapSize, this.mapSize);
   }
 
