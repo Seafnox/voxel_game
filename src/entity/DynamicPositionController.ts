@@ -1,8 +1,10 @@
+import { CollisionBox } from 'src/collision/CollisionBox';
+import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { VelocityProperty } from 'src/entity/properties/dynamic';
-import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
+import { PositionProperty, RotationProperty, CollisionUnits } from 'src/entity/properties/visual';
 import { isDifferentVector } from 'src/entity/utils/isDifferentVector';
 import { SurfaceFactor } from 'src/factor/surface/SurfaceFactor';
 import { TickSystem, TickSystemEvent } from 'src/system/TickSystem';
@@ -25,6 +27,14 @@ export class DynamicPositionController extends Controller {
 
   private get surfaceFactor(): SurfaceFactor {
     return this.engine.factors.find(SurfaceFactor);
+  }
+
+  private get collisionUnits(): CollisionBox[] {
+    return this.entity.getProperty<CollisionBox[]>(CollisionUnits);
+  }
+
+  private get collisionFactor(): CollisionFactor {
+    return this.engine.factors.find(CollisionFactor);
   }
 
   setNearest(x: number, z: number) {
@@ -65,27 +75,22 @@ export class DynamicPositionController extends Controller {
     }
 
     if (isDifferentVector(position, supposedPosition)) {
-      position.copy(supposedPosition);
-      this.entity.setProperty(PositionProperty, position);
+      if (this.pathIsClear(position, supposedPosition)) {
+        position.copy(supposedPosition);
+        this.entity.setProperty(PositionProperty, position);
+      }
     }
   }
 
-//  // FIXME change to calculation possible supposed position between position and initial supposed position
-//  private hasIntersections(pos: Vector3): boolean {
-//    // TODO refactoring SpatialGridController to property or change all to own collision system!
-//    const grid = this.entity.get<SpatialGridController>(SpatialGridController);
-//    const nearby = grid.FindNearbyEntities(5) || [];
-//
-//    for (let i = 0; i < nearby.length; ++i) {
-//      const nearbyEntity = nearby[i].entity;
-//      const nearbyPosition = nearbyEntity.getPosition();
-//      const distance = ((pos.x - nearbyPosition.x) ** 2 + (pos.z - nearbyPosition.z) ** 2) ** 0.5;
-//
-//      // FIXME HARDCODED
-//      if (distance <= 4) {
-//        return true;
-//      }
-//    }
-//    return false;
-//  }
+  private pathIsClear(prevPosition: Vector3, nextPosition: Vector3): boolean {
+    if (!this.entity.hasProperty(CollisionUnits)) return true;
+
+    const delta = nextPosition.clone().sub(prevPosition);
+    const collisionUnits = this.collisionUnits;
+    const nextCollisionUnits = this.collisionUnits.map(unit => unit.clone());
+    nextCollisionUnits.forEach(unit => unit.moveUp(delta));
+    const nextIntersections = this.collisionFactor.getIntersections(nextCollisionUnits, collisionUnits);
+
+    return !nextIntersections.length;
+  }
 }

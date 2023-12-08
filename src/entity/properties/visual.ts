@@ -5,3 +5,5 @@ export const ModelProperty = 'model';
 export const ModelReadyProperty = 'modelReady';
 
 export const FocusEntityProperty = 'focusAt';
+
+export const CollisionUnits = 'collisionModel';

@@ -3,20 +3,22 @@ import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { PositionProperty, RotationProperty } from 'src/entity/properties/visual';
+import { PositionProperty, RotationProperty, CollisionUnits } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
-import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial } from 'three';
+import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial, Material, Color } from 'three';
 
 export interface CollisionUnitConfig {
   size: Vector3;
   offset?: Vector3;
 }
 
+
 export class CollisionModelController extends Controller {
-  private _units: CollisionBox[] = [];
   private _unitConfigs: Record<string, CollisionUnitConfig> = {};
   private idCounter = 0;
-  private _meshes: Record<string, Mesh> = {};
+  private _meshes: Record<string, Mesh<BoxGeometry, MeshBasicMaterial>> = {};
+  private collidedColor = new Color(0x990000);
+  private uncollidedColor = new Color(0x000000);
 
   constructor(
     engine: GameEngine,
@@ -25,12 +27,13 @@ export class CollisionModelController extends Controller {
   ) {
     super(engine, entity, name);
 
+    this.entity.registerProperty(CollisionUnits, []);
     this.entity.on(PositionProperty, this.positionChanges.bind(this));
     this.entity.on(RotationProperty, this.rotationChanges.bind(this));
   }
 
   get units(): CollisionBox[] {
-    return this._units;
+    return this.entity.getProperty<CollisionBox[]>(CollisionUnits);
   }
 
   private get entityPosition(): Vector3 {
@@ -52,7 +55,7 @@ export class CollisionModelController extends Controller {
     const unit = new CollisionBox(unitName, unitPosition, config.size);
     const boxGeometry = new BoxGeometry(config.size.x, config.size.y, config.size.z);
     const unitMaterial = new MeshBasicMaterial({
-      color: 0xff0000,
+      color: this.uncollidedColor,
       wireframe: true,
     })
     const unitMesh = new Mesh(boxGeometry, unitMaterial);
@@ -60,7 +63,7 @@ export class CollisionModelController extends Controller {
 
     this.collisionFactor.register(unit);
     this.sceneFactor.add(unitMesh);
-    this._units.push(unit);
+    this.units.push(unit);
     this._meshes[unitName] = unitMesh;
     this._unitConfigs[unitName] = config;
 
@@ -80,10 +83,20 @@ export class CollisionModelController extends Controller {
   }
 
   private positionChanges() {
-    this._units.forEach(unit => {
+    this.units.forEach(unit => {
       const config = this._unitConfigs[unit.name];
       const unitMesh = this._meshes[unit.name];
       unit.position = this.calculateUnitPosition(config);
+      const intersections = this.collisionFactor.getIntersections([unit]);
+
+      if (intersections.length > 0 && !unitMesh.material.color.equals(this.collidedColor)) {
+        unitMesh.material.setValues({ color: this.collidedColor })
+      }
+
+      if (intersections.length == 0 && !unitMesh.material.color.equals(this.uncollidedColor)) {
+        unitMesh.material.setValues({ color: this.uncollidedColor })
+      }
+
       unitMesh.position.copy(unit.position);
     })
   }

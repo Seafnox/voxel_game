@@ -34,11 +34,21 @@ export class CollisionBox {
   }
 
   set position(position: Vector3) {
-    this._position = position;
+    this._position.copy(position);
     this.calculateMinMax();
   }
 
-  intersectsBox( box: CollisionBox ) {
+  clone(): this {
+    //@ts-ignore
+    return new this.constructor( this._name, this._position, this._size );
+  }
+
+  moveUp(delta: Vector3) {
+    this._position.add(delta);
+    this.calculateMinMax()
+  }
+
+  intersectsBox( box: CollisionBox ): boolean {
     const selfMax = this.max;
     const selfMin = this.min;
     const targetMax = box.max;
@@ -46,14 +56,14 @@ export class CollisionBox {
 
     // using 4 splitting planes to rule out intersections
 
-    return [
-      targetMax.x >= selfMin.x,
-      targetMin.x <= selfMax.x,
-      targetMax.y >= selfMin.y,
-      targetMin.y <= selfMax.y,
-      targetMax.z >= selfMin.z,
-      targetMin.z <= selfMax.z,
-    ].some(Boolean);
+    return !([
+      targetMax.x < selfMin.x,
+      targetMin.x > selfMax.x,
+      targetMax.y < selfMin.y,
+      targetMin.y > selfMax.y,
+      targetMax.z < selfMin.z,
+      targetMin.z > selfMax.z,
+    ].some(Boolean));
 
   }
 
@@ -80,13 +90,13 @@ export class CollisionBox {
   }
 
   private calculateMinMax() {
-    this._min.x = this.position.x - this.size.x/2;
-    this._min.y = this.position.y - this.size.y/2;
-    this._min.z = this.position.z - this.size.z/2;
+    this._min.x = this._position.x - this._size.x/2;
+    this._min.y = this._position.y - this._size.y/2;
+    this._min.z = this._position.z - this._size.z/2;
 
-    this._max.x = this.position.x + this.size.x/2;
-    this._max.y = this.position.y + this.size.y/2;
-    this._max.z = this.position.z + this.size.z/2;
+    this._max.x = this._position.x + this._size.x/2;
+    this._max.y = this._position.y + this._size.y/2;
+    this._max.z = this._position.z + this._size.z/2;
   }
 
 }
