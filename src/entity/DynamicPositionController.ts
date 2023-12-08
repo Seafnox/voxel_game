@@ -13,6 +13,7 @@ import { Vector3, Quaternion } from 'three';
 export class DynamicPositionController extends Controller {
   private deltaTimeScalar = 1000;
   private defaultPosition = new Vector3(0, 0, 0);
+
   constructor(
     engine: GameEngine,
     entity: Entity,
@@ -82,14 +83,14 @@ export class DynamicPositionController extends Controller {
     }
   }
 
+  // TODO add pathchecking (half delta check, quarter delta check, etc)
   private pathIsClear(prevPosition: Vector3, nextPosition: Vector3): boolean {
     if (!this.entity.hasProperty(CollisionUnits)) return true;
 
     const delta = nextPosition.clone().sub(prevPosition);
-    const collisionUnits = this.collisionUnits;
     const nextCollisionUnits = this.collisionUnits.map(unit => unit.clone());
     nextCollisionUnits.forEach(unit => unit.moveUp(delta));
-    const nextIntersections = this.collisionFactor.getIntersections(nextCollisionUnits, collisionUnits);
+    const nextIntersections = this.collisionFactor.getIntersections(nextCollisionUnits, this.collisionUnits);
 
     return !nextIntersections.length;
   }

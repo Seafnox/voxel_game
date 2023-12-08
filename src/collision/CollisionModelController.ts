@@ -5,7 +5,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { PositionProperty, RotationProperty, CollisionUnits } from 'src/entity/properties/visual';
 import { SceneFactor } from 'src/factor/SceneFactor';
-import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial, Material, Color } from 'three';
+import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial, Color } from 'three';
 
 export interface CollisionUnitConfig {
   size: Vector3;
