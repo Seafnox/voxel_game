@@ -73,7 +73,7 @@ export class VoxelGame {
     this.engine.factors.create(CameraFactor);
     this.engine.factors.create(GravityFactor);
     this.engine.factors.create(SurfaceFactor)
-      .generateSurface(this.randomizer.next.bind(this.randomizer), 400, 4000);
+      .generateSurface(this.random, 400, 4000);
     this.engine.factors.create(CollisionFactor);
   }
 
