@@ -19,6 +19,8 @@ export class CollisionModelController extends Controller {
   private _meshes: Record<string, Mesh<BoxGeometry, MeshBasicMaterial>> = {};
   private collidedColor = new Color(0x990000);
   private uncollidedColor = new Color(0x000000);
+  // TODO Make global config
+  private showMesh = false;
 
   constructor(
     engine: GameEngine,
@@ -62,10 +64,15 @@ export class CollisionModelController extends Controller {
     unitMesh.position.copy(unit.position);
 
     this.collisionFactor.register(unit);
-    this.sceneFactor.add(unitMesh);
     this.units.push(unit);
-    this._meshes[unitName] = unitMesh;
     this._unitConfigs[unitName] = config;
+
+    this._meshes[unitName] = unitMesh;
+
+    // TODO Make adoptive when convert to global config
+    if (this.showMesh) {
+      this.sceneFactor.add(unitMesh);
+    }
 
     return this;
   }
