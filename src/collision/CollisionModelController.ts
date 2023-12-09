@@ -3,8 +3,9 @@ import { CollisionFactor } from 'src/collision/CollisionFactor';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { PositionProperty, RotationProperty, CollisionUnits } from 'src/entity/properties/visual';
-import { SceneFactor } from 'src/factor/SceneFactor';
+import { CollisionUnitsProperty } from 'src/collision/CollisionUnitsProperty';
+import { PositionProperty, RotationProperty } from 'src/positioning/PositioningProperties';
+import { SceneFactor } from 'src/render/SceneFactor';
 import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial, Color } from 'three';
 
 export interface CollisionUnitConfig {
@@ -29,13 +30,13 @@ export class CollisionModelController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(CollisionUnits, []);
+    this.entity.registerProperty(CollisionUnitsProperty, []);
     this.entity.on(PositionProperty, this.positionChanges.bind(this));
     this.entity.on(RotationProperty, this.rotationChanges.bind(this));
   }
 
   get units(): CollisionBox[] {
-    return this.entity.getProperty<CollisionBox[]>(CollisionUnits);
+    return this.entity.getProperty<CollisionBox[]>(CollisionUnitsProperty);
   }
 
   private get entityPosition(): Vector3 {
