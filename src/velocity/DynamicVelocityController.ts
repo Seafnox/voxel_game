@@ -1,9 +1,11 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { AccelerationProperty, DecelerationProperty, VelocityProperty } from 'src/velocity/VelocityProperties';
+import { AccelerationProperty } from 'src/velocity/AccelerationProperty';
+import { DecelerationProperty } from 'src/velocity/DecelerationProperty';
 import { GravityFactor } from 'src/velocity/GravityFactor';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
+import { VelocityProperty } from 'src/velocity/VelocityProperty';
 import { Vector3 } from 'three';
 
 export class DynamicVelocityController extends Controller {
@@ -26,9 +28,10 @@ export class DynamicVelocityController extends Controller {
   }
 
   tick(deltaTime: number) {
-    const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
+    const velocityProperty = this.entity.findProperty(VelocityProperty);
+    const velocity = velocityProperty.get();
 
-    const frameAcceleration = this.entity.getProperty<Vector3>(AccelerationProperty).clone();
+    const frameAcceleration = this.entity.findProperty(AccelerationProperty).get().clone();
     frameAcceleration.add(this.gravityAcceleration);
     frameAcceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
 
@@ -38,11 +41,11 @@ export class DynamicVelocityController extends Controller {
 
     velocity.add(frameDeceleration);
 
-    this.entity.setProperty(VelocityProperty, velocity);
+    velocityProperty.set(velocity);
   }
 
   private getFrameDeceleration(velocity: Vector3, deltaTime: number) {
-    const frameDeceleration = this.entity.getProperty<Vector3>(DecelerationProperty).clone();
+    const frameDeceleration = this.entity.findProperty(DecelerationProperty).get().clone();
     frameDeceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
     frameDeceleration.x = Math.sign(frameDeceleration.x) * Math.min(Math.abs(frameDeceleration.x), Math.abs(velocity.x));
     frameDeceleration.y = Math.sign(frameDeceleration.y) * Math.min(Math.abs(frameDeceleration.y), Math.abs(velocity.y));

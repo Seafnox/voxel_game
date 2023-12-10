@@ -2,7 +2,7 @@ import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { PositionProperty } from 'src/positioning/PositioningProperties';
+import { PositionProperty } from 'src/positioning/PositionProperty';
 import { SceneFactor } from 'src/render/SceneFactor';
 import { SkyFactor } from 'src/sky/SkyFactor';
 import { HemisphereLight, Mesh, Vector3 } from 'three';
@@ -18,11 +18,11 @@ export class SkyFocusController extends Controller {
 
     this.sceneFactor.add(this.skySphere, this.skySphereLight);
 
-    this.entity.on(PositionProperty, this.targetPositionChange.bind(this));
+    this.entity.on(PositionProperty.name, this.targetPositionChange.bind(this));
 
     this.targetPositionChange({
       prev: undefined,
-      next: this.entity.getProperty<Vector3>(PositionProperty),
+      next: this.entity.findProperty(PositionProperty).get(),
     })
 
   }

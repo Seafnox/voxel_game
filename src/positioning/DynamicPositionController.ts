@@ -1,15 +1,16 @@
 import { CollisionBox } from 'src/collision/CollisionBox';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
+import { CollisionUnitsProperty } from 'src/collision/CollisionUnitsProperty';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { CollisionUnitsProperty } from 'src/collision/CollisionUnitsProperty';
-import { VelocityProperty } from 'src/velocity/VelocityProperties';
-import { PositionProperty, RotationProperty } from 'src/positioning/PositioningProperties';
+import { PositionProperty } from 'src/positioning/PositionProperty';
+import { RotationProperty } from 'src/positioning/RotationProperty';
 import { isDifferentVector } from 'src/utils/isDifferentVector';
 import { SurfaceFactor } from 'src/surface/SurfaceFactor';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
-import { Vector3, Quaternion } from 'three';
+import { VelocityProperty } from 'src/velocity/VelocityProperty';
+import { Vector3 } from 'three';
 
 export class DynamicPositionController extends Controller {
   private deltaTimeScalar = 1000;
@@ -32,22 +33,26 @@ export class DynamicPositionController extends Controller {
   }
 
   private get collisionUnits(): CollisionBox[] {
-    return this.entity.getProperty<CollisionBox[]>(CollisionUnitsProperty);
+    return this.entity.findProperty(CollisionUnitsProperty).get();
   }
 
   private get collisionFactor(): CollisionFactor {
     return this.engine.factors.find(CollisionFactor);
   }
 
+  private get positionProperty(): PositionProperty {
+    return this.entity.findProperty(PositionProperty);
+  }
+
   setNearest(x: number, z: number) {
     const y = this.surfaceFactor.getZCord(x, z);
-    this.entity.setProperty(PositionProperty, new Vector3(x,y,z));
+    this.positionProperty.set(new Vector3(x,y,z));
   }
 
   tick(deltaTime: number) {
-    const velocity = this.entity.getProperty<Vector3>(VelocityProperty);
-    const position = this.entity.getProperty<Vector3>(PositionProperty);
-    const rotation = this.entity.getProperty<Quaternion>(RotationProperty);
+    const position = this.positionProperty.get();
+    const velocity = this.entity.findProperty(VelocityProperty).get();
+    const rotation = this.entity.findProperty(RotationProperty).get();
 
     const forward = new Vector3(0, 0, 1);
     forward.applyQuaternion(rotation);
@@ -79,7 +84,7 @@ export class DynamicPositionController extends Controller {
     if (isDifferentVector(position, supposedPosition)) {
       if (this.pathIsClear(position, supposedPosition)) {
         position.copy(supposedPosition);
-        this.entity.setProperty(PositionProperty, position);
+        this.positionProperty.set(position);
       }
     }
   }

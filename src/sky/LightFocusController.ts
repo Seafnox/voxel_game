@@ -1,5 +1,5 @@
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { PositionProperty } from 'src/positioning/PositioningProperties';
+import { PositionProperty } from 'src/positioning/PositionProperty';
 import { SceneFactor } from 'src/render/SceneFactor';
 import { Controller } from 'src/engine/Controller';
 import { SunLightFactor } from 'src/sky/SunLightFactor';
@@ -17,11 +17,11 @@ export class LightFocusController extends Controller {
 
     this.sceneFactor.add(this.light, this.light.target);
 
-    this.entity.on(PositionProperty, this.targetPositionChange.bind(this));
+    this.entity.on(PositionProperty.name, this.targetPositionChange.bind(this));
 
     this.targetPositionChange({
       prev: undefined,
-      next: this.entity.getProperty<Vector3>(PositionProperty),
+      next: this.entity.findProperty(PositionProperty).get(),
     })
 
   }

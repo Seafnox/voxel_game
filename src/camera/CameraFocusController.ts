@@ -1,8 +1,9 @@
-import { PositionProperty, RotationProperty } from 'src/positioning/PositioningProperties';
 import { CameraFactor } from 'src/camera/CameraFactor';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import { WindowEventSystem, WindowTopic, WindowResizeEvent } from 'src/browser/WindowEventSystem';
 import { Controller } from 'src/engine/Controller';
+import { PositionProperty } from 'src/positioning/PositionProperty';
+import { RotationProperty } from 'src/positioning/RotationProperty';
 import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
@@ -58,8 +59,8 @@ export class CameraFocusController extends Controller {
   }
 
   private tick(deltaTime: number) {
-    const targetPosition = this.entity.getProperty<Vector3>(PositionProperty)
-    const targetRotation = this.entity.getProperty<Quaternion>(RotationProperty);
+    const targetPosition = this.entity.findProperty(PositionProperty).get();
+    const targetRotation = this.entity.findProperty(RotationProperty).get();
 
     const idealOffset = this.calculateIdealOffset(targetPosition, targetRotation);
     const idealLookAt = this.calculateIdealLookAt(targetPosition, targetRotation);

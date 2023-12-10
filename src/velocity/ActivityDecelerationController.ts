@@ -1,10 +1,11 @@
+import { ActivityStatusProperty } from 'src/activity/ActivityStatusProperty';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { EntityActivityStatus } from 'src/activity/EntityActivityStatus';
-import { ActivityStatusProperty } from 'src/activity/ActivityProperties';
-import { DecelerationProperty, VelocityProperty } from 'src/velocity/VelocityProperties';
+import { DecelerationProperty } from 'src/velocity/DecelerationProperty';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
+import { VelocityProperty } from 'src/velocity/VelocityProperty';
 import { Vector3 } from 'three';
 
 export class ActivityDecelerationController extends Controller {
@@ -25,11 +26,11 @@ export class ActivityDecelerationController extends Controller {
   }
 
   private get velocity(): Vector3 {
-    return this.entity.getProperty(VelocityProperty);
+    return this.entity.findProperty(VelocityProperty).get();
   }
 
   private get activityStatus(): EntityActivityStatus {
-    return this.entity.getProperty(ActivityStatusProperty);
+    return this.entity.findProperty(ActivityStatusProperty).get();
   }
 
   init() {
@@ -47,7 +48,7 @@ export class ActivityDecelerationController extends Controller {
       deceleration.z *= this.extremeDecelerationScalar;
     }
 
-    this.entity.setProperty(DecelerationProperty, deceleration);
+    this.entity.findProperty(DecelerationProperty).set(deceleration);
 
   }
 }

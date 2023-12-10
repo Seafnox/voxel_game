@@ -2,8 +2,10 @@ import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { ModelReadyProperty, ModelProperty } from 'src/models/ModelProperties';
-import { RotationProperty, PositionProperty } from 'src/positioning/PositioningProperties';
+import { ModelProperty } from 'src/models/ModelProperty';
+import { ModelStatusProperty } from 'src/models/ModelStatusProperty';
+import { PositionProperty } from 'src/positioning/PositionProperty';
+import { RotationProperty } from 'src/positioning/RotationProperty';
 import { SceneFactor } from 'src/render/SceneFactor';
 import { ModelSystem } from 'src/models/ModelSystem';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
@@ -44,11 +46,11 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(ModelProperty, undefined);
-    this.entity.registerProperty(ModelReadyProperty, false);
+    this.entity.registerProperty(ModelProperty, undefined as Object3D | undefined);
+    this.entity.registerProperty(ModelStatusProperty, false as boolean);
 
-    this.entity.on(PositionProperty, this.onPositionChange.bind(this));
-    this.entity.on(RotationProperty, this.onRotationChange.bind(this));
+    this.entity.on(PositionProperty.name, this.onPositionChange.bind(this));
+    this.entity.on(RotationProperty.name, this.onRotationChange.bind(this));
 //    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
@@ -109,8 +111,8 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
     animations.forEach(animationClip => this.addAnimation(animationClip));
 
     this.model.scale.setScalar(config.scale);
-    const entityPosition = this.entity.getProperty<Vector3>(PositionProperty);
-    const entityRotation = this.entity.getProperty<Quaternion>(RotationProperty);
+    const entityPosition = this.entity.findProperty(PositionProperty).get();
+    const entityRotation = this.entity.findProperty(RotationProperty).get();
     this.model.position.copy(entityPosition);
     this.model.quaternion.copy(entityRotation);
 
@@ -144,8 +146,8 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
       }
     });
 
-    this.entity.setProperty(ModelProperty, this.model);
-    this.entity.setProperty(ModelReadyProperty, true);
+    this.entity.findProperty(ModelProperty).set(this.model);
+    this.entity.findProperty(ModelStatusProperty).set(true);
   }
 
   protected getMixerOrThrow(): AnimationMixer {

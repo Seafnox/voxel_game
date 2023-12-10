@@ -1,9 +1,8 @@
+import { ActivityStatusProperty } from 'src/activity/ActivityStatusProperty';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { EntityActivityStatus } from 'src/activity/EntityActivityStatus';
-import { ActivityStatusProperty } from 'src/activity/ActivityProperties';
-import { RotationProperty } from 'src/positioning/PositioningProperties';
+import { RotationProperty } from 'src/positioning/RotationProperty';
 import { isDifferentQuaternion } from 'src/utils/isDifferentQuaternion';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import { Quaternion, Vector3 } from 'three';
@@ -26,10 +25,11 @@ export class ActivityRotationController extends Controller {
   }
 
   tick(deltaTime: number) {
-    const activityStatus = this.entity.getProperty<EntityActivityStatus>(ActivityStatusProperty);
+    const activityStatus = this.entity.findProperty(ActivityStatusProperty).get();
     const rotationMultiplier = new Quaternion();
     const rotationDirection = new Vector3(0, 1, 0);
-    const targetRotation = this.entity.getProperty<Quaternion>(RotationProperty);
+    const rotationProperty = this.entity.findProperty(RotationProperty);
+    const targetRotation = rotationProperty.get();
     const calculatedRotation = targetRotation.clone();
     const rotationAngle = this.rotationScalar * Math.PI * deltaTime / this.deltaTimeScalar;
 
@@ -47,7 +47,7 @@ export class ActivityRotationController extends Controller {
 
     if (isDifferentQuaternion(targetRotation, calculatedRotation)) {
       targetRotation.copy(calculatedRotation);
-      this.entity.setProperty(RotationProperty, targetRotation);
+      rotationProperty.set(targetRotation);
     }
   }
 }

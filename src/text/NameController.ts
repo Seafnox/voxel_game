@@ -1,8 +1,8 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { PositionProperty } from 'src/positioning/PositioningProperties';
 import { CameraFactor } from 'src/camera/CameraFactor';
+import { PositionProperty } from 'src/positioning/PositionProperty';
 import { SceneFactor } from 'src/render/SceneFactor';
 import { FontSystem } from 'src/text/FontSystem';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
@@ -29,7 +29,7 @@ export class NameController extends Controller {
   }
 
   private get entityPosition(): Vector3 {
-    return this.entity.getProperty<Vector3>(PositionProperty).clone();
+    return this.entity.findProperty(PositionProperty).get().clone();
   }
 
   private get sceneFactor(): SceneFactor {

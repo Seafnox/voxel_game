@@ -1,7 +1,7 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { ActiveStateProperty } from 'src/state/StateProperties';
+import { ActiveStateProperty } from 'src/state/ActiveStateProperty';
 import { SimpleStateConstructor, SimpleState } from 'src/state/SimpleState';
 import { NoopState } from 'src/state/NoopState';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
@@ -24,8 +24,8 @@ export class StateController extends Controller {
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.validateState.bind(this));
   }
 
-  get activeState(): SimpleState {
-    return this.entity.getProperty<SimpleState>(ActiveStateProperty);
+  get activeState(): ActiveStateProperty {
+    return this.entity.findProperty(ActiveStateProperty);
   }
 
   addState(constructor: SimpleStateConstructor) {
@@ -38,7 +38,7 @@ export class StateController extends Controller {
       throw new Error(`Can't find state '${constructor.name}' in ${Object.keys(this.states).join(', ')}`);
     }
 
-    const lastState = this.activeState;
+    const lastState = this.activeState.get();
     const newState = new this.states[constructor.name](this.engine, this.entity, this);
 
     if (lastState) {
@@ -49,10 +49,10 @@ export class StateController extends Controller {
     }
 
     newState.enter(lastState);
-    this.entity.setProperty(ActiveStateProperty, newState);
+    this.activeState.set(newState);
   }
 
   validateState(deltaTime: number) {
-    this.activeState.validate(deltaTime);
+    this.activeState.get().validate(deltaTime);
   }
 }

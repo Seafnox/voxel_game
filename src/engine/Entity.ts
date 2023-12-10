@@ -1,6 +1,6 @@
-import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
-import { Controller, ControllerConstructor } from './Controller';
 import { TopicEmitter } from 'src/emitter/TopicEmitter';
+import { Property, PropertyConstructor } from 'src/engine/Property';
+import { Controller, ControllerConstructor } from './Controller';
 import { GameEngine } from './GameEngine';
 
 export interface EntityConstructor<TEntity extends Entity> {
@@ -8,9 +8,8 @@ export interface EntityConstructor<TEntity extends Entity> {
 }
 
 export class Entity extends TopicEmitter {
-  private controllerList: Controller[] = [];
   private controllerMap: Record<string, Controller> = {};
-  private _properties: Record<string, unknown> = {};
+  private _properties: Record<string, Property<unknown>> = {};
 
   constructor(
     protected _gameEngine: GameEngine,
@@ -31,41 +30,28 @@ export class Entity extends TopicEmitter {
     return this.constructor.name;
   }
 
-  registerProperty<T>(name: string, value: T) {
-    if (name in this._properties) {
-      throw new Error(`Property '${name}' already registered in ${this.constructorName} '${this.name}'`)
+  registerProperty<TValue, TProperty extends Property<TValue>>(constructor: PropertyConstructor<TValue, TProperty>, value: TValue) {
+    const propertyName = constructor.name;
+
+    if (propertyName in this._properties) {
+      throw new Error(`Property '${propertyName}' already registered in ${this.constructorName} '${this.name}'`)
     }
 
-    this.setProperty(name, value);
+    this._properties[propertyName] = new constructor(this, value);
   }
 
-  hasProperty(name: string): boolean {
-    return name in this._properties;
+  hasProperty<TValue, TProperty extends Property<TValue>>(constructor: PropertyConstructor<TValue, TProperty>): boolean {
+    return constructor.name in this._properties;
   }
 
-  setProperty<T>(name: string, value: T, specialEventName?: string) {
-    const prev = this._properties[name];
-    this._properties[name] = value;
+  findProperty<TValue, TProperty extends Property<TValue>>(constructor: PropertyConstructor<TValue, TProperty>): TProperty {
+    const propertyName = constructor.name;
 
-    this.emit<UpdatePropertyEvent<T>>(name, {
-      prev,
-      next: value,
-    });
-
-    if (specialEventName) {
-      this.emit<UpdatePropertyEvent<T>>(specialEventName, {
-        prev,
-        next: value,
-      });
-    }
-  }
-
-  getProperty<T>(name: string): T {
-    if (!(name in this._properties)) {
-      throw new Error(`Can't read property '${name}' from ${this.constructorName} '${this.name}'`)
+    if (!(propertyName in this._properties)) {
+      throw new Error(`Can't read property '${propertyName}' from ${this.constructorName} '${this.name}'`)
     }
 
-    return this._properties[name] as T;
+    return this._properties[propertyName] as TProperty;
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -73,7 +59,6 @@ export class Entity extends TopicEmitter {
     const name = as?.name || constructor.name;
     const controller = new constructor(this._gameEngine, this, name);
     this.controllerMap[controller.name] = controller;
-    this.controllerList.push(controller);
 
     return controller;
   }

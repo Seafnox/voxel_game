@@ -1,3 +1,5 @@
+import { PositionProperty } from 'src/positioning/PositionProperty';
+import { RotationProperty } from 'src/positioning/RotationProperty';
 import { trees } from 'src/staticObjects/TreeConfig';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
@@ -5,7 +7,6 @@ import { CollisionModelController } from 'src/collision/CollisionModelController
 import { FbxModelController } from 'src/models/FbxModelController';
 import { ModelController } from 'src/models/ModelController';
 import { NameController } from 'src/text/NameController';
-import { PositionProperty, RotationProperty } from 'src/positioning/PositioningProperties';
 import { SurfaceFactor } from 'src/surface/SurfaceFactor';
 import { VMath } from 'src/VMath';
 import { Vector3, Quaternion, Color } from 'three';
@@ -31,8 +32,8 @@ export class TreeBuilder {
     const pos = new Vector3(x, y, z);
 
     const tree = this.engine.entities.create(Entity, `${config.name}_${postfix}`);
-    tree.setProperty(PositionProperty, pos);
-    tree.setProperty(RotationProperty, new Quaternion(0, 0, 0, 1));
+    tree.registerProperty(PositionProperty, pos);
+    tree.registerProperty(RotationProperty, new Quaternion(0, 0, 0, 1));
     tree.create(NameController);
 
     const collisionController = tree.create(CollisionModelController);

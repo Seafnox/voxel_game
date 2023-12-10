@@ -1,9 +1,8 @@
-import { ModelReadyProperty } from 'src/models/ModelProperties';
+import { ModelStatusProperty } from 'src/models/ModelStatusProperty';
 import { RunUserState } from 'src/player/states/RunUserState';
 import { WalkUserState } from 'src/player/states/WalkUserState';
 import { MinAnimatedVelocity, realVelocity, MinRunVelocity } from 'src/player/UserConfig';
-import { VelocityProperty } from 'src/velocity/VelocityProperties';
-import { Vector3 } from 'three';
+import { VelocityProperty } from 'src/velocity/VelocityProperty';
 import { ModelController } from 'src/models/ModelController';
 import { Disposable } from 'src/emitter/SimpleEmitter';
 import { SimpleState } from 'src/state/SimpleState';
@@ -13,11 +12,11 @@ export class IdleUserState extends SimpleState {
   private modelDisposable?: Disposable;
 
   enter(/* prevState: SimpleState | undefined */): void {
-    if (this.entity.getProperty<boolean>(ModelReadyProperty)) {
+    if (this.entity.findProperty(ModelStatusProperty).get()) {
       this.getModelAndRunAnimation();
       return;
     }
-    this.modelDisposable = this.entity.on(ModelReadyProperty, () => this.getModelAndRunAnimation());
+    this.modelDisposable = this.entity.on(ModelStatusProperty.name, () => this.getModelAndRunAnimation());
   }
 
   exit(/* nextState: SimpleState */): void {
@@ -25,7 +24,7 @@ export class IdleUserState extends SimpleState {
   }
 
   validate(): void {
-    const velocityVector = this.entity.getProperty<Vector3>(VelocityProperty);
+    const velocityVector = this.entity.findProperty(VelocityProperty).get();
     const velocity = realVelocity(velocityVector)
 
     if (velocity > MinAnimatedVelocity) {

@@ -1,10 +1,11 @@
 import { CollisionBox } from 'src/collision/CollisionBox';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
+import { CollisionUnitsProperty } from 'src/collision/CollisionUnitsProperty';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { CollisionUnitsProperty } from 'src/collision/CollisionUnitsProperty';
-import { PositionProperty, RotationProperty } from 'src/positioning/PositioningProperties';
+import { PositionProperty } from 'src/positioning/PositionProperty';
+import { RotationProperty } from 'src/positioning/RotationProperty';
 import { SceneFactor } from 'src/render/SceneFactor';
 import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial, Color } from 'three';
 
@@ -30,17 +31,17 @@ export class CollisionModelController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(CollisionUnitsProperty, []);
-    this.entity.on(PositionProperty, this.positionChanges.bind(this));
-    this.entity.on(RotationProperty, this.rotationChanges.bind(this));
+    this.entity.registerProperty(CollisionUnitsProperty, [] as CollisionBox[]);
+    this.entity.on(PositionProperty.name, this.positionChanges.bind(this));
+    this.entity.on(RotationProperty.name, this.rotationChanges.bind(this));
   }
 
   get units(): CollisionBox[] {
-    return this.entity.getProperty<CollisionBox[]>(CollisionUnitsProperty);
+    return this.entity.findProperty(CollisionUnitsProperty).get();
   }
 
   private get entityPosition(): Vector3 {
-    return this.entity.getProperty<Vector3>(PositionProperty).clone();
+    return this.entity.findProperty(PositionProperty).get().clone();
   }
 
   private get collisionFactor(): CollisionFactor {

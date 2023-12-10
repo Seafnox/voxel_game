@@ -1,8 +1,8 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { GravityAccelerationProperty } from 'src/velocity/VelocityProperties';
-import { PositionProperty } from 'src/positioning/PositioningProperties';
+import { PositionProperty } from 'src/positioning/PositionProperty';
+import { GravityAccelerationProperty } from 'src/velocity/GravityAccelerationProperty';
 import { GravityFactor } from 'src/velocity/GravityFactor';
 import { SurfaceFactor } from 'src/surface/SurfaceFactor';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
@@ -47,11 +47,11 @@ export class GravityAccelerationController extends Controller {
       ))
     }
 
-    this.entity.setProperty(GravityAccelerationProperty, acceleration);
+    this.entity.findProperty(GravityAccelerationProperty).set(acceleration);
   }
 
   private get entityPosition(): Vector3 {
-    return this.entity.getProperty(PositionProperty);
+    return this.entity.findProperty(PositionProperty).get();
   }
 
   // TODO FEATURE make nearest surface point calculation based on gravity Vector
