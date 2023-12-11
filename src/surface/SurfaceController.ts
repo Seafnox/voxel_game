@@ -1,3 +1,4 @@
+import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
@@ -10,6 +11,8 @@ import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 export class SurfaceController extends Controller {
   private surfaceFactor: SurfaceFactor;
   private sceneFactor: SceneFactor;
+  private lastTimeUpdated = 0;
+  private waterGeometry: ParametricGeometry = new ParametricGeometry();
 
   constructor(
     engine: GameEngine,
@@ -24,10 +27,13 @@ export class SurfaceController extends Controller {
     this.sceneFactor.add(this.createSurfaceWireframeMesh());
     this.sceneFactor.add(this.createSurfaceMesh());
     this.sceneFactor.add(this.createWaterMesh());
+
+    this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.updateSurface.bind(this))
   }
 
   private createWaterMesh(): Mesh {
-    const geometry = this.createWaterGeometry();
+    this.lastTimeUpdated = Date.now();
+    this.waterGeometry = this.createWaterGeometry();
     const material = new MeshPhongMaterial({
       color: 0x66aaff,
       side: DoubleSide,
@@ -35,7 +41,7 @@ export class SurfaceController extends Controller {
       opacity: .8,
       flatShading: true,
     });
-    const surfaceMesh = new Mesh(geometry, material);
+    const surfaceMesh = new Mesh(this.waterGeometry, material);
 
     surfaceMesh.castShadow = false;
     surfaceMesh.receiveShadow = true;
@@ -79,7 +85,7 @@ export class SurfaceController extends Controller {
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
       const x = this.surfaceFactor.getMapToCord(percentX * (mapSize));
       const y = this.surfaceFactor.getMapToCord(percentY * (mapSize));
-      const z = this.engine.random() * 2 - 8;
+      const z = Math.sin((x+y+this.lastTimeUpdated/300)/2) - 7;//this.engine.random() * 2 - 8;
       target.set(x, z, y);
     };
     return new ParametricGeometry(calculatePoint, mapSize, mapSize);
@@ -120,5 +126,11 @@ export class SurfaceController extends Controller {
     texture.needsUpdate = true;
 
     return texture;
+  }
+
+  private updateSurface(deltaTime: number) {
+    this.lastTimeUpdated += deltaTime;
+    const tmpGeometry = this.createWaterGeometry();
+    this.waterGeometry.copy(tmpGeometry);
   }
 }
