@@ -1,5 +1,6 @@
 import { CollisionBox } from 'src/collision/CollisionBox';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
+import { CollisionUnitConfig } from 'src/collision/CollisionUnitConfig';
 import { CollisionUnitsProperty } from 'src/collision/CollisionUnitsProperty';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
@@ -8,12 +9,6 @@ import { PositionProperty } from 'src/positioning/PositionProperty';
 import { RotationProperty } from 'src/positioning/RotationProperty';
 import { SceneFactor } from 'src/render/SceneFactor';
 import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial, Color } from 'three';
-
-export interface CollisionUnitConfig {
-  size: Vector3;
-  offset?: Vector3;
-}
-
 
 export class CollisionModelController extends Controller {
   private _unitConfigs: Record<string, CollisionUnitConfig> = {};

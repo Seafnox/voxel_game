@@ -1,3 +1,4 @@
+import { PlayerCollisionModel } from 'src/player/PlayerCollisionModel';
 import { CloudBuilder } from 'src/sky/CloudBuilder';
 import { TreeBuilder } from 'src/staticObjects/TreeBuilder';
 import { CollisionFactor } from 'src/collision/CollisionFactor';
@@ -26,7 +27,6 @@ import { MouseEventSystem } from 'src/browser/MouseEventSystem';
 import { TickSystem } from 'src/browser/TickSystem';
 import { PseudoRandomizer } from 'src/utils/PseudoRandomizer';
 import { VMath } from 'src/VMath';
-import { Vector3 } from 'three';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
 import { SurfaceController } from 'src/surface/SurfaceController';
@@ -135,9 +135,7 @@ export class VoxelGame {
     player.create(SkyFocusController);
     player.create(CameraFocusController);
     player.create(CollisionModelController)
-      .add({
-        size: new Vector3(6, 9.5, 6),
-      });
+      .add(PlayerCollisionModel);
 
     modelController.modelConfig = {
       resourcePath: './resources/units/guard.glb',
