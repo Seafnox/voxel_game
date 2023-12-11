@@ -21,7 +21,7 @@ export class LightFocusController extends Controller {
 
     this.targetPositionChange({
       prev: undefined,
-      next: this.entity.findProperty(PositionProperty).get(),
+      next: this.entity.properties.find(PositionProperty).get(),
     })
 
   }

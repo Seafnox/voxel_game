@@ -59,8 +59,8 @@ export class CameraFocusController extends Controller {
   }
 
   private tick(deltaTime: number) {
-    const targetPosition = this.entity.findProperty(PositionProperty).get();
-    const targetRotation = this.entity.findProperty(RotationProperty).get();
+    const targetPosition = this.entity.properties.find(PositionProperty).get();
+    const targetRotation = this.entity.properties.find(RotationProperty).get();
 
     const idealOffset = this.calculateIdealOffset(targetPosition, targetRotation);
     const idealLookAt = this.calculateIdealLookAt(targetPosition, targetRotation);

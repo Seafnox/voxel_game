@@ -19,13 +19,13 @@ export class StateController extends Controller {
 
     this.defaultState = new NoopState(engine, entity, this);
 
-    this.entity.registerProperty(ActiveStateProperty, this.defaultState);
+    this.entity.properties.register(ActiveStateProperty, this.defaultState);
 
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.validateState.bind(this));
   }
 
   get activeState(): ActiveStateProperty {
-    return this.entity.findProperty(ActiveStateProperty);
+    return this.entity.properties.find(ActiveStateProperty);
   }
 
   addState(constructor: SimpleStateConstructor) {

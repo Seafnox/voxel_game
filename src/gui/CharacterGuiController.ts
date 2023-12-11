@@ -27,22 +27,22 @@ export class CharacterGuiController extends Controller {
     const characterRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterRotation);
     const characterVelocityWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterVelocity);
 
-    const prettyPosition = characterEntity.findProperty(PositionProperty).get()
+    const prettyPosition = characterEntity.properties.find(PositionProperty).get()
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
     characterPositionWrapper.innerText =
       `[${prettyPosition.join(', ')}]`;
 
-    const prettyRotation = characterEntity.findProperty(RotationProperty).get()
+    const prettyRotation = characterEntity.properties.find(RotationProperty).get()
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
     characterRotationWrapper.innerText =
       `[${prettyRotation.join(', ')}]`;
 
-    const prettyVelocity = characterEntity.findProperty(VelocityProperty).get()
+    const prettyVelocity = characterEntity.properties.find(VelocityProperty).get()
       .toArray()
       .map(coord => coord.toFixed(3).padStart(3, ' '));
-    const calculatedVelocity = characterEntity.findProperty(VelocityProperty).get().length().toFixed(3);
+    const calculatedVelocity = characterEntity.properties.find(VelocityProperty).get().length().toFixed(3);
 
     characterVelocityWrapper.innerText =
       `${calculatedVelocity} [${prettyVelocity.join(', ')}]`;

@@ -46,8 +46,8 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(ModelProperty, undefined as Object3D | undefined);
-    this.entity.registerProperty(ModelStatusProperty, false as boolean);
+    this.entity.properties.register(ModelProperty, undefined as Object3D | undefined);
+    this.entity.properties.register(ModelStatusProperty, false as boolean);
 
     this.entity.on(PositionProperty.name, this.onPositionChange.bind(this));
     this.entity.on(RotationProperty.name, this.onRotationChange.bind(this));
@@ -111,8 +111,8 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
     animations.forEach(animationClip => this.addAnimation(animationClip));
 
     this.model.scale.setScalar(config.scale);
-    const entityPosition = this.entity.findProperty(PositionProperty).get();
-    const entityRotation = this.entity.findProperty(RotationProperty).get();
+    const entityPosition = this.entity.properties.find(PositionProperty).get();
+    const entityRotation = this.entity.properties.find(RotationProperty).get();
     this.model.position.copy(entityPosition);
     this.model.quaternion.copy(entityRotation);
 
@@ -146,8 +146,8 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
       }
     });
 
-    this.entity.findProperty(ModelProperty).set(this.model);
-    this.entity.findProperty(ModelStatusProperty).set(true);
+    this.entity.properties.find(ModelProperty).set(this.model);
+    this.entity.properties.find(ModelStatusProperty).set(true);
   }
 
   protected getMixerOrThrow(): AnimationMixer {

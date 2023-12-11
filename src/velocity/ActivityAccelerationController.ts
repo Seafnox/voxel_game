@@ -19,7 +19,7 @@ export class ActivityAccelerationController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(AccelerationProperty, this.defaultAcceleration);
+    this.entity.properties.register(AccelerationProperty, this.defaultAcceleration);
 
     this.entity.on(ActivityStatusProperty.name, this.updateAcceleration.bind(this));
   }
@@ -51,7 +51,7 @@ export class ActivityAccelerationController extends Controller {
 
     acceleration.multiply(multiplicator);
 
-    this.entity.findProperty(AccelerationProperty).set(acceleration);
+    this.entity.properties.find(AccelerationProperty).set(acceleration);
 
   }
 }

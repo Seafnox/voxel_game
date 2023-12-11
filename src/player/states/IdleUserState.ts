@@ -12,7 +12,7 @@ export class IdleUserState extends SimpleState {
   private modelDisposable?: Disposable;
 
   enter(/* prevState: SimpleState | undefined */): void {
-    if (this.entity.findProperty(ModelStatusProperty).get()) {
+    if (this.entity.properties.find(ModelStatusProperty).get()) {
       this.getModelAndRunAnimation();
       return;
     }
@@ -24,7 +24,7 @@ export class IdleUserState extends SimpleState {
   }
 
   validate(): void {
-    const velocityVector = this.entity.findProperty(VelocityProperty).get();
+    const velocityVector = this.entity.properties.find(VelocityProperty).get();
     const velocity = realVelocity(velocityVector)
 
     if (velocity > MinAnimatedVelocity) {
@@ -37,8 +37,9 @@ export class IdleUserState extends SimpleState {
 
   }
 
+  // FIXME refactor controller requests to property requests
   private getModelAndRunAnimation() {
-    const modelController = this.entity.get<ModelController>(ModelController);
+    const modelController = this.entity.controllers.find<ModelController>(ModelController);
     if (!modelController.getAnimationList().includes(this.animationName)) {
       throw new Error(`No '${this.animationName}' animation in entity '${this.entity.name}' with animation list: [${modelController.getAnimationList().join(', ')}]`);
     }

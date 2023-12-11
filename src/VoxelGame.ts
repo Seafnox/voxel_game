@@ -88,12 +88,12 @@ export class VoxelGame {
 
   private initRenderer() {
     const entity = this.engine.entities.create(Entity);
-    entity.create(RenderController);
+    entity.controllers.register(RenderController);
   }
 
   private initSurface(): void {
     const entity = this.engine.entities.create(Entity, EntityName.Surface);
-    entity.create(SurfaceController);
+    entity.controllers.register(SurfaceController);
   }
 
   private initClouds() {
@@ -122,19 +122,19 @@ export class VoxelGame {
 
   private initPlayer() {
     const player = this.engine.entities.create(Entity, EntityName.Player);
-    const modelController = player.create(GltfModelController, ModelController);
-    const stateController = player.create(StateController);
+    const modelController = player.controllers.register(GltfModelController, ModelController);
+    const stateController = player.controllers.register(StateController);
 
-    player.create(KeyboardActivityController);
-    player.create(ActivityAccelerationController);
-    player.create(ActivityDecelerationController);
-    player.create(ActivityRotationController);
-    player.create(DynamicVelocityController);
-    player.create(DynamicPositionController).setNearest(0,0);
-    player.create(LightFocusController);
-    player.create(SkyFocusController);
-    player.create(CameraFocusController);
-    player.create(CollisionModelController)
+    player.controllers.register(KeyboardActivityController);
+    player.controllers.register(ActivityAccelerationController);
+    player.controllers.register(ActivityDecelerationController);
+    player.controllers.register(ActivityRotationController);
+    player.controllers.register(DynamicVelocityController);
+    player.controllers.register(DynamicPositionController).setNearest(0,0);
+    player.controllers.register(LightFocusController);
+    player.controllers.register(SkyFocusController);
+    player.controllers.register(CameraFocusController);
+    player.controllers.register(CollisionModelController)
       .add(PlayerCollisionModel);
 
     modelController.modelConfig = {
@@ -185,8 +185,8 @@ export class VoxelGame {
   private initGui() {
     const gui = this.engine.entities.create(Entity);
 
-    gui.create(FpsController);
-    gui.create(CameraGuiController);
-    gui.create(CharacterGuiController);
+    gui.controllers.register(FpsController);
+    gui.controllers.register(CameraGuiController);
+    gui.controllers.register(CharacterGuiController);
   }
 }

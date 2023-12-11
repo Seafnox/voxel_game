@@ -20,7 +20,7 @@ export class GravityAccelerationController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(GravityAccelerationProperty, this.defaultAcceleration);
+    this.entity.properties.register(GravityAccelerationProperty, this.defaultAcceleration);
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
@@ -47,11 +47,11 @@ export class GravityAccelerationController extends Controller {
       ))
     }
 
-    this.entity.findProperty(GravityAccelerationProperty).set(acceleration);
+    this.entity.properties.find(GravityAccelerationProperty).set(acceleration);
   }
 
   private get entityPosition(): Vector3 {
-    return this.entity.findProperty(PositionProperty).get();
+    return this.entity.properties.find(PositionProperty).get();
   }
 
   // TODO FEATURE make nearest surface point calculation based on gravity Vector

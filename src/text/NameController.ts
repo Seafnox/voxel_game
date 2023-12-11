@@ -29,7 +29,7 @@ export class NameController extends Controller {
   }
 
   private get entityPosition(): Vector3 {
-    return this.entity.findProperty(PositionProperty).get().clone();
+    return this.entity.properties.find(PositionProperty).get().clone();
   }
 
   private get sceneFactor(): SceneFactor {

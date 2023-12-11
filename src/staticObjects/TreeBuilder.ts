@@ -32,14 +32,14 @@ export class TreeBuilder {
     const pos = new Vector3(x, y, z);
 
     const tree = this.engine.entities.create(Entity, `${config.name}_${postfix}`);
-    tree.registerProperty(PositionProperty, pos);
-    tree.registerProperty(RotationProperty, new Quaternion(0, 0, 0, 1));
-    tree.create(NameController);
+    tree.properties.register(PositionProperty, pos);
+    tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
+    tree.controllers.register(NameController);
 
-    const collisionController = tree.create(CollisionModelController);
+    const collisionController = tree.controllers.register(CollisionModelController);
     config.collisionUnits.forEach(collisionConfig => collisionController.add(collisionConfig));
 
-    const modelController: ModelController = tree.create(FbxModelController);
+    const modelController: ModelController = tree.controllers.register(FbxModelController);
     modelController.modelConfig = {
       resourcePath: config.path,
       scale: 0.25,

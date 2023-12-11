@@ -22,10 +22,10 @@ export class CloudBuilder {
     );
 
     const cloudEntity = this.engine.entities.create(Entity, `cloud_${postfix}`);
-    cloudEntity.registerProperty(PositionProperty, pos);
-    cloudEntity.registerProperty(RotationProperty, new Quaternion(0,0,0,1));
+    cloudEntity.properties.register(PositionProperty, pos);
+    cloudEntity.properties.register(RotationProperty, new Quaternion(0,0,0,1));
 
-    const modelController = cloudEntity.create(GltfModelController);
+    const modelController = cloudEntity.controllers.register(GltfModelController);
     modelController.modelConfig = {
       resourcePath: './resources/clouds/Cloud' + index + '.glb',
       scale: this.engine.random() * 5 + 10,

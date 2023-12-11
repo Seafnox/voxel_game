@@ -18,7 +18,7 @@ export class DynamicVelocityController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(VelocityProperty, this.defaultVelocity);
+    this.entity.properties.register(VelocityProperty, this.defaultVelocity);
 //    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
@@ -28,10 +28,10 @@ export class DynamicVelocityController extends Controller {
   }
 
   tick(deltaTime: number) {
-    const velocityProperty = this.entity.findProperty(VelocityProperty);
+    const velocityProperty = this.entity.properties.find(VelocityProperty);
     const velocity = velocityProperty.get();
 
-    const frameAcceleration = this.entity.findProperty(AccelerationProperty).get().clone();
+    const frameAcceleration = this.entity.properties.find(AccelerationProperty).get().clone();
     frameAcceleration.add(this.gravityAcceleration);
     frameAcceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
 
@@ -45,7 +45,7 @@ export class DynamicVelocityController extends Controller {
   }
 
   private getFrameDeceleration(velocity: Vector3, deltaTime: number) {
-    const frameDeceleration = this.entity.findProperty(DecelerationProperty).get().clone();
+    const frameDeceleration = this.entity.properties.find(DecelerationProperty).get().clone();
     frameDeceleration.multiplyScalar(deltaTime / this.deltaTimeScalar);
     frameDeceleration.x = Math.sign(frameDeceleration.x) * Math.min(Math.abs(frameDeceleration.x), Math.abs(velocity.x));
     frameDeceleration.y = Math.sign(frameDeceleration.y) * Math.min(Math.abs(frameDeceleration.y), Math.abs(velocity.y));

@@ -26,7 +26,7 @@ export class KeyboardActivityController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(ActivityStatusProperty, this.defaultValue);
+    this.entity.properties.register(ActivityStatusProperty, this.defaultValue);
 
     const keyBoardEventSystem = this.engine.systems.find(KeyboardEventSystem);
 
@@ -35,7 +35,7 @@ export class KeyboardActivityController extends Controller {
   }
 
   private onKeyDown(event: KeyboardEvent) {
-    const activityStatus = this.entity.findProperty(ActivityStatusProperty);
+    const activityStatus = this.entity.properties.find(ActivityStatusProperty);
     activityStatus.set({
       ...activityStatus.get(),
       ...this.getChange(event.keyCode, true),
@@ -43,7 +43,7 @@ export class KeyboardActivityController extends Controller {
   }
 
   private onKeyUp(event: KeyboardEvent) {
-    const activityStatus = this.entity.findProperty(ActivityStatusProperty);
+    const activityStatus = this.entity.properties.find(ActivityStatusProperty);
     activityStatus.set({
       ...activityStatus.get(),
       ...this.getChange(event.keyCode, false),

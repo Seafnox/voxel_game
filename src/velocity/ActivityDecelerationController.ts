@@ -20,17 +20,17 @@ export class ActivityDecelerationController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(DecelerationProperty, this.defaultDeceleration);
+    this.entity.properties.register(DecelerationProperty, this.defaultDeceleration);
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
 
   private get velocity(): Vector3 {
-    return this.entity.findProperty(VelocityProperty).get();
+    return this.entity.properties.find(VelocityProperty).get();
   }
 
   private get activityStatus(): EntityActivityStatus {
-    return this.entity.findProperty(ActivityStatusProperty).get();
+    return this.entity.properties.find(ActivityStatusProperty).get();
   }
 
   init() {
@@ -48,7 +48,7 @@ export class ActivityDecelerationController extends Controller {
       deceleration.z *= this.extremeDecelerationScalar;
     }
 
-    this.entity.findProperty(DecelerationProperty).set(deceleration);
+    this.entity.properties.find(DecelerationProperty).set(deceleration);
 
   }
 }

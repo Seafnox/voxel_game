@@ -26,17 +26,17 @@ export class CollisionModelController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(CollisionUnitsProperty, [] as CollisionBox[]);
+    this.entity.properties.register(CollisionUnitsProperty, [] as CollisionBox[]);
     this.entity.on(PositionProperty.name, this.positionChanges.bind(this));
     this.entity.on(RotationProperty.name, this.rotationChanges.bind(this));
   }
 
   get units(): CollisionBox[] {
-    return this.entity.findProperty(CollisionUnitsProperty).get();
+    return this.entity.properties.find(CollisionUnitsProperty).get();
   }
 
   private get entityPosition(): Vector3 {
-    return this.entity.findProperty(PositionProperty).get().clone();
+    return this.entity.properties.find(PositionProperty).get().clone();
   }
 
   private get collisionFactor(): CollisionFactor {

@@ -23,7 +23,7 @@ export class DynamicPositionController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(PositionProperty, this.defaultPosition);
+    this.entity.properties.register(PositionProperty, this.defaultPosition);
 //    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
@@ -33,7 +33,7 @@ export class DynamicPositionController extends Controller {
   }
 
   private get collisionUnits(): CollisionBox[] {
-    return this.entity.findProperty(CollisionUnitsProperty).get();
+    return this.entity.properties.find(CollisionUnitsProperty).get();
   }
 
   private get collisionFactor(): CollisionFactor {
@@ -41,7 +41,7 @@ export class DynamicPositionController extends Controller {
   }
 
   private get positionProperty(): PositionProperty {
-    return this.entity.findProperty(PositionProperty);
+    return this.entity.properties.find(PositionProperty);
   }
 
   setNearest(x: number, z: number) {
@@ -51,8 +51,8 @@ export class DynamicPositionController extends Controller {
 
   tick(deltaTime: number) {
     const position = this.positionProperty.get();
-    const velocity = this.entity.findProperty(VelocityProperty).get();
-    const rotation = this.entity.findProperty(RotationProperty).get();
+    const velocity = this.entity.properties.find(VelocityProperty).get();
+    const rotation = this.entity.properties.find(RotationProperty).get();
 
     const forward = new Vector3(0, 0, 1);
     forward.applyQuaternion(rotation);
@@ -91,7 +91,7 @@ export class DynamicPositionController extends Controller {
 
   // TODO add pathchecking (half delta check, quarter delta check, etc)
   private pathIsClear(prevPosition: Vector3, nextPosition: Vector3): boolean {
-    if (!this.entity.hasProperty(CollisionUnitsProperty)) return true;
+    if (!this.entity.properties.has(CollisionUnitsProperty)) return true;
 
     const delta = nextPosition.clone().sub(prevPosition);
     const nextCollisionUnits = this.collisionUnits.map(unit => unit.clone());

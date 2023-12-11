@@ -19,16 +19,16 @@ export class ActivityRotationController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.entity.registerProperty(RotationProperty, this.defaultRotation);
+    this.entity.properties.register(RotationProperty, this.defaultRotation);
 //    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
 
   tick(deltaTime: number) {
-    const activityStatus = this.entity.findProperty(ActivityStatusProperty).get();
+    const activityStatus = this.entity.properties.find(ActivityStatusProperty).get();
     const rotationMultiplier = new Quaternion();
     const rotationDirection = new Vector3(0, 1, 0);
-    const rotationProperty = this.entity.findProperty(RotationProperty);
+    const rotationProperty = this.entity.properties.find(RotationProperty);
     const targetRotation = rotationProperty.get();
     const calculatedRotation = targetRotation.clone();
     const rotationAngle = this.rotationScalar * Math.PI * deltaTime / this.deltaTimeScalar;
