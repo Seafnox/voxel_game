@@ -9,8 +9,8 @@ import { Vector3 } from 'three';
 
 export class ActivityAccelerationController extends Controller {
   private defaultAcceleration = new Vector3(0.0, 0.0, 0.0);
-  private totalAcceleration = new Vector3(2.0, 11.0, 10.0);
-  private extremeAccelerationScalar = 10;
+  private totalAcceleration = new Vector3(2.0, 60.0, 10.0);
+  private extremeAccelerationScalar = 5;
 
   constructor(
     engine: GameEngine,
@@ -46,7 +46,8 @@ export class ActivityAccelerationController extends Controller {
     }
 
     if (status.shift) {
-      multiplicator.multiplyScalar(this.extremeAccelerationScalar);
+      multiplicator.x *= this.extremeAccelerationScalar;
+      multiplicator.z *= this.extremeAccelerationScalar;
     }
 
     acceleration.multiply(multiplicator);
