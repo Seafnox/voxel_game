@@ -3,7 +3,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { SceneFactor } from 'src/render/SceneFactor';
 import { SurfaceFactor } from 'src/surface/SurfaceFactor';
-import { Mesh, Vector3, BackSide, Texture, DataTexture, MeshStandardMaterial, MeshBasicMaterial, Color } from 'three';
+import { Mesh, Vector3, BackSide, Texture, DataTexture, MeshStandardMaterial, MeshBasicMaterial } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 
 export class SurfaceController extends Controller {
