@@ -19,7 +19,7 @@ export class VMath {
   }
 
   static revertLerp(real: number, min: number, max: number) {
-    return (real - min) / max;
+    return (real - min) / (max - min);
   }
 
   static sat(x: number) {

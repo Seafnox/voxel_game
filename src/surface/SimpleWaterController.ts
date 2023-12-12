@@ -69,6 +69,6 @@ export class SimpleWaterController extends Controller {
 
   private updateSurface(deltaTime: number) {
     this.lastTimeUpdated += deltaTime;
-    this.waterMesh.position.y = Math.sin(this.lastTimeUpdated/500) - 7;
+    this.waterMesh.position.y = Math.sin(this.lastTimeUpdated/500) - 3;
   }
 }

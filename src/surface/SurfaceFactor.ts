@@ -1,7 +1,7 @@
 import { RandomFn } from 'simplex-noise/simplex-noise';
 import { Factor } from 'src/engine/Factor';
-import { RGBColor } from 'src/surface/RGBColor';
-import { SurfaceEntry, surfaceEntries } from 'src/surface/TempSurfaceConstant';
+import { SurfaceConfig } from 'src/surface/SurfaceConfig';
+import { SurfaceTypeConfig } from 'src/surface/SurfaceTypeConfig';
 import { VMath } from 'src/VMath';
 import { SurfaceMap, SurfaceBuilder, SurfacePoint } from 'src/surface/SurfaceBuilder';
 
@@ -54,12 +54,12 @@ export class SurfaceFactor implements Factor {
     return this.getZCordByLocation(this.getSurfaceLocation(xCord, yCord))
   }
 
-  getSurfaceMapHeight(x: number, y: number): number {
-    return this.getHeightByLocation(this.getSurfaceMapLocation(x, y));
+  getSurfaceUnit(x: number, y: number): number {
+    return this.getUnitByLocation(this.getSurfaceMapLocation(x, y));
   }
 
-  getSurfaceMapColor(x: number, y: number): RGBColor {
-    return this.heightToColor(this.getSurfaceMapHeight(x, y));
+  getSurfacePointColor(x: number, y: number): number {
+    return this.surfaceUnitToColor(this.getSurfaceUnit(x, y));
   }
 
   getCordToMap(cord: number): number {
@@ -92,21 +92,33 @@ export class SurfaceFactor implements Factor {
     }
   }
 
-  private heightToColor(height: number): RGBColor {
-    const surfaceEntry: SurfaceEntry | undefined = surfaceEntries.find(surfaceKV => surfaceKV[0] > height);
-    return surfaceEntry?.[1] || [0, 0, 0]; // бездна;
+  private surfaceUnitToColor(unit: number): number {
+    const surfaceTypeConfig = this.surfaceUnitToSurfaceConfig(unit);
+    return surfaceTypeConfig?.color; // бездна;
   }
 
-  private getHeightByLocation(area: SurfaceMapLocation): number {
+  private surfaceUnitToSurfaceConfig(unit: number): SurfaceTypeConfig {
+    return SurfaceConfig.find(checked => checked.maxUnit >= unit) || SurfaceConfig[0];
+  }
+
+  private getSurfaceConfigBetween(unit: number): [SurfaceTypeConfig, SurfaceTypeConfig] {
+    const maxIndex = SurfaceConfig.findIndex(checked => checked.maxUnit >= unit);
+
+    if (maxIndex <= 0) return [SurfaceConfig[0], SurfaceConfig[0]];
+
+    return [SurfaceConfig[maxIndex-1], SurfaceConfig[maxIndex]];
+  }
+
+  private getUnitByLocation(area: SurfaceMapLocation): number {
     const {x: leftX, y: bottomY} = area.leftBottom;
     const bottomDiff = Math.abs(area.position.x - leftX);
     const topDiff = 1 - bottomDiff;
     const leftDiff = Math.abs(area.position.y - bottomY);
     const rightDiff = 1 - leftDiff;
-    const leftTopHeight = area.leftTop.height;
-    const leftBottomHeight = area.leftBottom.height;
-    const rightTopHeight = area.rightTop.height;
-    const rightBottomHeight = area.rightBottom.height;
+    const leftTopHeight = area.leftTop.unit;
+    const leftBottomHeight = area.leftBottom.unit;
+    const rightTopHeight = area.rightTop.unit;
+    const rightBottomHeight = area.rightBottom.unit;
 
     if (bottomDiff + leftDiff < 1) {
       return [
@@ -130,7 +142,7 @@ export class SurfaceFactor implements Factor {
     const empty: SurfacePoint = {
       x: xMap,
       y: yMap,
-      height: -0.1,
+      unit: -0.1,
     };
 
     if (xMap > this.mapSize-1 || yMap > this.mapSize-1) {
@@ -146,11 +158,18 @@ export class SurfaceFactor implements Factor {
 
   private getZCordByLocation(area: SurfaceMapLocation): number {
     const {x, y} = area.position;
-    const height = this.getHeightByLocation(area);
-    return this.getZCordByPosition({x, y, height});
+    const unit = this.getUnitByLocation(area);
+    return this.getZCordByPosition({x, y, unit});
   }
 
-  private getZCordByPosition({height}: SurfacePoint): number {
-    return VMath.lerp(height, -150, 150);
+  private getZCordByPosition({unit}: SurfacePoint): number {
+    const [prev, next] = this.getSurfaceConfigBetween(unit);
+    // debugger;
+    const minZ = prev.maxHeight;
+    const minUnit = prev.maxUnit;
+    const maxZ = next.maxHeight;
+    const maxUnit = next.maxUnit;
+    const normal = VMath.revertLerp(unit, minUnit, maxUnit);
+    return VMath.lerp(normal, minZ, maxZ);
   }
 }
