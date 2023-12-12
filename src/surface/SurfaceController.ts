@@ -80,10 +80,10 @@ export class SurfaceController extends Controller {
       for ( let y = 0; y < mapSize; y += 1/scale ) {
         const stride = (y * mapSize * scale + x) * colorScale * scale;
         const color = this.surfaceFactor.getSurfaceMapColor(x,y);
-        data[ stride ] = color[0];
-        data[ stride + 1 ] = color[1];
-        data[ stride + 2 ] = color[2];
-        data[ stride + 3 ] = 255;
+        data[ stride ] = (color[0] * (0.9 + this.engine.random()* 0.1)) % 0xFF;
+        data[ stride + 1 ] = (color[1] * (0.9 + this.engine.random()* 0.1)) % 0xFF;
+        data[ stride + 2 ] = (color[2] * (0.9 + this.engine.random()* 0.1)) % 0xFF;
+        data[ stride + 3 ] = 0xFF;
       }
     }
 
