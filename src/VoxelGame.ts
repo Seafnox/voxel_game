@@ -109,7 +109,7 @@ export class VoxelGame {
   private initThrees() {
     const builder = new TreeBuilder(this.engine);
 
-    for (let i = 0; i < 100; ++i) {
+    for (let i = 0; i < 300; ++i) {
       builder.buildRandomTree(i.toString());
     }
   }

@@ -1,11 +1,12 @@
 import { RandomFn } from 'simplex-noise/simplex-noise';
 import { Factor } from 'src/engine/Factor';
 import { SurfaceConfig } from 'src/surface/SurfaceConfig';
+import { SurfaceType } from 'src/surface/SurfaceType';
 import { SurfaceTypeConfig } from 'src/surface/SurfaceTypeConfig';
 import { VMath } from 'src/VMath';
 import { SurfaceMap, SurfaceBuilder, SurfacePoint } from 'src/surface/SurfaceBuilder';
 
-export interface SurfaceMapLocation {
+export interface SurfacePointLocation {
   leftTop: SurfacePoint;
   leftBottom: SurfacePoint;
   rightTop: SurfacePoint;
@@ -55,7 +56,11 @@ export class SurfaceFactor implements Factor {
   }
 
   getSurfaceUnit(x: number, y: number): number {
-    return this.getUnitByLocation(this.getSurfaceMapLocation(x, y));
+    return this.getSurfaceUnitByLocation(this.getSurfacePointLocation(x, y));
+  }
+
+  getSurfaceType(xCord: number, yCord: number): SurfaceType {
+    return this.getSurfaceTypeByLocation(this.getSurfaceLocation(xCord, yCord));
   }
 
   getSurfacePointColor(x: number, y: number): number {
@@ -70,24 +75,24 @@ export class SurfaceFactor implements Factor {
     return mapCord * (this.surfaceSize/this.mapSize) - this.surfaceSize/2;
   }
 
-  getSurfaceLocation(xCord: number, yCord: number): SurfaceMapLocation {
+  getSurfaceLocation(xCord: number, yCord: number): SurfacePointLocation {
     const x = this.getCordToMap(xCord);
     const y = this.getCordToMap(yCord);
 
-    return this.getSurfaceMapLocation(x,y);
+    return this.getSurfacePointLocation(x,y);
   }
 
-  getSurfaceMapLocation(x: number, y: number): SurfaceMapLocation {
+  getSurfacePointLocation(x: number, y: number): SurfacePointLocation {
     const bottomX = Math.floor(x);
     const leftY = Math.floor(y);
     const topX = bottomX === x ? x : bottomX + 1;
     const rightY = leftY === y ? y : leftY + 1;
 
     return {
-      leftTop: this.getSurfacePosition(topX, leftY),
-      leftBottom: this.getSurfacePosition(bottomX, leftY),
-      rightTop: this.getSurfacePosition(topX, rightY),
-      rightBottom: this.getSurfacePosition(bottomX, rightY),
+      leftTop: this.getSurfacePoint(topX, leftY),
+      leftBottom: this.getSurfacePoint(bottomX, leftY),
+      rightTop: this.getSurfacePoint(topX, rightY),
+      rightBottom: this.getSurfacePoint(bottomX, rightY),
       position: {x,y},
     }
   }
@@ -101,7 +106,7 @@ export class SurfaceFactor implements Factor {
     return SurfaceConfig.find(checked => checked.maxUnit >= unit) || SurfaceConfig[0];
   }
 
-  private getSurfaceConfigBetween(unit: number): [SurfaceTypeConfig, SurfaceTypeConfig] {
+  private getSurfaceLocationConfig(unit: number): [SurfaceTypeConfig, SurfaceTypeConfig] {
     const maxIndex = SurfaceConfig.findIndex(checked => checked.maxUnit >= unit);
 
     if (maxIndex <= 0) return [SurfaceConfig[0], SurfaceConfig[0]];
@@ -109,7 +114,7 @@ export class SurfaceFactor implements Factor {
     return [SurfaceConfig[maxIndex-1], SurfaceConfig[maxIndex]];
   }
 
-  private getUnitByLocation(area: SurfaceMapLocation): number {
+  private getSurfaceUnitByLocation(area: SurfacePointLocation): number {
     const {x: leftX, y: bottomY} = area.leftBottom;
     const bottomDiff = Math.abs(area.position.x - leftX);
     const topDiff = 1 - bottomDiff;
@@ -138,7 +143,7 @@ export class SurfaceFactor implements Factor {
     ].reduce((a, b) => a + b, 0);
   }
 
-  private getSurfacePosition(xMap: number, yMap: number): SurfacePoint {
+  private getSurfacePoint(xMap: number, yMap: number): SurfacePoint {
     const empty: SurfacePoint = {
       x: xMap,
       y: yMap,
@@ -156,15 +161,19 @@ export class SurfaceFactor implements Factor {
     return this._surfaceMap[xMap][yMap];
   }
 
-  private getZCordByLocation(area: SurfaceMapLocation): number {
+  private getZCordByLocation(area: SurfacePointLocation): number {
     const {x, y} = area.position;
-    const unit = this.getUnitByLocation(area);
-    return this.getZCordByPosition({x, y, unit});
+    const unit = this.getSurfaceUnitByLocation(area);
+    return this.getZCordByPoint({x, y, unit});
   }
 
-  private getZCordByPosition({unit}: SurfacePoint): number {
-    const [prev, next] = this.getSurfaceConfigBetween(unit);
-    // debugger;
+  private getSurfaceTypeByLocation(area: SurfacePointLocation): SurfaceType {
+    const unit = this.getSurfaceUnitByLocation(area);
+    return this.surfaceUnitToSurfaceConfig(unit).type;
+  }
+
+  private getZCordByPoint({unit}: SurfacePoint): number {
+    const [prev, next] = this.getSurfaceLocationConfig(unit);
     const minZ = prev.maxHeight;
     const minUnit = prev.maxUnit;
     const maxZ = next.maxHeight;

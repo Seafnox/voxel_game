@@ -34,19 +34,19 @@ const SurfaceConfigMap: Record<SurfaceType, SurfaceTypeConfig> = {
   },
   [SurfaceType.Seaside] : {
     type: SurfaceType.Seaside,
-    color: 0x006600,
+    color: 0x229922,
     maxUnit: 0.54,
     maxHeight: 7,
   },
   [SurfaceType.Plain] : {
     type: SurfaceType.Plain,
-    color: 0x008800,
+    color: 0x118811,
     maxUnit: 0.59,
     maxHeight: 14,
   },
   [SurfaceType.Hill] : {
     type: SurfaceType.Hill,
-    color: 0x229922,
+    color: 0x336600,
     maxUnit: 0.75,
     maxHeight: 30,
   },
