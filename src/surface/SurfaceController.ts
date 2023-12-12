@@ -1,19 +1,12 @@
-import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { SceneFactor } from 'src/render/SceneFactor';
 import { SurfaceFactor } from 'src/surface/SurfaceFactor';
-import { Mesh, Vector3, BackSide, Texture, DataTexture, MeshStandardMaterial, MeshBasicMaterial, DoubleSide } from 'three';
+import { Mesh, Vector3, BackSide, Texture, DataTexture, MeshStandardMaterial, MeshBasicMaterial } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
-import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 
 export class SurfaceController extends Controller {
-  private surfaceFactor: SurfaceFactor;
-  private sceneFactor: SceneFactor;
-  private lastTimeUpdated = 0;
-  private waterGeometry: ParametricGeometry = new ParametricGeometry();
-
   constructor(
     engine: GameEngine,
     entity: Entity,
@@ -21,32 +14,16 @@ export class SurfaceController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.surfaceFactor = this.engine.factors.find(SurfaceFactor);
-    this.sceneFactor = this.engine.factors.find(SceneFactor);
-
     this.sceneFactor.add(this.createSurfaceWireframeMesh());
     this.sceneFactor.add(this.createSurfaceMesh());
-    this.sceneFactor.add(this.createWaterMesh());
-
-    this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.updateSurface.bind(this))
   }
 
-  private createWaterMesh(): Mesh {
-    this.lastTimeUpdated = Date.now();
-    this.waterGeometry = this.createWaterGeometry();
-    const material = new MeshPhongMaterial({
-      color: 0x66aaff,
-      side: DoubleSide,
-      transparent: true,
-      opacity: .8,
-      flatShading: true,
-    });
-    const surfaceMesh = new Mesh(this.waterGeometry, material);
+  private get surfaceFactor(): SurfaceFactor {
+    return this.engine.factors.find(SurfaceFactor);
+  }
 
-    surfaceMesh.castShadow = false;
-    surfaceMesh.receiveShadow = true;
-
-    return surfaceMesh;
+  private get sceneFactor(): SceneFactor {
+    return this.engine.factors.find(SceneFactor);
   }
 
   // TODO FEATURE add target position check and entity subscription
@@ -78,17 +55,6 @@ export class SurfaceController extends Controller {
     surfaceMesh.receiveShadow = true;
 
     return surfaceMesh;
-  }
-
-  private createWaterGeometry(): ParametricGeometry {
-    const mapSize = this.surfaceFactor.mapSize;
-    const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
-      const x = this.surfaceFactor.getMapToCord(percentX * (mapSize));
-      const y = this.surfaceFactor.getMapToCord(percentY * (mapSize));
-      const z = Math.sin((x+y+this.lastTimeUpdated/300)/2) - 7;//this.engine.random() * 2 - 8;
-      target.set(x, z, y);
-    };
-    return new ParametricGeometry(calculatePoint, mapSize, mapSize);
   }
 
   private createSurfaceGeometry(): ParametricGeometry {
@@ -126,11 +92,5 @@ export class SurfaceController extends Controller {
     texture.needsUpdate = true;
 
     return texture;
-  }
-
-  private updateSurface(deltaTime: number) {
-    this.lastTimeUpdated += deltaTime;
-    const tmpGeometry = this.createWaterGeometry();
-    this.waterGeometry.copy(tmpGeometry);
   }
 }

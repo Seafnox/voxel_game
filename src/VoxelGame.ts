@@ -6,6 +6,7 @@ import { CollisionModelController } from 'src/collision/CollisionModelController
 import { RenderController } from 'src/render/RenderController';
 import { SkyFocusController } from 'src/sky/SkyFocusController';
 import { StateController } from 'src/state/StateController';
+import { SimpleWaterController } from 'src/surface/SimpleWaterController';
 import { ActivityAccelerationController } from 'src/velocity/ActivityAccelerationController';
 import { KeyboardActivityController } from 'src/player/KeyboardActivityController';
 import { ActivityDecelerationController } from 'src/velocity/ActivityDecelerationController';
@@ -94,6 +95,7 @@ export class VoxelGame {
   private initSurface(): void {
     const entity = this.engine.entities.create(Entity, EntityName.Surface);
     entity.controllers.register(SurfaceController);
+    entity.controllers.register(SimpleWaterController);
   }
 
   private initClouds() {
