@@ -101,7 +101,7 @@ export class VoxelGame {
   private initClouds() {
     const builder = new CloudBuilder(this.engine);
 
-    for (let i = 0; i < 25; ++i) {
+    for (let i = 0; i < 100; ++i) {
       builder.buildRandomCloud(i.toString());
     }
   }

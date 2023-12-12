@@ -3,27 +3,35 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { GltfModelController } from 'src/models/GltfModelController';
 import { PositionProperty } from 'src/positioning/PositionProperty';
 import { RotationProperty } from 'src/positioning/RotationProperty';
+import { SurfaceFactor } from 'src/surface/SurfaceFactor';
 import { VMath } from 'src/VMath';
 import { Vector3, Quaternion, Color } from 'three';
 
 export class CloudBuilder {
   private cloudColor = 0xaecfff;
+  private cloudHeight = 270;
 
   constructor(
     private engine: GameEngine,
   ) {}
 
-  buildRandomCloud(postfix: string) {
+  private get surfaceFactor(): SurfaceFactor {
+    return this.engine.factors.find(SurfaceFactor);
+  }
+
+  buildRandomCloud(postfix: string): void {
+    const x = VMath.lerp(this.engine.random(), -this.surfaceFactor.surfaceSize/2, this.surfaceFactor.surfaceSize/2);
+    const z = VMath.lerp(this.engine.random(), -this.surfaceFactor.surfaceSize/2, this.surfaceFactor.surfaceSize/2);
+    const y = this.surfaceFactor.getZCord(x, z);
+
+    if (y > this.cloudHeight) return this.buildRandomCloud(postfix);
+
     const index = VMath.rand_int(1, 3);
-    const pos = new Vector3(
-      (this.engine.random() * 2.0 - 1.0) * 500,
-      270,
-      (this.engine.random() * 2.0 - 1.0) * 500,
-    );
+    const pos = new Vector3(x, this.cloudHeight, z);
 
     const cloudEntity = this.engine.entities.create(Entity, `cloud_${postfix}`);
     cloudEntity.properties.register(PositionProperty, pos);
-    cloudEntity.properties.register(RotationProperty, new Quaternion(0,0,0,1));
+    cloudEntity.properties.register(RotationProperty, new Quaternion(0,  this.engine.random(), 0, -this.engine.random()));
 
     const modelController = cloudEntity.controllers.register(GltfModelController);
     modelController.modelConfig = {

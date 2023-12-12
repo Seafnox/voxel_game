@@ -6,23 +6,25 @@ const SurfaceConfigMap: Record<SurfaceType, SurfaceTypeConfig> = {
     type: SurfaceType.Void,
     color: 0x000000,
     maxUnit: 0,
-    maxHeight: -100,
+    maxHeight: -200,
   },
   [SurfaceType.DeepOcean] : {
     type: SurfaceType.DeepOcean,
     color: 0x001166,
     maxUnit: 0.3,
-    maxHeight: -50,
+    maxHeight: -100,
   },
   [SurfaceType.Ocean] : {
     type: SurfaceType.Ocean,
-    color: 0x003399,
+    color: 0x998811,
+    //color: 0x003399,
     maxUnit: 0.42,
     maxHeight: -30,
   },
   [SurfaceType.DeepBeach] : {
     type: SurfaceType.DeepBeach,
-    color: 0x0077aa,
+    color: 0xBBAA33,
+    //color: 0x0077aa,
     maxUnit: 0.47,
     maxHeight: -5,
   },
@@ -41,7 +43,7 @@ const SurfaceConfigMap: Record<SurfaceType, SurfaceTypeConfig> = {
   [SurfaceType.Plain] : {
     type: SurfaceType.Plain,
     color: 0x118811,
-    maxUnit: 0.59,
+    maxUnit: 0.7,
     maxHeight: 14,
   },
   [SurfaceType.Hill] : {
@@ -53,7 +55,7 @@ const SurfaceConfigMap: Record<SurfaceType, SurfaceTypeConfig> = {
   [SurfaceType.Rock] : {
     type: SurfaceType.Rock,
     color: 0x888888,
-    maxUnit: 0.8,
+    maxUnit: 0.85,
     maxHeight: 60,
   },
   [SurfaceType.Mountain] : {

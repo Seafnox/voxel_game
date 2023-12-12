@@ -33,7 +33,7 @@ export class SurfaceBuilder {
     for (let x = 0; x < mapWidth; x++) {
       rgbMap[x] = [];
       for (let y = 0; y < mapHeight; y++) {
-        const height = this.getUnit(this.xyToXyz(mapWidth, mapHeight, x, y)) + this.getRandom()*0.02;
+        const height = this.getUnit(this.xyToXyz(mapWidth, mapHeight, x, y)) + this.getRandom()*0.01;
         rgbMap[x][y] = {x, y, unit: height};
       }
     }
