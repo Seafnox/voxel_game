@@ -92,16 +92,19 @@ export class CameraFocusController extends Controller {
     this.camera.lookAt(this.lookAt);
 
     this.waterLens.position.copy(this.camera.position);
+//    this.waterLens.position.copy(this.lookAt);
     this.waterLens.quaternion.copy(this.camera.quaternion);
 
     const underwaterDepth = this.waterFactor.waters[0].position.y - this.camera.position.y;
-    const recalcDepth = underwaterDepth > 5
-      ? 5
-      : underwaterDepth < -5
-        ? -5
+    const depthLimit = 2;
+    const recalcDepth = underwaterDepth > depthLimit
+      ? depthLimit
+      : underwaterDepth < -depthLimit
+        ? -depthLimit
         : underwaterDepth;
 
-    const angle = Math.PI * recalcDepth/10;
-    this.waterLens.geometry.rotateZ(angle);
+    // this is wrong formula but it works fine
+    const angle = (recalcDepth * 2 + 1/3)/(depthLimit) + Math.PI/2;
+    this.waterLens.rotateX(angle);
   }
 }

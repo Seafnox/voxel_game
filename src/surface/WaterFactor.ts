@@ -48,12 +48,14 @@ export class WaterFactor {
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
       const x = pointToPosition(percentX * (mapSize), mapSize, surfaceSize);
       const y = pointToPosition(percentY * (mapSize), mapSize, surfaceSize);
-      const z = [
-        Math.sin((x+y)/2)/2,
-        Math.sin((x-y)/2)/2,
-      ].reduce((a, b) => a + b, 0);
+      // TODO Use shader instead, because threeJS can't make underwater lightning
+      // @see CameraFocusController.waterLens for hack
+//      const z = [
+//        Math.sin((x+y)/2)/2,
+//        Math.sin((x-y)/2)/2,
+//      ].reduce((a, b) => a + b, 0);
 
-      target.set(x, z, y);
+      target.set(x, 0, y);
     };
 
     return new ParametricGeometry(calculatePoint, mapSize, mapSize);
