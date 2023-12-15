@@ -4,11 +4,15 @@ import { WindowEventSystem, WindowTopic, WindowResizeEvent } from 'src/browser/W
 import { Controller } from 'src/engine/Controller';
 import { PositionProperty } from 'src/positioning/PositionProperty';
 import { RotationProperty } from 'src/positioning/RotationProperty';
-import { PerspectiveCamera, Quaternion, Vector3 } from 'three';
+import { SceneFactor } from 'src/render/SceneFactor';
+import { WaterFactor } from 'src/surface/WaterFactor';
+import { PerspectiveCamera, Quaternion, Vector3, Mesh, SphereGeometry } from 'three';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
+import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 
 export class CameraFocusController extends Controller {
+  private readonly waterLensRotationVector = new Vector3(1,0,0);
   constructor(
     engine: GameEngine,
     entity: Entity,
@@ -24,6 +28,8 @@ export class CameraFocusController extends Controller {
     const window = this.windowEventSystem.getWindow();
     this.cameraFactor.updateAspect(window.innerWidth / window.innerHeight);
 
+    this.sceneFactor.add(this.waterLens);
+
 //    this.engine.systems.find(TickSystem).on(TickSystemEvent.Init, this.init.bind(this));
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
@@ -32,12 +38,23 @@ export class CameraFocusController extends Controller {
     return this.engine.systems.find(WindowEventSystem);
   }
 
+  get sceneFactor(): SceneFactor {
+    return this.engine.factors.find(SceneFactor);
+  }
+  get waterFactor(): WaterFactor {
+    return this.engine.factors.find(WaterFactor);
+  }
+
   get cameraFactor(): CameraFactor {
     return this.engine.factors.find(CameraFactor);
   }
 
   get camera(): PerspectiveCamera {
     return this.cameraFactor.camera;
+  }
+
+  get waterLens(): Mesh<SphereGeometry, MeshPhongMaterial> {
+    return this.cameraFactor.waterLens;
   }
 
   get lookAt(): Vector3 {
@@ -73,5 +90,18 @@ export class CameraFocusController extends Controller {
 
     this.camera.position.copy(cameraPosition);
     this.camera.lookAt(this.lookAt);
+
+    this.waterLens.position.copy(this.camera.position);
+    this.waterLens.quaternion.copy(this.camera.quaternion);
+
+    const underwaterDepth = this.waterFactor.waters[0].position.y - this.camera.position.y;
+    const recalcDepth = underwaterDepth > 5
+      ? 5
+      : underwaterDepth < -5
+        ? -5
+        : underwaterDepth;
+
+    const angle = Math.PI * recalcDepth/10;
+    this.waterLens.geometry.rotateZ(angle);
   }
 }

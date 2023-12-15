@@ -1,10 +1,23 @@
-import { PerspectiveCamera, Vector3 } from 'three';
+import { PerspectiveCamera, Vector3, Mesh, SphereGeometry, BackSide } from 'three';
+import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
 
 export class CameraFactor {
   readonly camera: PerspectiveCamera;
   readonly lookAt = new Vector3(0,0,0);
+  readonly waterLensGeometry = new SphereGeometry(5, 10, 10, 0, Math.PI)
+  readonly waterLensMaterial = new MeshPhongMaterial({
+    color: 0x66aaff,
+    emissive: 0x001144,
+    specular: 0x3388aa,
+    side: BackSide,
+    transparent: true,
+    shininess: .8,
+    opacity: .5,
+  })
+  readonly waterLens = new Mesh(this.waterLensGeometry, this.waterLensMaterial);
 
   constructor() {
+    this.waterLens.geometry.rotateZ(-Math.PI/2);
     this.camera = this.createCamera();
   }
 

@@ -1,5 +1,7 @@
 import { RandomFn } from 'simplex-noise/simplex-noise';
 import { Factor } from 'src/engine/Factor';
+import { pointToPosition } from 'src/surface/pointToPosition';
+import { positionToPoint } from 'src/surface/positionToPoint';
 import { SurfaceConfig } from 'src/surface/SurfaceConfig';
 import { SurfaceType } from 'src/surface/SurfaceType';
 import { SurfaceTypeConfig } from 'src/surface/SurfaceTypeConfig';
@@ -67,12 +69,12 @@ export class SurfaceFactor implements Factor {
     return this.surfaceUnitToColor(this.getSurfaceUnit(x, y));
   }
 
-  getCordToMap(cord: number): number {
-    return cord * (this.mapSize/this.surfaceSize) + this.mapSize/2;
+  getCordToMap(position: number): number {
+    return positionToPoint(position, this.mapSize, this.surfaceSize);
   }
 
-  getMapToCord(mapCord: number): number {
-    return mapCord * (this.surfaceSize/this.mapSize) - this.surfaceSize/2;
+  getMapToCord(point: number): number {
+    return pointToPosition(point, this.mapSize, this.surfaceSize);
   }
 
   getSurfaceLocation(xCord: number, yCord: number): SurfacePointLocation {

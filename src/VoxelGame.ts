@@ -7,6 +7,7 @@ import { RenderController } from 'src/render/RenderController';
 import { SkyFocusController } from 'src/sky/SkyFocusController';
 import { StateController } from 'src/state/StateController';
 import { SimpleWaterController } from 'src/surface/SimpleWaterController';
+import { WaterFactor } from 'src/surface/WaterFactor';
 import { ActivityAccelerationController } from 'src/velocity/ActivityAccelerationController';
 import { KeyboardActivityController } from 'src/player/KeyboardActivityController';
 import { ActivityDecelerationController } from 'src/velocity/ActivityDecelerationController';
@@ -75,6 +76,8 @@ export class VoxelGame {
     this.engine.factors.create(GravityFactor);
     this.engine.factors.create(SurfaceFactor)
       .generateSurface(this.random, 400, 4000);
+    this.engine.factors.create(WaterFactor)
+      .generateWaters(400, 4000);
     this.engine.factors.create(CollisionFactor);
   }
 
