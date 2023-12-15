@@ -9,7 +9,7 @@ import { Vector3 } from 'three';
 
 export class ActivityAccelerationController extends Controller {
   private defaultAcceleration = new Vector3(0.0, 0.0, 0.0);
-  private totalAcceleration = new Vector3(2.0, 60.0, 10.0);
+  private totalAcceleration = new Vector3(2.0, 60.0, 8.0);
   private extremeAccelerationScalar = 5;
 
   constructor(
