@@ -16,11 +16,11 @@ export class SunLightFactor {
     light.shadow.mapSize.width = 4096;
     light.shadow.mapSize.height = 4096;
     light.shadow.camera.near = 0.1;
-    light.shadow.camera.far = 1000.0;
-    light.shadow.camera.left = 150;
-    light.shadow.camera.right = -150;
-    light.shadow.camera.top = 150;
-    light.shadow.camera.bottom = -150;
+    light.shadow.camera.far = 2000.0;
+    light.shadow.camera.left = 600;
+    light.shadow.camera.right = -600;
+    light.shadow.camera.top = 600;
+    light.shadow.camera.bottom = -600;
     light.shadow.radius = 5;
     light.shadow.blurSamples = 25;
 
