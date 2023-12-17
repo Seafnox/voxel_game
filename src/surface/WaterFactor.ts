@@ -25,16 +25,17 @@ export class WaterFactor {
     const material = new MeshPhongMaterial({
       color: 0x66aaff,
       emissive: 0x001144,
-      specular: 0x3388aa,
+      specular: 0x4499dd,
       side: DoubleSide,
       transparent: true,
       shininess: .8,
-      opacity: .7,
+      opacity: .6,
+      reflectivity: 0.9,
     });
 
     const waterMesh = new Mesh(waterGeometry, material);
 
-    waterMesh.castShadow = false;
+    waterMesh.castShadow = true;
     waterMesh.receiveShadow = false;
 
     return waterMesh;
