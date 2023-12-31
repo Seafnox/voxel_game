@@ -1,8 +1,8 @@
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { PositionProperty } from 'src/positioning/PositionProperty';
-import { SceneFactor } from 'src/render/SceneFactor';
+import { SceneProperty } from 'src/render/SceneProperty';
 import { Controller } from 'src/engine/Controller';
-import { SunLightFactor } from 'src/sky/SunLightFactor';
+import { SunLightProperty } from 'src/sky/SunLightProperty';
 import { DirectionalLight, Vector3 } from 'three';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
@@ -15,7 +15,7 @@ export class LightFocusController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.sceneFactor.add(this.light, this.light.target);
+    this.sceneProperty.add(this.light, this.light.target);
 
     this.entity.on(PositionProperty.name, this.targetPositionChange.bind(this));
 
@@ -27,11 +27,11 @@ export class LightFocusController extends Controller {
   }
 
   get light(): DirectionalLight {
-    return this.engine.factors.find(SunLightFactor).light;
+    return this.engine.properties.find(SunLightProperty).get();
   }
 
-  get sceneFactor(): SceneFactor {
-    return this.engine.factors.find(SceneFactor);
+  get sceneProperty(): SceneProperty {
+    return this.engine.properties.find(SceneProperty);
   }
 
   private targetPositionChange(event: UpdatePropertyEvent<Vector3>) {

@@ -1,44 +1,45 @@
 import { RandomFn } from 'simplex-noise/simplex-noise';
-import { Factor } from 'src/engine/Factor';
+import { EventSystem } from 'src/engine/EventSystem';
+import { GameEngine } from 'src/engine/GameEngine';
 import { pointToPosition } from 'src/surface/pointToPosition';
 import { positionToPoint } from 'src/surface/positionToPoint';
 import { SurfaceConfig } from 'src/surface/SurfaceConfig';
+import { SurfaceConfigProperty } from 'src/surface/SurfaceConfigProperty';
+import { SurfaceMapProperty } from 'src/surface/SurfaceMapProperty';
+import { SurfacePointLocation } from 'src/surface/SurfacePointLocation';
 import { SurfaceType } from 'src/surface/SurfaceType';
 import { SurfaceTypeConfig } from 'src/surface/SurfaceTypeConfig';
 import { VMath } from 'src/VMath';
-import { SurfaceMap, SurfaceBuilder, SurfacePoint } from 'src/surface/SurfaceBuilder';
+import { SurfaceBuilder, SurfacePoint, SurfaceMap } from 'src/surface/SurfaceBuilder';
 
-export interface SurfacePointLocation {
-  leftTop: SurfacePoint;
-  leftBottom: SurfacePoint;
-  rightTop: SurfacePoint;
-  rightBottom: SurfacePoint;
-  position: {
-    x: number;
-    y: number;
-  };
-}
+export class SurfaceHelperSystem extends EventSystem {
+  private surfaceConfig: SurfaceConfigProperty;
+  private surfaceMap: SurfaceMapProperty;
 
-export class SurfaceFactor implements Factor {
-  private _mapSize: number = 0;
-  private _surfaceSize: number = 0;
-  private _surfaceScale: number = 0;
-  private _surfaceMap: SurfaceMap = [];
+  constructor(
+    engine: GameEngine,
+    name: string,
+  ) {
+    super(engine, name);
 
-  get surfaceMap(): SurfaceMap {
-    return this._surfaceMap;
+    this.surfaceConfig = this.engine.properties.find(SurfaceConfigProperty);
+    this.surfaceMap = this.engine.properties.find(SurfaceMapProperty);
   }
 
   get mapSize(): number {
-    return this._mapSize;
+    return this.surfaceConfig.mapSize;
   }
 
   get surfaceSize(): number {
-    return this._surfaceSize;
+    return this.surfaceConfig.surfaceSize;
   }
 
   get surfaceScale(): number {
-    return this._surfaceScale;
+    return this.surfaceConfig.surfaceScale;
+  }
+
+  get surface(): SurfaceMap {
+    return this.surfaceMap.get();
   }
 
   generateSurface(
@@ -46,11 +47,13 @@ export class SurfaceFactor implements Factor {
     mapSize: number,
     surfaceSize: number,
   ) {
-    this._mapSize = mapSize;
-    this._surfaceSize = surfaceSize;
-    this._surfaceScale = this.surfaceSize / this.mapSize;
-    const surfaceBuilder = new SurfaceBuilder(randomFn, 0.003 * this._surfaceScale);
-    this._surfaceMap = surfaceBuilder.getSurfaceMap(this.mapSize, this.mapSize);
+    this.surfaceConfig.set({
+      mapSize,
+      surfaceSize,
+      surfaceScale: this.surfaceSize / this.mapSize,
+    });
+    const surfaceBuilder = new SurfaceBuilder(randomFn, 0.003 * this.surfaceScale);
+    this.surfaceMap.set(surfaceBuilder.getSurfaceMap(this.mapSize, this.mapSize));
   }
 
   getZCord(xCord: number, yCord: number): number {
@@ -160,7 +163,7 @@ export class SurfaceFactor implements Factor {
       return empty;
     }
 
-    return this._surfaceMap[xMap][yMap];
+    return this.surfaceMap.get()[xMap][yMap];
   }
 
   private getZCordByLocation(area: SurfacePointLocation): number {

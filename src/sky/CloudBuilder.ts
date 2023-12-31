@@ -3,7 +3,7 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { GltfModelController } from 'src/models/GltfModelController';
 import { PositionProperty } from 'src/positioning/PositionProperty';
 import { RotationProperty } from 'src/positioning/RotationProperty';
-import { SurfaceFactor } from 'src/surface/SurfaceFactor';
+import { SurfaceHelperSystem } from 'src/surface/SurfaceHelperSystem';
 import { VMath } from 'src/VMath';
 import { Vector3, Quaternion, Color } from 'three';
 
@@ -15,14 +15,14 @@ export class CloudBuilder {
     private engine: GameEngine,
   ) {}
 
-  private get surfaceFactor(): SurfaceFactor {
-    return this.engine.factors.find(SurfaceFactor);
+  private get surfaceHelper(): SurfaceHelperSystem {
+    return this.engine.systems.find(SurfaceHelperSystem);
   }
 
   buildRandomCloud(postfix: string): void {
-    const x = VMath.lerp(this.engine.random(), -this.surfaceFactor.surfaceSize/2, this.surfaceFactor.surfaceSize/2);
-    const z = VMath.lerp(this.engine.random(), -this.surfaceFactor.surfaceSize/2, this.surfaceFactor.surfaceSize/2);
-    const y = this.surfaceFactor.getZCord(x, z);
+    const x = VMath.lerp(this.engine.random(), -this.surfaceHelper.surfaceSize/2, this.surfaceHelper.surfaceSize/2);
+    const z = VMath.lerp(this.engine.random(), -this.surfaceHelper.surfaceSize/2, this.surfaceHelper.surfaceSize/2);
+    const y = this.surfaceHelper.getZCord(x, z);
 
     if (y > this.cloudHeight) return this.buildRandomCloud(postfix);
 

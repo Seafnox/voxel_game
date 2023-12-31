@@ -1,7 +1,7 @@
 import { CollisionBox } from 'src/collision/CollisionBox';
-import { Factor } from 'src/engine/Factor';
+import { EventSystem } from 'src/engine/EventSystem';
 
-export class CollisionFactor implements Factor {
+export class CollisionSystem extends EventSystem {
   private _units: CollisionBox[] = [];
 
   register(unit: CollisionBox) {

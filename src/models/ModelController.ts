@@ -6,7 +6,7 @@ import { ModelProperty } from 'src/models/ModelProperty';
 import { ModelStatusProperty } from 'src/models/ModelStatusProperty';
 import { PositionProperty } from 'src/positioning/PositionProperty';
 import { RotationProperty } from 'src/positioning/RotationProperty';
-import { SceneFactor } from 'src/render/SceneFactor';
+import { SceneProperty } from 'src/render/SceneProperty';
 import { ModelSystem } from 'src/models/ModelSystem';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import {
@@ -59,8 +59,8 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
     return this.engine.systems.find(ModelSystem);
   }
 
-  get sceneFactor(): SceneFactor {
-    return this.engine.factors.find(SceneFactor);
+  get sceneProperty(): SceneProperty {
+    return this.engine.properties.find(SceneProperty);
   }
 
   getAnimationList(): string[] {
@@ -105,7 +105,7 @@ export abstract class ModelController<TConfig extends ModelConfig = ModelConfig>
 
   protected onTargetLoaded(model: Object3D, animations: AnimationClip[], config: TConfig) {
     this.model = model;
-    this.sceneFactor.add(this.model);
+    this.sceneProperty.add(this.model);
     this.animationMap = {};
     this.mixer = new AnimationMixer(this.model);
     animations.forEach(animationClip => this.addAnimation(animationClip));

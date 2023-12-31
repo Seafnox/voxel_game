@@ -1,9 +1,9 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { CameraFactor } from 'src/camera/CameraFactor';
-import { RendererFactor } from 'src/render/RendererFactor';
-import { SceneFactor } from 'src/render/SceneFactor';
+import { CameraProperty } from 'src/camera/CameraProperty';
+import { RendererProperty } from 'src/render/RendererProperty';
+import { SceneProperty } from 'src/render/SceneProperty';
 import { HtmlElementId } from 'src/HtmlElementId';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import { WindowEventSystem, WindowResizeEvent, WindowTopic } from 'src/browser/WindowEventSystem';
@@ -28,14 +28,14 @@ export class RenderController extends Controller {
     });
 
     this.tickSystem.on<number>(TickSystemEvent.Tick, () => {
-      const scene = this.engine.factors.find(SceneFactor).scene;
-      const camera = this.engine.factors.find(CameraFactor).camera;
+      const scene = this.engine.properties.find(SceneProperty).get();
+      const camera = this.engine.properties.find(CameraProperty).get();
       this.renderer.render(scene, camera);
     });
   }
 
   private get renderer(): WebGLRenderer {
-    return this.engine.factors.find(RendererFactor).renderer;
+    return this.engine.properties.find(RendererProperty).get();
   }
 
   private get windowEventSystem(): WindowEventSystem {

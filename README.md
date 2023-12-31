@@ -30,8 +30,8 @@ Welcome to the world of creativity and adventure! Start your journey now and cre
 13) [X]  Refactor gravity does not attract to the surface, but pulls down, but leaves the player on the surface
 14) [X]  Make the surface more rough/lively
 15) [X]  Add the sea at the 0 mark
-16) [ ]  Change engine Factors to emitable properties (Entity-Property-Controller-System)
-17) [ ]  Add global controllers to engine for engine properties
+16) [X]  Change engine Factors to emitable properties (Entity-Property-Controller-System)
+17) [X]  Add global controllers to engine for engine properties
 18) [ ]  Add movement deceleration under water
 19) [ ]  Add sea Archimed force wich pull player up to water
 20) [ ]  Change player model to LowPolyModel

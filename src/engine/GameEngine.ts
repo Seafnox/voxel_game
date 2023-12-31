@@ -1,16 +1,19 @@
 import { RandomFn } from 'simplex-noise/simplex-noise';
+import { TopicEmitter } from 'src/emitter/TopicEmitter';
 import { EntityManager } from 'src/engine/EntityManager';
 import { SystemManager } from 'src/engine/SystemManager';
-import { FactorManager } from './FactorManager';
+import { GlobalPropertyManager } from 'src/engine/GlobalPropertyManager';
 
-export class GameEngine {
+export class GameEngine extends TopicEmitter {
   private entityManager = new EntityManager(this);
   private systemManager = new SystemManager(this);
-  private factorManager = new FactorManager();
+  private globalPropertyManager = new GlobalPropertyManager(this);
 
   constructor(
     private _random: RandomFn,
-  ) {}
+  ) {
+    super();
+  }
 
   get entities(): EntityManager {
     return this.entityManager;
@@ -20,8 +23,8 @@ export class GameEngine {
     return this.systemManager;
   }
 
-  get factors(): FactorManager {
-    return this.factorManager;
+  get properties(): GlobalPropertyManager {
+    return this.globalPropertyManager;
   }
 
   get random(): RandomFn {

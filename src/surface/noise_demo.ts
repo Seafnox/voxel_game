@@ -1,10 +1,16 @@
+import { GameEngine } from 'src/engine/GameEngine';
+import { SurfaceConfigProperty } from 'src/surface/SurfaceConfigProperty';
+import { SurfaceHelperSystem } from 'src/surface/SurfaceHelperSystem';
+import { SurfaceMapProperty } from 'src/surface/SurfaceMapProperty';
 import { PseudoRandomizer } from 'src/utils/PseudoRandomizer';
-import { SurfaceFactor } from 'src/surface/SurfaceFactor';
 
-const surfaceFactor = new SurfaceFactor();
 const randomizer = new PseudoRandomizer(123);
-surfaceFactor.generateSurface(randomizer.next.bind(randomizer),50, 150);
-const map = surfaceFactor.surfaceMap;
+const engine = new GameEngine(randomizer.next.bind(randomizer));
+engine.properties.register(SurfaceConfigProperty);
+engine.properties.register(SurfaceMapProperty);
+const surfaceHelper = engine.systems.create(SurfaceHelperSystem);
+surfaceHelper.generateSurface(randomizer.next.bind(randomizer),50, 150);
+const map = surfaceHelper.surface;
 
 const colorMap: Record<string, string> = {
   '0':       '\x1b[40m\x1b[30m_ _\x1b[0m', // бездна
@@ -25,9 +31,9 @@ map.forEach(row => {
   const heights2: string[] = [];
   const colorString = row.map(({x,y,unit}) => {
     heights.push(unit.toFixed(2));
-    heights2.push(surfaceFactor.getSurfaceUnit(x, y).toFixed(2));
+    heights2.push(surfaceHelper.getSurfaceUnit(x, y).toFixed(2));
 
-    const color = surfaceFactor.getSurfacePointColor(x,y).toString(16);
+    const color = surfaceHelper.getSurfacePointColor(x,y).toString(16);
     return colorMap[color] || '\x1b[0m? ?\x1b[0m';
   }).join('');
 

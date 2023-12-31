@@ -7,9 +7,9 @@ import { GameEngine } from 'src/engine/GameEngine';
 import { CollisionModelController } from 'src/collision/CollisionModelController';
 import { FbxModelController } from 'src/models/FbxModelController';
 import { ModelController } from 'src/models/ModelController';
+import { SurfaceHelperSystem } from 'src/surface/SurfaceHelperSystem';
 import { SurfaceType } from 'src/surface/SurfaceType';
 import { NameController } from 'src/text/NameController';
-import { SurfaceFactor } from 'src/surface/SurfaceFactor';
 import { VMath } from 'src/VMath';
 import { Vector3, Quaternion, Color } from 'three';
 
@@ -35,18 +35,18 @@ export class TreeBuilder {
 
   }
 
-  private get surfaceFactor(): SurfaceFactor {
-    return this.engine.factors.find(SurfaceFactor);
+  private get surfaceHelper(): SurfaceHelperSystem {
+    return this.engine.systems.find(SurfaceHelperSystem);
   }
 
   buildRandomTree(postfix: string): void {
-    const x = VMath.lerp(this.engine.random(), -this.surfaceFactor.surfaceSize/2, this.surfaceFactor.surfaceSize/2);
-    const z = VMath.lerp(this.engine.random(), -this.surfaceFactor.surfaceSize/2, this.surfaceFactor.surfaceSize/2);
-    const surfaceType = this.surfaceFactor.getSurfaceType(x, z);
+    const x = VMath.lerp(this.engine.random(), -this.surfaceHelper.surfaceSize/2, this.surfaceHelper.surfaceSize/2);
+    const z = VMath.lerp(this.engine.random(), -this.surfaceHelper.surfaceSize/2, this.surfaceHelper.surfaceSize/2);
+    const surfaceType = this.surfaceHelper.getSurfaceType(x, z);
 
     if (!(surfaceType in this.surfaceTypeTreeMap)) return this.buildRandomTree(postfix);
 
-    const y = this.surfaceFactor.getZCord(x, z);
+    const y = this.surfaceHelper.getZCord(x, z);
     const pos = new Vector3(x, y, z);
     const availableTrees = this.surfaceTypeTreeMap[surfaceType]!;
 

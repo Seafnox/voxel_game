@@ -1,13 +1,13 @@
 import { CollisionBox } from 'src/collision/CollisionBox';
-import { CollisionFactor } from 'src/collision/CollisionFactor';
+import { CollisionSystem } from 'src/collision/CollisionSystem';
 import { CollisionUnitsProperty } from 'src/collision/CollisionUnitsProperty';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { PositionProperty } from 'src/positioning/PositionProperty';
 import { RotationProperty } from 'src/positioning/RotationProperty';
+import { SurfaceHelperSystem } from 'src/surface/SurfaceHelperSystem';
 import { isDifferentVector } from 'src/utils/isDifferentVector';
-import { SurfaceFactor } from 'src/surface/SurfaceFactor';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import { VelocityProperty } from 'src/velocity/VelocityProperty';
 import { Vector3 } from 'three';
@@ -28,16 +28,16 @@ export class DynamicPositionController extends Controller {
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.tick.bind(this));
   }
 
-  private get surfaceFactor(): SurfaceFactor {
-    return this.engine.factors.find(SurfaceFactor);
+  private get surfaceHelper(): SurfaceHelperSystem {
+    return this.engine.systems.find(SurfaceHelperSystem);
   }
 
   private get collisionUnits(): CollisionBox[] {
     return this.entity.properties.find(CollisionUnitsProperty).get();
   }
 
-  private get collisionFactor(): CollisionFactor {
-    return this.engine.factors.find(CollisionFactor);
+  private get collisionSystem(): CollisionSystem {
+    return this.engine.systems.find(CollisionSystem);
   }
 
   private get positionProperty(): PositionProperty {
@@ -45,7 +45,7 @@ export class DynamicPositionController extends Controller {
   }
 
   setNearest(x: number, z: number) {
-    const y = this.surfaceFactor.getZCord(x, z);
+    const y = this.surfaceHelper.getZCord(x, z);
     this.positionProperty.set(new Vector3(x,y,z));
   }
 
@@ -76,7 +76,7 @@ export class DynamicPositionController extends Controller {
     supposedPosition.add(sideways);
 
     // TODO Add collision System
-    const surfaceY = this.surfaceFactor.getZCord(supposedPosition.x, supposedPosition.z);
+    const surfaceY = this.surfaceHelper.getZCord(supposedPosition.x, supposedPosition.z);
     if (supposedPosition.y < surfaceY) {
       supposedPosition.y = surfaceY;
     }
@@ -96,7 +96,7 @@ export class DynamicPositionController extends Controller {
     const delta = nextPosition.clone().sub(prevPosition);
     const nextCollisionUnits = this.collisionUnits.map(unit => unit.clone());
     nextCollisionUnits.forEach(unit => unit.moveUp(delta));
-    const nextIntersections = this.collisionFactor.getIntersections(nextCollisionUnits, this.collisionUnits);
+    const nextIntersections = this.collisionSystem.getIntersections(nextCollisionUnits, this.collisionUnits);
 
     return !nextIntersections.length;
   }

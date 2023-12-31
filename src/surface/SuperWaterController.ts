@@ -2,8 +2,8 @@ import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { SceneFactor } from 'src/render/SceneFactor';
-import { SurfaceFactor } from 'src/surface/SurfaceFactor';
+import { SceneProperty } from 'src/render/SceneProperty';
+import { SurfaceHelperSystem } from 'src/surface/SurfaceHelperSystem';
 import { Mesh, Vector3, DoubleSide } from 'three';
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry';
 import { MeshPhongMaterial } from 'three/src/materials/MeshPhongMaterial';
@@ -19,17 +19,17 @@ export class SuperWaterController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.sceneFactor.add(this.createWaterMesh());
+    this.sceneProperty.add(this.createWaterMesh());
 
     this.engine.systems.find(TickSystem).on(TickSystemEvent.Tick, this.updateSurface.bind(this))
   }
 
-  private get surfaceFactor(): SurfaceFactor {
-    return this.engine.factors.find(SurfaceFactor);
+  private get surfaceHelper(): SurfaceHelperSystem {
+    return this.engine.systems.find(SurfaceHelperSystem);
   }
 
-  private get sceneFactor(): SceneFactor {
-    return this.engine.factors.find(SceneFactor);
+  private get sceneProperty(): SceneProperty {
+    return this.engine.properties.find(SceneProperty);
   }
 
   private createWaterMesh(): Mesh {
@@ -52,10 +52,10 @@ export class SuperWaterController extends Controller {
   }
 
   private createWaterGeometry(): ParametricGeometry {
-    const mapSize = this.surfaceFactor.mapSize;
+    const mapSize = this.surfaceHelper.mapSize;
     const calculatePoint = (percentX: number, percentY: number, target: Vector3) => {
-      const x = this.surfaceFactor.getMapToCord(percentX * (mapSize));
-      const y = this.surfaceFactor.getMapToCord(percentY * (mapSize));
+      const x = this.surfaceHelper.getMapToCord(percentX * (mapSize));
+      const y = this.surfaceHelper.getMapToCord(percentY * (mapSize));
       const z = [
         Math.sin((x+y+this.lastTimeUpdated/300)/2)/2,
         Math.sin((x-y+this.lastTimeUpdated/300)/2)/2,

@@ -1,5 +1,5 @@
 import { CollisionBox } from 'src/collision/CollisionBox';
-import { CollisionFactor } from 'src/collision/CollisionFactor';
+import { CollisionSystem } from 'src/collision/CollisionSystem';
 import { CollisionUnitConfig } from 'src/collision/CollisionUnitConfig';
 import { CollisionUnitsProperty } from 'src/collision/CollisionUnitsProperty';
 import { Controller } from 'src/engine/Controller';
@@ -7,7 +7,7 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { PositionProperty } from 'src/positioning/PositionProperty';
 import { RotationProperty } from 'src/positioning/RotationProperty';
-import { SceneFactor } from 'src/render/SceneFactor';
+import { SceneProperty } from 'src/render/SceneProperty';
 import { Vector3, Mesh, BoxGeometry, MeshBasicMaterial, Color } from 'three';
 
 export class CollisionModelController extends Controller {
@@ -39,12 +39,12 @@ export class CollisionModelController extends Controller {
     return this.entity.properties.find(PositionProperty).get().clone();
   }
 
-  private get collisionFactor(): CollisionFactor {
-    return this.engine.factors.find(CollisionFactor);
+  private get collisionSystem(): CollisionSystem {
+    return this.engine.systems.find(CollisionSystem);
   }
 
-  private get sceneFactor(): SceneFactor {
-    return this.engine.factors.find(SceneFactor);
+  private get sceneProperty(): SceneProperty {
+    return this.engine.properties.find(SceneProperty);
   }
 
   add(config: CollisionUnitConfig): this {
@@ -60,7 +60,7 @@ export class CollisionModelController extends Controller {
     const unitMesh = new Mesh(boxGeometry, unitMaterial);
     unitMesh.position.copy(unit.position);
 
-    this.collisionFactor.register(unit);
+    this.collisionSystem.register(unit);
     this.units.push(unit);
     this._unitConfigs[unitName] = config;
 
@@ -68,7 +68,7 @@ export class CollisionModelController extends Controller {
 
     // TODO Make adoptive when convert to global config
     if (this.showMesh) {
-      this.sceneFactor.add(unitMesh);
+      this.sceneProperty.add(unitMesh);
     }
 
     return this;
@@ -91,7 +91,7 @@ export class CollisionModelController extends Controller {
       const config = this._unitConfigs[unit.name];
       const unitMesh = this._meshes[unit.name];
       unit.position = this.calculateUnitPosition(config);
-      const intersections = this.collisionFactor.getIntersections([unit]);
+      const intersections = this.collisionSystem.getIntersections([unit]);
 
       if (intersections.length > 0 && !unitMesh.material.color.equals(this.collidedColor)) {
         unitMesh.material.setValues({ color: this.collidedColor })

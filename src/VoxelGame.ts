@@ -1,13 +1,17 @@
 import { PlayerCollisionModel } from 'src/player/PlayerCollisionModel';
 import { CloudBuilder } from 'src/sky/CloudBuilder';
 import { TreeBuilder } from 'src/staticObjects/TreeBuilder';
-import { CollisionFactor } from 'src/collision/CollisionFactor';
+import { CollisionSystem } from 'src/collision/CollisionSystem';
 import { CollisionModelController } from 'src/collision/CollisionModelController';
 import { RenderController } from 'src/render/RenderController';
 import { SkyFocusController } from 'src/sky/SkyFocusController';
 import { StateController } from 'src/state/StateController';
 import { SimpleWaterController } from 'src/surface/SimpleWaterController';
-import { WaterFactor } from 'src/surface/WaterFactor';
+import { SurfaceHelperSystem } from 'src/surface/SurfaceHelperSystem';
+import { SurfaceConfigProperty } from 'src/surface/SurfaceConfigProperty';
+import { SurfaceMapProperty } from 'src/surface/SurfaceMapProperty';
+import { WaterHelperSystem } from 'src/surface/WaterHelperSystem';
+import { WaterConfigProperty } from 'src/surface/WaterConfigProperty';
 import { ActivityAccelerationController } from 'src/velocity/ActivityAccelerationController';
 import { KeyboardActivityController } from 'src/player/KeyboardActivityController';
 import { ActivityDecelerationController } from 'src/velocity/ActivityDecelerationController';
@@ -17,11 +21,11 @@ import { IdleUserState } from 'src/player/states/IdleUserState';
 import { RunUserState } from 'src/player/states/RunUserState';
 import { WalkUserState } from 'src/player/states/WalkUserState';
 import { DynamicVelocityController } from 'src/velocity/DynamicVelocityController';
-import { CameraFactor } from 'src/camera/CameraFactor';
-import { RendererFactor } from 'src/render/RendererFactor';
-import { SceneFactor } from 'src/render/SceneFactor';
-import { SkyFactor } from 'src/sky/SkyFactor';
-import { SunLightFactor } from 'src/sky/SunLightFactor';
+import { CameraProperty } from 'src/camera/CameraProperty';
+import { RendererProperty } from 'src/render/RendererProperty';
+import { SceneProperty } from 'src/render/SceneProperty';
+import { SkyProperty } from 'src/sky/SkyProperty';
+import { SunLightProperty } from 'src/sky/SunLightProperty';
 import { FontSystem } from 'src/text/FontSystem';
 import { KeyboardEventSystem } from 'src/browser/KeyboardEventSystem';
 import { ModelSystem } from 'src/models/ModelSystem';
@@ -32,8 +36,7 @@ import { VMath } from 'src/VMath';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
 import { SurfaceController } from 'src/surface/SurfaceController';
-import { GravityFactor } from 'src/velocity/GravityFactor';
-import { SurfaceFactor } from 'src/surface/SurfaceFactor';
+import { GravityProperty } from 'src/velocity/GravityProperty';
 import { WindowEventSystem } from 'src/browser/WindowEventSystem';
 import { CameraFocusController } from 'src/camera/CameraFocusController';
 import { GltfModelController } from './models/GltfModelController';
@@ -55,8 +58,8 @@ export class VoxelGame {
     console.log('World seed', this.randomizer.seed);
     VMath.random = this.random;
 
-    this.initFactors();
-    this.initSystems();
+    this.initGlobalProperties();
+    this.initGlobalSystems();
     this.initRenderer();
 
     this.initSurface();
@@ -67,27 +70,30 @@ export class VoxelGame {
     this.initGui();
   }
 
-  private initFactors() {
-    this.engine.factors.create(RendererFactor);
-    this.engine.factors.create(SceneFactor);
-    this.engine.factors.create(SunLightFactor);
-    this.engine.factors.create(SkyFactor);
-    this.engine.factors.create(CameraFactor);
-    this.engine.factors.create(GravityFactor);
-    this.engine.factors.create(SurfaceFactor)
-      .generateSurface(this.random, 400, 4000);
-    this.engine.factors.create(WaterFactor)
-      .generateWaters(400, 4000);
-    this.engine.factors.create(CollisionFactor);
+  private initGlobalProperties() {
+    this.engine.properties.register(RendererProperty);
+    this.engine.properties.register(SceneProperty);
+    this.engine.properties.register(SunLightProperty);
+    this.engine.properties.register(SkyProperty);
+    this.engine.properties.register(CameraProperty);
+    this.engine.properties.register(GravityProperty);
+    this.engine.properties.register(SurfaceConfigProperty);
+    this.engine.properties.register(SurfaceMapProperty);
+    this.engine.properties.register(WaterConfigProperty);
   }
 
-  private initSystems() {
+  private initGlobalSystems() {
     this.engine.systems.create(TickSystem);
     this.engine.systems.create(WindowEventSystem);
     this.engine.systems.create(KeyboardEventSystem);
     this.engine.systems.create(MouseEventSystem);
     this.engine.systems.create(FontSystem);
     this.engine.systems.create(ModelSystem);
+    this.engine.systems.create(CollisionSystem);
+    this.engine.systems.create(SurfaceHelperSystem)
+      .generateSurface(this.random, 400, 4000);
+    this.engine.systems.create(WaterHelperSystem)
+      .configureWater(this.random,400, 4000);
   }
 
   private initRenderer() {

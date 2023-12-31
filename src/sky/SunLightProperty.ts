@@ -1,15 +1,20 @@
+import { GameEngine } from 'src/engine/GameEngine';
+import { GlobalProperty } from 'src/engine/GlobalProperty';
 import { DirectionalLight } from 'three';
 
-export class SunLightFactor {
-  readonly lightColor = 0xeeffff;
-  readonly light: DirectionalLight;
+export class SunLightProperty extends GlobalProperty<DirectionalLight> {
+  constructor(
+    engine: GameEngine,
+    value = new DirectionalLight(0xeeffff, 1.0),
+  ) {
+    super(engine, value);
 
-  constructor() {
-    this.light = this.createLight();
+    this.configureLight()
   }
 
-  private createLight(): DirectionalLight {
-    const light = new DirectionalLight(this.lightColor, 1.0);
+  private configureLight(): DirectionalLight {
+    const light = this.get();
+
     light.position.set(0, 800, 0);
     light.castShadow = true;
     light.shadow.bias = -0.001;

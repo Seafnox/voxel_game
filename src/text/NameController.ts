@@ -1,9 +1,9 @@
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { CameraFactor } from 'src/camera/CameraFactor';
+import { CameraProperty } from 'src/camera/CameraProperty';
 import { PositionProperty } from 'src/positioning/PositionProperty';
-import { SceneFactor } from 'src/render/SceneFactor';
+import { SceneProperty } from 'src/render/SceneProperty';
 import { FontSystem } from 'src/text/FontSystem';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import { VMath } from 'src/VMath';
@@ -32,12 +32,12 @@ export class NameController extends Controller {
     return this.entity.properties.find(PositionProperty).get().clone();
   }
 
-  private get sceneFactor(): SceneFactor {
-    return this.engine.factors.find(SceneFactor);
+  private get sceneProperty(): SceneProperty {
+    return this.engine.properties.find(SceneProperty);
   }
 
   private get camera(): Camera {
-    return this.engine.factors.find(CameraFactor).camera;
+    return this.engine.properties.find(CameraProperty).get();
   }
 
   private get fontSystem(): FontSystem {
@@ -64,7 +64,7 @@ export class NameController extends Controller {
     this.mesh = new Mesh(geometry, material);
     this.updatePosition();
 
-    this.sceneFactor.add(this.mesh);
+    this.sceneProperty.add(this.mesh);
   }
 
   private updatePosition() {

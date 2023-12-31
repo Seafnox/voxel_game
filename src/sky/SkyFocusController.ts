@@ -3,8 +3,8 @@ import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { UpdatePropertyEvent } from 'src/engine/UpdatePropertyEvent';
 import { PositionProperty } from 'src/positioning/PositionProperty';
-import { SceneFactor } from 'src/render/SceneFactor';
-import { SkyFactor } from 'src/sky/SkyFactor';
+import { SceneProperty } from 'src/render/SceneProperty';
+import { SkyProperty } from 'src/sky/SkyProperty';
 import { HemisphereLight, Mesh, Vector3 } from 'three';
 
 export class SkyFocusController extends Controller {
@@ -16,7 +16,7 @@ export class SkyFocusController extends Controller {
   ) {
     super(engine, entity, name);
 
-    this.sceneFactor.add(this.skySphere, this.skySphereLight);
+    this.sceneProperty.add(this.skySphere, this.skySphereLight);
 
     this.entity.on(PositionProperty.name, this.targetPositionChange.bind(this));
 
@@ -28,15 +28,15 @@ export class SkyFocusController extends Controller {
   }
 
   get skySphere(): Mesh {
-    return this.engine.factors.find(SkyFactor).skySphere;
+    return this.engine.properties.find(SkyProperty).skySphere;
   }
 
   get skySphereLight(): HemisphereLight {
-    return this.engine.factors.find(SkyFactor).skySphereLight;
+    return this.engine.properties.find(SkyProperty).skySphereLight;
   }
 
-  get sceneFactor(): SceneFactor {
-    return this.engine.factors.find(SceneFactor);
+  get sceneProperty(): SceneProperty {
+    return this.engine.properties.find(SceneProperty);
   }
 
   private targetPositionChange(event: UpdatePropertyEvent<Vector3>) {

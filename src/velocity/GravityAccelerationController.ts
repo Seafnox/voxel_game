@@ -2,9 +2,9 @@ import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
 import { PositionProperty } from 'src/positioning/PositionProperty';
+import { SurfaceHelperSystem } from 'src/surface/SurfaceHelperSystem';
 import { GravityAccelerationProperty } from 'src/velocity/GravityAccelerationProperty';
-import { GravityFactor } from 'src/velocity/GravityFactor';
-import { SurfaceFactor } from 'src/surface/SurfaceFactor';
+import { GravityProperty } from 'src/velocity/GravityProperty';
 import { TickSystem, TickSystemEvent } from 'src/browser/TickSystem';
 import { Vector3 } from 'three';
 
@@ -57,17 +57,17 @@ export class GravityAccelerationController extends Controller {
   // TODO FEATURE make nearest surface point calculation based on gravity Vector
   private get nearestSurfacePosition(): Vector3 {
     const position = this.entityPosition.clone();
-    position.y = this.surfaceFactor.getZCord(position.x, position.z);
+    position.y = this.surfaceHelper.getZCord(position.x, position.z);
 
     return position;
   }
 
-  private get surfaceFactor(): SurfaceFactor {
-    return this.engine.factors.find(SurfaceFactor);
+  private get surfaceHelper(): SurfaceHelperSystem {
+    return this.engine.systems.find(SurfaceHelperSystem);
   }
 
   private get gravity(): Vector3 {
-    return this.engine.factors.find(GravityFactor).gravity;
+    return this.engine.properties.find(GravityProperty).get();
   }
 
   private playerOnSurface(playerPosition: Vector3, surfacePosition: Vector3): boolean {
