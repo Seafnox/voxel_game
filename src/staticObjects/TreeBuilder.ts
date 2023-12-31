@@ -51,7 +51,7 @@ export class TreeBuilder {
     const availableTrees = this.surfaceTypeTreeMap[surfaceType]!;
 
     const config = availableTrees[VMath.rand_int(0, availableTrees.length - 1)];
-    const tree = this.engine.entities.create(Entity, `${config.name}_${postfix}`);
+    const tree = this.engine.entities.register(Entity, `${config.name}_${postfix}`);
     tree.properties.register(PositionProperty, pos);
     tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
     tree.controllers.register(NameController);

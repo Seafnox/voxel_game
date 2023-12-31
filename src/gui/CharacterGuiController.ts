@@ -22,7 +22,7 @@ export class CharacterGuiController extends Controller {
   }
 
   tick(): void {
-    const characterEntity = this.entity.engine.entities.get(EntityName.Player);
+    const characterEntity = this.entity.engine.entities.find(EntityName.Player);
     const characterPositionWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterPosition);
     const characterRotationWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterRotation);
     const characterVelocityWrapper = getHtmlElementByIdOrThrow(HtmlElementId.CharacterVelocity);

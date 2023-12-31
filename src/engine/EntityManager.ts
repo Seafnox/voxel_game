@@ -11,7 +11,7 @@ export class EntityManager {
     private gameEngine: GameEngine,
   ) {}
 
-  get<TEntity extends Entity>(name: string): TEntity {
+  find<TEntity extends Entity>(name: string): TEntity {
     if (!this.entityMap[name]) {
       throw new Error(`Can't find ${Entity.name} '${name}' in ${this.constructor.name} '${EntityManager.name}'`);
     }
@@ -19,25 +19,15 @@ export class EntityManager {
     return this.entityMap[name] as TEntity;
   }
 
-  find<TEntity extends Entity>(constructor: EntityConstructor<TEntity>): TEntity[] {
-    return this.entityList.filter(entity => entity instanceof constructor) as TEntity[];
+  has(name: string): boolean {
+    return !!this.entityMap[name];
   }
 
   filter(predicate: FilterPredicate<Entity>): Entity[] {
     return this.entityList.filter(predicate);
   }
 
-  findOne<TEntity extends Entity>(constructor: EntityConstructor<TEntity>): TEntity {
-    const first = this.find<TEntity>(constructor)[0];
-
-    if (!first) {
-      throw new Error(`Can't find ${constructor.name} in ${this.constructor.name}`);
-    }
-
-    return first;
-  }
-
-  create<TEntity extends Entity>(constructor: EntityConstructor<TEntity>, preferName?: string): TEntity {
+  register<TEntity extends Entity>(constructor: EntityConstructor<TEntity>, preferName?: string): TEntity {
     const name = preferName || this.generateName(constructor.name);
     const entity = new constructor(this.gameEngine, name);
     console.log(this.constructor.name, 'create', constructor.name, name);

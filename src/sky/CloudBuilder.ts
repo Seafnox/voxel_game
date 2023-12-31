@@ -29,7 +29,7 @@ export class CloudBuilder {
     const index = VMath.rand_int(1, 3);
     const pos = new Vector3(x, this.cloudHeight, z);
 
-    const cloudEntity = this.engine.entities.create(Entity, `cloud_${postfix}`);
+    const cloudEntity = this.engine.entities.register(Entity, `cloud_${postfix}`);
     cloudEntity.properties.register(PositionProperty, pos);
     cloudEntity.properties.register(RotationProperty, new Quaternion(0,  this.engine.random(), 0, -this.engine.random()));
 

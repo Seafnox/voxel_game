@@ -11,14 +11,6 @@ export class SystemManager {
     private gameEngine: GameEngine,
   ) {}
 
-  get(name: string): EventSystem {
-    if (!this.systemMap[name]) {
-      throw new Error(`Can't find ${EventSystem.name} '${name}' in ${this.constructor.name} '${SystemManager.name}'`);
-    }
-
-    return this.systemMap[name];
-  }
-
   find<TSystem extends EventSystem>(constructor: EventSystemConstructor<TSystem>): TSystem {
     const first = this.systemMap[constructor.name];
 
@@ -33,7 +25,7 @@ export class SystemManager {
     return this.systemList.filter(predicate);
   }
 
-  create<TSystem extends EventSystem>(constructor: EventSystemConstructor<TSystem>): TSystem {
+  register<TSystem extends EventSystem>(constructor: EventSystemConstructor<TSystem>): TSystem {
     const name = constructor.name;
     const system = new constructor(this.gameEngine, name);
     console.log(this.constructor.name, 'create', constructor.name);

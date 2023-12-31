@@ -8,7 +8,7 @@ const randomizer = new PseudoRandomizer(123);
 const engine = new GameEngine(randomizer.next.bind(randomizer));
 engine.properties.register(SurfaceConfigProperty);
 engine.properties.register(SurfaceMapProperty);
-const surfaceHelper = engine.systems.create(SurfaceHelperSystem);
+const surfaceHelper = engine.systems.register(SurfaceHelperSystem);
 surfaceHelper.generateSurface(randomizer.next.bind(randomizer),50, 150);
 const map = surfaceHelper.surface;
 

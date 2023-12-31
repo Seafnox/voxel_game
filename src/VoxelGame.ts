@@ -83,26 +83,26 @@ export class VoxelGame {
   }
 
   private initGlobalSystems() {
-    this.engine.systems.create(TickSystem);
-    this.engine.systems.create(WindowEventSystem);
-    this.engine.systems.create(KeyboardEventSystem);
-    this.engine.systems.create(MouseEventSystem);
-    this.engine.systems.create(FontSystem);
-    this.engine.systems.create(ModelSystem);
-    this.engine.systems.create(CollisionSystem);
-    this.engine.systems.create(SurfaceHelperSystem)
+    this.engine.systems.register(TickSystem);
+    this.engine.systems.register(WindowEventSystem);
+    this.engine.systems.register(KeyboardEventSystem);
+    this.engine.systems.register(MouseEventSystem);
+    this.engine.systems.register(FontSystem);
+    this.engine.systems.register(ModelSystem);
+    this.engine.systems.register(CollisionSystem);
+    this.engine.systems.register(SurfaceHelperSystem)
       .generateSurface(this.random, 400, 4000);
-    this.engine.systems.create(WaterHelperSystem)
+    this.engine.systems.register(WaterHelperSystem)
       .configureWater(this.random,400, 4000);
   }
 
   private initRenderer() {
-    const entity = this.engine.entities.create(Entity);
+    const entity = this.engine.entities.register(Entity);
     entity.controllers.register(RenderController);
   }
 
   private initSurface(): void {
-    const entity = this.engine.entities.create(Entity, EntityName.Surface);
+    const entity = this.engine.entities.register(Entity, EntityName.Surface);
     entity.controllers.register(SurfaceController);
     entity.controllers.register(SimpleWaterController);
   }
@@ -132,7 +132,7 @@ export class VoxelGame {
   }
 
   private initPlayer() {
-    const player = this.engine.entities.create(Entity, EntityName.Player);
+    const player = this.engine.entities.register(Entity, EntityName.Player);
     const modelController = player.controllers.register(GltfModelController, ModelController);
     const stateController = player.controllers.register(StateController);
 
@@ -194,7 +194,7 @@ export class VoxelGame {
   }
 
   private initGui() {
-    const gui = this.engine.entities.create(Entity);
+    const gui = this.engine.entities.register(Entity);
 
     gui.controllers.register(FpsController);
     gui.controllers.register(CameraGuiController);
