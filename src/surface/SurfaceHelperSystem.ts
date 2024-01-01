@@ -3,6 +3,7 @@ import { EventSystem } from 'src/engine/EventSystem';
 import { GameEngine } from 'src/engine/GameEngine';
 import { pointToPosition } from 'src/surface/pointToPosition';
 import { positionToPoint } from 'src/surface/positionToPoint';
+import { SurfaceBuilder, SurfacePoint, SurfaceMap } from 'src/surface/SurfaceBuilder';
 import { SurfaceConfig } from 'src/surface/SurfaceConfig';
 import { SurfaceConfigProperty } from 'src/surface/SurfaceConfigProperty';
 import { SurfaceMapProperty } from 'src/surface/SurfaceMapProperty';
@@ -10,7 +11,6 @@ import { SurfacePointLocation } from 'src/surface/SurfacePointLocation';
 import { SurfaceType } from 'src/surface/SurfaceType';
 import { SurfaceTypeConfig } from 'src/surface/SurfaceTypeConfig';
 import { VMath } from 'src/VMath';
-import { SurfaceBuilder, SurfacePoint, SurfaceMap } from 'src/surface/SurfaceBuilder';
 
 export class SurfaceHelperSystem extends EventSystem {
   private surfaceConfig: SurfaceConfigProperty;
@@ -52,8 +52,10 @@ export class SurfaceHelperSystem extends EventSystem {
       surfaceSize,
       surfaceScale: this.surfaceSize / this.mapSize,
     });
-    const surfaceBuilder = new SurfaceBuilder(randomFn, 0.003 * this.surfaceScale);
-    this.surfaceMap.set(surfaceBuilder.getSurfaceMap(this.mapSize, this.mapSize));
+    // TODO property by some undefined reason has async setter, and so we can't use surfaceScale property. Turn to this.surfaceScale()
+    const surfaceBuilder = new SurfaceBuilder(randomFn, 0.003 * this.surfaceSize / this.mapSize);
+    const surfaceMap = surfaceBuilder.getSurfaceMap(this.mapSize, this.mapSize);
+    this.surfaceMap.set(surfaceMap);
   }
 
   getZCord(xCord: number, yCord: number): number {
@@ -84,7 +86,7 @@ export class SurfaceHelperSystem extends EventSystem {
     const x = this.getCordToMap(xCord);
     const y = this.getCordToMap(yCord);
 
-    return this.getSurfacePointLocation(x,y);
+    return this.getSurfacePointLocation(x, y);
   }
 
   getSurfacePointLocation(x: number, y: number): SurfacePointLocation {
@@ -155,7 +157,7 @@ export class SurfaceHelperSystem extends EventSystem {
       unit: -0.1,
     };
 
-    if (xMap > this.mapSize-1 || yMap > this.mapSize-1) {
+    if (xMap >= this.mapSize || yMap >= this.mapSize) {
       return empty;
     }
 
@@ -174,7 +176,9 @@ export class SurfaceHelperSystem extends EventSystem {
 
   private getSurfaceTypeByLocation(area: SurfacePointLocation): SurfaceType {
     const unit = this.getSurfaceUnitByLocation(area);
-    return this.surfaceUnitToSurfaceConfig(unit).type;
+    const config = this.surfaceUnitToSurfaceConfig(unit);
+
+    return config.type;
   }
 
   private getZCordByPoint({unit}: SurfacePoint): number {

@@ -39,12 +39,16 @@ export class TreeBuilder {
     return this.engine.systems.find(SurfaceHelperSystem);
   }
 
-  buildRandomTree(postfix: string): void {
+  buildRandomTree(postfix: string, iteration = 0): void {
     const x = VMath.lerp(this.engine.random(), -this.surfaceHelper.surfaceSize/2, this.surfaceHelper.surfaceSize/2);
     const z = VMath.lerp(this.engine.random(), -this.surfaceHelper.surfaceSize/2, this.surfaceHelper.surfaceSize/2);
     const surfaceType = this.surfaceHelper.getSurfaceType(x, z);
 
-    if (!(surfaceType in this.surfaceTypeTreeMap)) return this.buildRandomTree(postfix);
+    if (iteration > 4) {
+      return;
+    }
+
+    if (!(surfaceType in this.surfaceTypeTreeMap)) return this.buildRandomTree(postfix, iteration + 1);
 
     const y = this.surfaceHelper.getZCord(x, z);
     const pos = new Vector3(x, y, z);
