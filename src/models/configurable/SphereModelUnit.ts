@@ -10,7 +10,7 @@ export interface SphereModelUnit extends BaseModelUnitConfig {
 
 export const sphereModelUnitBuilder: ModelUnitBuilder<SphereModelUnit> = (config) => {
   const geometry = new SphereGeometry(config.radius);
-  const mesh = new Mesh(geometry, new MeshBasicMaterial({ color: config.color }));
+  const mesh = new Mesh(geometry, new MeshBasicMaterial({color: config.color}));
 
   mesh.castShadow = false;
   mesh.receiveShadow = true;
@@ -20,4 +20,4 @@ export const sphereModelUnitBuilder: ModelUnitBuilder<SphereModelUnit> = (config
   }
 
   return mesh;
-}
+};

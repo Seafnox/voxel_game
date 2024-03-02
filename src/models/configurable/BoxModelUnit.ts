@@ -10,7 +10,7 @@ export interface BoxModelUnit extends BaseModelUnitConfig {
 
 export const boxModelUnitBuilder: ModelUnitBuilder<BoxModelUnit> = (config) => {
   const geometry = new BoxGeometry(config.size.x, config.size.y, config.size.z);
-  const mesh = new Mesh(geometry, new MeshBasicMaterial({ color: config.color }));
+  const mesh = new Mesh(geometry, new MeshBasicMaterial({color: config.color}));
 
   mesh.castShadow = false;
   mesh.receiveShadow = true;
@@ -20,4 +20,4 @@ export const boxModelUnitBuilder: ModelUnitBuilder<BoxModelUnit> = (config) => {
   }
 
   return mesh;
-}
+};

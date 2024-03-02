@@ -11,7 +11,7 @@ export interface ConeModelUnit extends BaseModelUnitConfig {
 
 export const coneModelUnitBuilder: ModelUnitBuilder<ConeModelUnit> = (config) => {
   const geometry = new ConeGeometry(config.radius, config.height);
-  const mesh = new Mesh(geometry, new MeshBasicMaterial({ color: config.color }));
+  const mesh = new Mesh(geometry, new MeshBasicMaterial({color: config.color}));
 
   mesh.castShadow = false;
   mesh.receiveShadow = true;
@@ -21,4 +21,4 @@ export const coneModelUnitBuilder: ModelUnitBuilder<ConeModelUnit> = (config) =>
   }
 
   return mesh;
-}
+};

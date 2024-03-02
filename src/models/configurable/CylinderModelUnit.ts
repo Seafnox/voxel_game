@@ -12,7 +12,7 @@ export interface CylinderModelUnit extends BaseModelUnitConfig {
 
 export const cylinderModelUnitBuilder: ModelUnitBuilder<CylinderModelUnit> = (config) => {
   const geometry = new CylinderGeometry(config.radiusTop, config.radiusBottom, config.height);
-  const mesh = new Mesh(geometry, new MeshBasicMaterial({ color: config.color }));
+  const mesh = new Mesh(geometry, new MeshBasicMaterial({color: config.color}));
 
   mesh.castShadow = false;
   mesh.receiveShadow = true;
@@ -22,4 +22,4 @@ export const cylinderModelUnitBuilder: ModelUnitBuilder<CylinderModelUnit> = (co
   }
 
   return mesh;
-}
+};
