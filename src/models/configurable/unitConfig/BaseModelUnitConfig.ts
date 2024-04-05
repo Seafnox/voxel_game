@@ -1,9 +1,9 @@
 import { Vector3, Mesh } from 'three';
-import { ModelUnitShape } from './ModelUnitShape';
+import { ModelUnitShape } from '../ModelUnitShape';
 
 export interface BaseModelUnitConfig {
   shape: ModelUnitShape;
-  color: string;
+  color: string | number;
   offset?: Vector3;
 }
 

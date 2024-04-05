@@ -1,7 +1,7 @@
 import { Group, AnimationClip, NumberKeyframeTrack, VectorKeyframeTrack, QuaternionKeyframeTrack, ColorKeyframeTrack } from 'three';
 import { KeyframeTrack } from 'three/src/animation/KeyframeTrack';
 import { ModelController, ModelConfig } from '../ModelController';
-import { BaseModelUnitConfig } from './BaseModelUnitConfig';
+import { CustomModelUnitConfig } from './unitConfig/CustomModelUnitConfig';
 import { ModelUnit } from './ModelUnit';
 import {
   ModelUnitAnimationConfig,
@@ -15,9 +15,9 @@ import {
 } from './ModelUnitAnimationConfig';
 
 export interface ConfigurableModelConfig extends ModelConfig {
-  modelConfig: Record<string, BaseModelUnitConfig>;
+  modelConfig: Record<string, CustomModelUnitConfig>;
   animations: Record<string, ModelUnitAnimationConfig>;
-  mouseSensitive: string[];
+  mouseSensitive?: string[];
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

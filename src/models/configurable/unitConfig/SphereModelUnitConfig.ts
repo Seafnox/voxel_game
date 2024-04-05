@@ -1,16 +1,16 @@
-import { Vector3, SphereGeometry, MeshBasicMaterial, Mesh } from 'three';
+import { Vector3, SphereGeometry, MeshStandardMaterial, Mesh } from 'three';
 import { BaseModelUnitConfig, ModelUnitBuilder } from './BaseModelUnitConfig';
-import { ModelUnitShape } from './ModelUnitShape';
+import { ModelUnitShape } from '../ModelUnitShape';
 
-export interface SphereModelUnit extends BaseModelUnitConfig {
+export interface SphereModelUnitConfig extends BaseModelUnitConfig {
   shape: ModelUnitShape.Sphere;
   radius: number;
   offset?: Vector3;
 }
 
-export const sphereModelUnitBuilder: ModelUnitBuilder<SphereModelUnit> = (config) => {
+export const sphereModelUnitBuilder: ModelUnitBuilder<SphereModelUnitConfig> = (config) => {
   const geometry = new SphereGeometry(config.radius);
-  const mesh = new Mesh(geometry, new MeshBasicMaterial({color: config.color}));
+  const mesh = new Mesh(geometry, new MeshStandardMaterial({color: config.color}));
 
   mesh.castShadow = false;
   mesh.receiveShadow = true;

@@ -1,18 +1,18 @@
-import { Vector3, CylinderGeometry, Mesh, MeshBasicMaterial } from 'three';
+import { Vector3, CylinderGeometry, Mesh, MeshStandardMaterial } from 'three';
 import { BaseModelUnitConfig, ModelUnitBuilder } from './BaseModelUnitConfig';
-import { ModelUnitShape } from './ModelUnitShape';
+import { ModelUnitShape } from '../ModelUnitShape';
 
-export interface CylinderModelUnit extends BaseModelUnitConfig {
-  shape: ModelUnitShape.Cylinder;
+export interface ConeModelUnitConfig extends BaseModelUnitConfig {
+  shape: ModelUnitShape.Cone;
   radiusTop: number;
   radiusBottom: number;
   height: number;
   offset?: Vector3;
 }
 
-export const cylinderModelUnitBuilder: ModelUnitBuilder<CylinderModelUnit> = (config) => {
+export const coneModelUnitBuilder: ModelUnitBuilder<ConeModelUnitConfig> = (config) => {
   const geometry = new CylinderGeometry(config.radiusTop, config.radiusBottom, config.height);
-  const mesh = new Mesh(geometry, new MeshBasicMaterial({color: config.color}));
+  const mesh = new Mesh(geometry, new MeshStandardMaterial({color: config.color}));
 
   mesh.castShadow = false;
   mesh.receiveShadow = true;
