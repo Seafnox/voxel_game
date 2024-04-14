@@ -14,7 +14,7 @@ export const coneModelUnitBuilder: ModelUnitBuilder<ConeModelUnitConfig> = (conf
   const geometry = new CylinderGeometry(config.radiusTop, config.radiusBottom, config.height);
   const mesh = new Mesh(geometry, new MeshStandardMaterial({color: config.color}));
 
-  mesh.castShadow = false;
+  mesh.castShadow = true;
   mesh.receiveShadow = true;
 
   if (config.offset) {

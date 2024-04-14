@@ -10,7 +10,7 @@ import { sphereModelUnitBuilder } from './unitConfig/SphereModelUnitConfig';
 export class ModelUnit {
   private static map: Record<ModelUnitShape, ModelUnitBuilder<never>> = {
     [ModelUnitShape.Box]: boxModelUnitBuilder,
-    [ModelUnitShape.Cyllinder]: cylinderModelUnitBuilder,
+    [ModelUnitShape.Cylinder]: cylinderModelUnitBuilder,
     [ModelUnitShape.Sphere]: sphereModelUnitBuilder,
     [ModelUnitShape.Cone]: coneModelUnitBuilder,
   };

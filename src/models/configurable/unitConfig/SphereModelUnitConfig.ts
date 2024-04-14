@@ -12,7 +12,7 @@ export const sphereModelUnitBuilder: ModelUnitBuilder<SphereModelUnitConfig> = (
   const geometry = new SphereGeometry(config.radius);
   const mesh = new Mesh(geometry, new MeshStandardMaterial({color: config.color}));
 
-  mesh.castShadow = false;
+  mesh.castShadow = true;
   mesh.receiveShadow = true;
 
   if (config.offset) {

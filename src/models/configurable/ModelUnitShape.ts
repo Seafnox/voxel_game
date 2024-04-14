@@ -1,6 +1,6 @@
 export const enum ModelUnitShape {
   Box = 'box',
-  Cyllinder = 'cone',
+  Cylinder = 'cylinder',
   Sphere = 'sphere',
-  Cone = 'cylinder',
+  Cone = 'cone',
 }

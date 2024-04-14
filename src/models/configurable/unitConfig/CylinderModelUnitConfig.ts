@@ -3,7 +3,7 @@ import { BaseModelUnitConfig, ModelUnitBuilder } from './BaseModelUnitConfig';
 import { ModelUnitShape } from '../ModelUnitShape';
 
 export interface CylinderModelUnitConfig extends BaseModelUnitConfig {
-  shape: ModelUnitShape.Cyllinder;
+  shape: ModelUnitShape.Cylinder;
   radius: number;
   height: number;
   offset?: Vector3;
@@ -13,7 +13,7 @@ export const cylinderModelUnitBuilder: ModelUnitBuilder<CylinderModelUnitConfig>
   const geometry = new CylinderGeometry(config.radius, config.radius, config.height);
   const mesh = new Mesh(geometry, new MeshStandardMaterial({color: config.color}));
 
-  mesh.castShadow = false;
+  mesh.castShadow = true;
   mesh.receiveShadow = true;
 
   if (config.offset) {
