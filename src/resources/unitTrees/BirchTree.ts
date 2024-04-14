@@ -2,16 +2,17 @@ import { Vector3 } from 'three';
 import { ConfigurableModelConfig } from '../../models/configurable/ConfigurableModelController';
 import { ModelUnitShape } from '../../models/configurable/ModelUnitShape';
 
-export const simpleTree: ConfigurableModelConfig = {
+export const birchTree: ConfigurableModelConfig = {
   resourcePath: '',
   scale: 1,
   modelConfig: {
     trunk: {
-      shape: ModelUnitShape.Cylinder,
-      color: 0x805800,
+      shape: ModelUnitShape.Cone,
+      color: 0xfffef0,
       offset: new Vector3(0, 5, 0),
-      height: 10,
-      radius: 2,
+      height: 16,
+      radiusBottom: 3,
+      radiusTop: 2,
     },
     crown1: {
       shape: ModelUnitShape.Box,
