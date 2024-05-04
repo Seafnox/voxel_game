@@ -11,7 +11,6 @@ export interface ConeModelUnitConfig extends BaseModelUnitConfig {
 
 export const coneModelUnitBuilder: ModelUnitBuilder<ConeModelUnitConfig> = (config) => {
   const geometry = new CylinderGeometry(config.radiusTop, config.radiusBottom, config.height);
-  // FIXME Fix Color parsing from json
   const mesh = new Mesh(geometry, new MeshStandardMaterial({color: config.color}));
 
   return baseModelUnitBuilder(mesh, config);

@@ -4,7 +4,6 @@ import { ModelUnitShape } from '../ModelUnitShape';
 export interface BaseModelUnitConfig {
   shape: ModelUnitShape;
   color: string | number;
-  // FIXME json file could not support vector3
   offset?: number[];
 }
 

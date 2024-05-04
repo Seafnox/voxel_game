@@ -9,7 +9,6 @@ export interface BoxModelUnitConfig extends BaseModelUnitConfig {
 
 export const boxModelUnitBuilder: ModelUnitBuilder<BoxModelUnitConfig> = (config) => {
   const geometry = new BoxGeometry(config.size[0], config.size[1], config.size[2]);
- // FIXME Fix Color parsing from json
   const mesh = new Mesh(geometry, new MeshStandardMaterial({color: config.color}));
 
   return baseModelUnitBuilder(mesh, config);

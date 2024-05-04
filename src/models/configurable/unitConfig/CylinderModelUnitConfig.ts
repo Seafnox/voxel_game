@@ -10,7 +10,6 @@ export interface CylinderModelUnitConfig extends BaseModelUnitConfig {
 
 export const cylinderModelUnitBuilder: ModelUnitBuilder<CylinderModelUnitConfig> = (config) => {
   const geometry = new CylinderGeometry(config.radius, config.radius, config.height);
-  // FIXME Fix Color parsing from json
   const mesh = new Mesh(geometry, new MeshStandardMaterial({color: config.color}));
 
   return baseModelUnitBuilder(mesh, config);

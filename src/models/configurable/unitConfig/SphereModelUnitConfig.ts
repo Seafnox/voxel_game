@@ -9,7 +9,6 @@ export interface SphereModelUnitConfig extends BaseModelUnitConfig {
 
 export const sphereModelUnitBuilder: ModelUnitBuilder<SphereModelUnitConfig> = (config) => {
   const geometry = new SphereGeometry(config.radius);
-  // FIXME Fix Color parsing from json
   const mesh = new Mesh(geometry, new MeshStandardMaterial({color: config.color}));
 
   return baseModelUnitBuilder(mesh, config);
