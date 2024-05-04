@@ -1,4 +1,3 @@
-import { RandomFn } from 'simplex-noise/simplex-noise';
 import { EventSystem } from 'src/engine/EventSystem';
 import { GameEngine } from 'src/engine/GameEngine';
 import { pointToPosition } from 'src/surface/pointToPosition';
@@ -43,7 +42,6 @@ export class SurfaceHelperSystem extends EventSystem {
   }
 
   generateSurface(
-    randomFn: RandomFn,
     mapSize: number,
     surfaceSize: number,
   ) {
@@ -53,7 +51,7 @@ export class SurfaceHelperSystem extends EventSystem {
       surfaceScale: this.surfaceSize / this.mapSize,
     });
     // TODO property by some undefined reason has async setter, and so we can't use surfaceScale property. Turn to this.surfaceScale()
-    const surfaceBuilder = new SurfaceBuilder(randomFn, 0.003 * this.surfaceSize / this.mapSize);
+    const surfaceBuilder = new SurfaceBuilder(this.engine.random, 0.003 * this.surfaceSize / this.mapSize);
     const surfaceMap = surfaceBuilder.getSurfaceMap(this.mapSize, this.mapSize);
     this.surfaceMap.set(surfaceMap);
   }

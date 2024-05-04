@@ -1,4 +1,3 @@
-import { RandomFn } from 'simplex-noise/simplex-noise';
 import { EventSystem } from 'src/engine/EventSystem';
 import { GameEngine } from 'src/engine/GameEngine';
 import { WaterConfigProperty } from 'src/surface/WaterConfigProperty';
@@ -17,7 +16,6 @@ export class WaterHelperSystem extends EventSystem {
   }
 
   configureWater(
-    randomFn: RandomFn,
     mapSize: number,
     waterWaveSize: number,
   ): void {

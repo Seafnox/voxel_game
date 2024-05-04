@@ -32,7 +32,6 @@ import { ModelSystem } from 'src/models/ModelSystem';
 import { MouseEventSystem } from 'src/browser/MouseEventSystem';
 import { TickSystem } from 'src/browser/TickSystem';
 import { PseudoRandomizer } from 'src/utils/PseudoRandomizer';
-import { VMath } from 'src/VMath';
 import { Vector3, Quaternion } from 'three';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
@@ -59,14 +58,14 @@ import { NameController } from './text/NameController';
 
 export class VoxelGame {
 
-  // FIXME import randomizer into engine and refactor Math.random
-  private randomizer = new PseudoRandomizer(1152372536);
-  private random = this.randomizer.next.bind(this.randomizer);
-  private engine = new GameEngine(this.random);
+  private readonly engine;
 
-  constructor() {
+  constructor(
+    private randomizer: PseudoRandomizer
+  ) {
     console.log('World seed', this.randomizer.seed);
-    VMath.random = this.random;
+
+    this.engine = new GameEngine(this.randomizer);
 
     this.initGlobalProperties();
     this.initGlobalSystems();
@@ -101,9 +100,9 @@ export class VoxelGame {
     this.engine.systems.register(ModelSystem);
     this.engine.systems.register(CollisionSystem);
     this.engine.systems.register(SurfaceHelperSystem)
-      .generateSurface(this.random, 400, 4000);
+      .generateSurface(400, 4000);
     this.engine.systems.register(WaterHelperSystem)
-      .configureWater(this.random,400, 4000);
+      .configureWater(400, 4000);
   }
 
   private initRenderer() {

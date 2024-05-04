@@ -3,6 +3,7 @@ import { TopicEmitter } from 'src/emitter/TopicEmitter';
 import { EntityManager } from 'src/engine/EntityManager';
 import { SystemManager } from 'src/engine/SystemManager';
 import { GlobalPropertyManager } from 'src/engine/GlobalPropertyManager';
+import { PseudoRandomizer } from '../utils/PseudoRandomizer';
 
 export class GameEngine extends TopicEmitter {
   private entityManager = new EntityManager(this);
@@ -10,7 +11,7 @@ export class GameEngine extends TopicEmitter {
   private globalPropertyManager = new GlobalPropertyManager(this);
 
   constructor(
-    private _random: RandomFn,
+    private randomizer: PseudoRandomizer
   ) {
     super();
   }
@@ -28,6 +29,6 @@ export class GameEngine extends TopicEmitter {
   }
 
   get random(): RandomFn {
-    return this._random;
+    return this.randomizer.next.bind(this.randomizer);
   }
 }
