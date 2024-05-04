@@ -2,6 +2,7 @@ import { EventSystem } from 'src/engine/EventSystem';
 import { LoadingManager, AnimationClip, Object3D } from 'three';
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { ConfigurableModelLoader, ConfigurableModel } from './configurable/ConfigurableModelLoader';
 
 export const enum ModelEvent {
   Progress = 'Progress',
@@ -112,6 +113,19 @@ export class ModelSystem extends EventSystem {
       return;
     }
 
+    if (resourceLink.endsWith('json')) {
+      const loader = new ConfigurableModelLoader(config.manager);
+      loader.load(
+        resourceLink,
+        (data: ConfigurableModel) => {
+          config.onReady(data);
+        },
+        config.onProgress,
+        config.onError,
+      );
+
+      return;
+    }
 
     throw new Error(`Can't find loader for such type of file: ${resourceLink}`);
   }

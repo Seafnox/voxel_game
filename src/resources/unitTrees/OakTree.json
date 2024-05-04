@@ -1,0 +1,24 @@
+{
+  "modelConfig": {
+    "trunk": {
+      "shape": "Cylinder",
+      "color": "#805800",
+      "offset": [0, 8, 0],
+      "height": 16,
+      "radius": 1
+    },
+    "crown1": {
+      "shape": "Box",
+      "color": "#57965c",
+      "offset": [0, 24, 0],
+      "size": [10, 16, 10]
+    },
+    "crown2": {
+      "shape": "Box",
+      "color": "#57965c",
+      "offset": [5, 35, 0],
+      "size": [5, 6, 5]
+    }
+  },
+  "animations": {}
+}

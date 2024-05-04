@@ -1,0 +1,44 @@
+{
+  "modelConfig": {
+    "trunk": {
+      "shape": "Cylinder",
+      "color": "#805800",
+      "offset": [0, 3, 0],
+      "height": 6,
+      "radius": 4
+    },
+    "crown1": {
+      "shape": "Cone",
+      "color": "#57965c",
+      "offset": [0, 11, 0],
+      "height": 10,
+      "radiusTop": 6,
+      "radiusBottom": 12
+    },
+    "crown2": {
+      "shape": "Cone",
+      "color": "#57965c",
+      "offset": [0, 20, 0],
+      "height": 8,
+      "radiusTop": 4,
+      "radiusBottom": 10
+    },
+    "crown3": {
+      "shape": "Cone",
+      "color": "#57965c",
+      "offset": [0, 28, 0],
+      "height": 8,
+      "radiusTop": 2,
+      "radiusBottom": 7
+    },
+    "crown4": {
+      "shape": "Cone",
+      "color": "#57965c",
+      "offset": [0, 35, 0],
+      "height": 6,
+      "radiusTop": 0,
+      "radiusBottom": 4
+    }
+  },
+  "animations": {}
+}

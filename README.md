@@ -29,7 +29,7 @@ Welcome to the world of creativity and adventure! Start your journey now and cre
 1) [X]  Add the sea at the 0 mark
 1) [X]  Change engine Factors to emitable properties (Entity-Property-Controller-System)
 1) [X]  Add global controllers to engine for engine properties
-1) [ ]  Add parametric static model (from JSON)
+1) [X]  Add parametric static model (from JSON)
 1) [ ]  Add parametric dynamic model (from JSON)
 1) [ ]  Change Keyboard control (WASD + QE + RF)
 1) [ ]  Add mouse control (only camera)

@@ -49,11 +49,6 @@ import { CharacterGuiController } from 'src/gui/CharacterGuiController';
 import { LightFocusController } from 'src/sky/LightFocusController';
 import { PositionProperty } from './positioning/PositionProperty';
 import { RotationProperty } from './positioning/RotationProperty';
-import { birchTree } from './resources/unitTrees/BirchTree';
-import { oakTree } from './resources/unitTrees/OakTree';
-import { pineTree } from './resources/unitTrees/PineTree';
-import { simpleTree } from './resources/unitTrees/SimpleTree';
-import { tuyaTree } from './resources/unitTrees/TuyaTree';
 import { NameController } from './text/NameController';
 
 export class VoxelGame {
@@ -211,7 +206,12 @@ export class VoxelGame {
     tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
     tree.controllers.register(NameController);
 
-    modelController.modelConfig = simpleTree;
+    modelController.modelConfig = {
+      resourcePath: './resources/unitTrees/SimpleTree.json',
+      scale: 1,
+      receiveShadow: true,
+      castShadow: true,
+    };
 
   }
 
@@ -227,7 +227,12 @@ export class VoxelGame {
     tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
     tree.controllers.register(NameController);
 
-    modelController.modelConfig = birchTree;
+    modelController.modelConfig = {
+      resourcePath: './resources/unitTrees/BirchTree.json',
+      scale: 1,
+      receiveShadow: true,
+      castShadow: true,
+    };
   }
 
   private initTestObject3() {
@@ -242,7 +247,12 @@ export class VoxelGame {
     tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
     tree.controllers.register(NameController);
 
-    modelController.modelConfig = oakTree;
+    modelController.modelConfig = {
+      resourcePath: './resources/unitTrees/OakTree.json',
+      scale: 1,
+      receiveShadow: true,
+      castShadow: true,
+    };
   }
 
   private initTestObject4() {
@@ -257,7 +267,12 @@ export class VoxelGame {
     tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
     tree.controllers.register(NameController);
 
-    modelController.modelConfig = pineTree;
+    modelController.modelConfig = {
+      resourcePath: './resources/unitTrees/PineTree.json',
+      scale: 1,
+      receiveShadow: true,
+      castShadow: true,
+    };
   }
 
   private initTestObject5() {
@@ -272,7 +287,12 @@ export class VoxelGame {
     tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
     tree.controllers.register(NameController);
 
-    modelController.modelConfig = tuyaTree;
+    modelController.modelConfig = {
+      resourcePath: './resources/unitTrees/TuyaTree.json',
+      scale: 1,
+      receiveShadow: true,
+      castShadow: true,
+    };
   }
 
   private initNPC() {

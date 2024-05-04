@@ -1,0 +1,25 @@
+{
+  "modelConfig": {
+    "trunk": {
+      "shape": "Cone",
+      "color": "#fffef0",
+      "offset": [0, 5, 0],
+      "height": 16,
+      "radiusBottom": 3,
+      "radiusTop": 2
+    },
+    "crown1": {
+      "shape": "Box",
+      "color": "#57965c",
+      "offset": [0, 18, 0],
+      "size": [10, 16, 10]
+    },
+    "crown2": {
+      "shape": "Box",
+      "color": "#57965c",
+      "offset": [5, 29, 0],
+      "size": [5, 6, 5]
+    }
+  },
+  "animations": {}
+}
