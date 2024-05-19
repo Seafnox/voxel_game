@@ -4,7 +4,6 @@ import { TreeConfig } from 'src/staticObjects/TreeConfig';
 import { trees } from 'src/staticObjects/Trees';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { CollisionModelController } from 'src/models/collision/CollisionModelController';
 import { FbxModelController } from 'src/models/FbxModelController';
 import { ModelController } from 'src/models/ModelController';
 import { SurfaceHelperSystem } from 'src/surface/SurfaceHelperSystem';
@@ -12,6 +11,10 @@ import { SurfaceType } from 'src/surface/SurfaceType';
 import { NameController } from 'src/text/NameController';
 import { VMath } from 'src/VMath';
 import { Vector3, Quaternion, Color } from 'three';
+import { ControllerConstructor } from '../engine/Controller';
+import { ConfigurableModelController } from '../models/configurable/ConfigurableModelController';
+import { GltfModelController } from '../models/GltfModelController';
+import { ModelType } from '../models/ModelType';
 
 export class TreeBuilder {
   private lightAbsorptionMask = 0x000000;
@@ -60,18 +63,32 @@ export class TreeBuilder {
     tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
     tree.controllers.register(NameController);
 
-    const collisionController = tree.controllers.register(CollisionModelController);
     // TODO Make new Collision system
-    config.collisionUnits?.forEach(collisionConfig => collisionController.add(collisionConfig));
+    // const collisionController = tree.controllers.register(CollisionModelController);
+    // config.collisionUnits?.forEach(collisionConfig => collisionController.add(collisionConfig));
 
-    const modelController: ModelController = tree.controllers.register(FbxModelController);
+    const modelController: ModelController = tree.controllers.register(this.getModelController(config.modelType.toString()));
     modelController.modelConfig = {
       resourcePath: config.path,
-      scale: 0.25,
+      scale: config.scale,
       emissive: new Color(this.darkEmissionLight),
       specular: new Color(this.lightAbsorptionMask),
       receiveShadow: true,
       castShadow: true,
     };
+  }
+
+  private getModelController(modelType: string): ControllerConstructor<ModelController> {
+    switch (modelType) {
+      case ModelType.FBX.toString():
+        return FbxModelController;
+      case ModelType.GLB.toString():
+      case ModelType.GLTF.toString():
+        return GltfModelController;
+      case ModelType.JSON.toString():
+        return ConfigurableModelController;
+      default:
+        throw new Error(`Unknown model type: ${modelType}`);
+    }
   }
 }

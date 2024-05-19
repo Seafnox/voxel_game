@@ -5,7 +5,8 @@ import { SurfaceType } from 'src/surface/SurfaceType';
 export interface TreeConfig {
   name: string;
   modelType: ModelType;
+  scale: number;
   surfaceType: SurfaceType[];
   path: string;
-  collisionUnits: CollisionUnitConfig[];
+  collisionUnits?: CollisionUnitConfig[];
 }
