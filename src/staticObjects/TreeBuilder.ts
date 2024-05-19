@@ -4,7 +4,7 @@ import { TreeConfig } from 'src/staticObjects/TreeConfig';
 import { trees } from 'src/staticObjects/Trees';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
-import { CollisionModelController } from 'src/collision/CollisionModelController';
+import { CollisionModelController } from 'src/models/collision/CollisionModelController';
 import { FbxModelController } from 'src/models/FbxModelController';
 import { ModelController } from 'src/models/ModelController';
 import { SurfaceHelperSystem } from 'src/surface/SurfaceHelperSystem';
@@ -61,7 +61,8 @@ export class TreeBuilder {
     tree.controllers.register(NameController);
 
     const collisionController = tree.controllers.register(CollisionModelController);
-    config.collisionUnits.forEach(collisionConfig => collisionController.add(collisionConfig));
+    // TODO Make new Collision system
+    config.collisionUnits?.forEach(collisionConfig => collisionController.add(collisionConfig));
 
     const modelController: ModelController = tree.controllers.register(FbxModelController);
     modelController.modelConfig = {

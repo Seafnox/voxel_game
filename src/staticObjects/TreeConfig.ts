@@ -1,4 +1,4 @@
-import { CollisionUnitConfig } from 'src/collision/CollisionUnitConfig';
+import { CollisionUnitConfig } from 'src/models/collision/CollisionUnitConfig';
 import { ModelType } from 'src/models/ModelType';
 import { SurfaceType } from 'src/surface/SurfaceType';
 

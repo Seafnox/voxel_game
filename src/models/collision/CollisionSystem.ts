@@ -1,4 +1,4 @@
-import { CollisionBox } from 'src/collision/CollisionBox';
+import { CollisionBox } from 'src/models/collision/CollisionBox';
 import { EventSystem } from 'src/engine/EventSystem';
 
 export class CollisionSystem extends EventSystem {

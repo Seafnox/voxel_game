@@ -1,8 +1,8 @@
 import { PlayerCollisionModel } from 'src/player/PlayerCollisionModel';
 import { CloudBuilder } from 'src/sky/CloudBuilder';
 import { TreeBuilder } from 'src/staticObjects/TreeBuilder';
-import { CollisionSystem } from 'src/collision/CollisionSystem';
-import { CollisionModelController } from 'src/collision/CollisionModelController';
+import { CollisionSystem } from 'src/models/collision/CollisionSystem';
+import { CollisionModelController } from 'src/models/collision/CollisionModelController';
 import { RenderController } from 'src/render/RenderController';
 import { SkyFocusController } from 'src/sky/SkyFocusController';
 import { StateController } from 'src/state/StateController';

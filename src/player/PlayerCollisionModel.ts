@@ -1,4 +1,4 @@
-import { CollisionUnitConfig } from 'src/collision/CollisionUnitConfig';
+import { CollisionUnitConfig } from 'src/models/collision/CollisionUnitConfig';
 import { Vector3 } from 'three';
 
 export const PlayerCollisionModel: CollisionUnitConfig = {

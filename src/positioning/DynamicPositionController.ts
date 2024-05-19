@@ -1,6 +1,6 @@
-import { CollisionBox } from 'src/collision/CollisionBox';
-import { CollisionSystem } from 'src/collision/CollisionSystem';
-import { CollisionUnitsProperty } from 'src/collision/CollisionUnitsProperty';
+import { CollisionBox } from 'src/models/collision/CollisionBox';
+import { CollisionSystem } from 'src/models/collision/CollisionSystem';
+import { CollisionUnitsProperty } from 'src/models/collision/CollisionUnitsProperty';
 import { Controller } from 'src/engine/Controller';
 import { Entity } from 'src/engine/Entity';
 import { GameEngine } from 'src/engine/GameEngine';
