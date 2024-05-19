@@ -32,14 +32,12 @@ import { ModelSystem } from 'src/models/ModelSystem';
 import { MouseEventSystem } from 'src/browser/MouseEventSystem';
 import { TickSystem } from 'src/browser/TickSystem';
 import { PseudoRandomizer } from 'src/utils/PseudoRandomizer';
-import { Vector3, Quaternion } from 'three';
 import { Entity } from './engine/Entity';
 import { GameEngine } from './engine/GameEngine';
 import { SurfaceController } from 'src/surface/SurfaceController';
 import { GravityProperty } from 'src/velocity/GravityProperty';
 import { WindowEventSystem } from 'src/browser/WindowEventSystem';
 import { CameraFocusController } from 'src/camera/CameraFocusController';
-import { ConfigurableModelController } from './models/configurable/ConfigurableModelController';
 import { GltfModelController } from './models/GltfModelController';
 import { ModelController } from './models/ModelController';
 import { FpsController } from './gui/FpsController';
@@ -47,9 +45,6 @@ import { EntityName } from './engine/EntityName';
 import { CameraGuiController } from 'src/gui/CameraGuiController';
 import { CharacterGuiController } from 'src/gui/CharacterGuiController';
 import { LightFocusController } from 'src/sky/LightFocusController';
-import { PositionProperty } from './positioning/PositionProperty';
-import { RotationProperty } from './positioning/RotationProperty';
-import { NameController } from './text/NameController';
 
 export class VoxelGame {
 
@@ -187,112 +182,6 @@ export class VoxelGame {
   }
 
   private initTestObjects() {
-    this.initTestObject1();
-    this.initTestObject2();
-    this.initTestObject3();
-    this.initTestObject4();
-    this.initTestObject5();
-  }
-
-  private initTestObject1() {
-    const x = 20;
-    const z = 100;
-    const y = this.surfaceHelper.getZCord(x, z);
-    const pos = new Vector3(x, y, z);
-
-    const tree = this.engine.entities.register(Entity);
-    const modelController = tree.controllers.register(ConfigurableModelController, ModelController);
-    tree.properties.register(PositionProperty, pos);
-    tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
-    tree.controllers.register(NameController);
-
-    modelController.modelConfig = {
-      resourcePath: './resources/unitTrees/SimpleTree.json',
-      scale: 1,
-      receiveShadow: true,
-      castShadow: true,
-    };
-
-  }
-
-  private initTestObject2() {
-    const x = 40;
-    const z = 80;
-    const y = this.surfaceHelper.getZCord(x, z);
-    const pos = new Vector3(x, y, z);
-
-    const tree = this.engine.entities.register(Entity);
-    const modelController = tree.controllers.register(ConfigurableModelController, ModelController);
-    tree.properties.register(PositionProperty, pos);
-    tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
-    tree.controllers.register(NameController);
-
-    modelController.modelConfig = {
-      resourcePath: './resources/unitTrees/BirchTree.json',
-      scale: 1,
-      receiveShadow: true,
-      castShadow: true,
-    };
-  }
-
-  private initTestObject3() {
-    const x = 60;
-    const z = 60;
-    const y = this.surfaceHelper.getZCord(x, z);
-    const pos = new Vector3(x, y, z);
-
-    const tree = this.engine.entities.register(Entity);
-    const modelController = tree.controllers.register(ConfigurableModelController, ModelController);
-    tree.properties.register(PositionProperty, pos);
-    tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
-    tree.controllers.register(NameController);
-
-    modelController.modelConfig = {
-      resourcePath: './resources/unitTrees/OakTree.json',
-      scale: 1,
-      receiveShadow: true,
-      castShadow: true,
-    };
-  }
-
-  private initTestObject4() {
-    const x = 80;
-    const z = 40;
-    const y = this.surfaceHelper.getZCord(x, z);
-    const pos = new Vector3(x, y, z);
-
-    const tree = this.engine.entities.register(Entity);
-    const modelController = tree.controllers.register(ConfigurableModelController, ModelController);
-    tree.properties.register(PositionProperty, pos);
-    tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
-    tree.controllers.register(NameController);
-
-    modelController.modelConfig = {
-      resourcePath: './resources/unitTrees/PineTree.json',
-      scale: 1,
-      receiveShadow: true,
-      castShadow: true,
-    };
-  }
-
-  private initTestObject5() {
-    const x = 100;
-    const z = 20;
-    const y = this.surfaceHelper.getZCord(x, z);
-    const pos = new Vector3(x, y, z);
-
-    const tree = this.engine.entities.register(Entity);
-    const modelController = tree.controllers.register(ConfigurableModelController, ModelController);
-    tree.properties.register(PositionProperty, pos);
-    tree.properties.register(RotationProperty, new Quaternion(0, 0, 0, 1));
-    tree.controllers.register(NameController);
-
-    modelController.modelConfig = {
-      resourcePath: './resources/unitTrees/TuyaTree.json',
-      scale: 1,
-      receiveShadow: true,
-      castShadow: true,
-    };
   }
 
   private initNPC() {
