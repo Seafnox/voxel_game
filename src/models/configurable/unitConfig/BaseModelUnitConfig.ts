@@ -1,4 +1,4 @@
-import { Mesh } from 'three';
+import { Mesh, Box3 } from 'three';
 import { ModelUnitShape } from '../ModelUnitShape';
 
 export interface BaseModelUnitConfig {
@@ -15,7 +15,17 @@ export function baseModelUnitBuilder<T extends Mesh>(mesh: T, config: BaseModelU
   mesh.receiveShadow = true;
 
   if (config.offset) {
-    mesh.position.set(config.offset[0], config.offset[1], config.offset[2]);
+    const measure = new Box3().setFromObject(mesh);
+    const measureSize = [];
+    measureSize[0] = measure.max.x - measure.min.x;
+    measureSize[1] = measure.max.y - measure.min.y;
+    measureSize[2] = measure.max.z - measure.min.z;
+    const realOffset = [
+      config.offset[0] + measureSize[0] / 2,
+      config.offset[1] + measureSize[1] / 2,
+      config.offset[2] + measureSize[2] / 2,
+    ];
+    mesh.position.set(realOffset[0], realOffset[1], realOffset[2]);
   }
 
   if (config.rotation) {

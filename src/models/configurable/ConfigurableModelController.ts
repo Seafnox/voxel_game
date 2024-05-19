@@ -2,7 +2,7 @@ import { LoadingManager } from 'three';
 import { ModelController, ModelConfig } from '../ModelController';
 import { ModelState } from '../ModelSystem';
 
-export class ConfigurableModelController extends ModelController<ModelConfig> {
+export class ConfigurableModelController extends ModelController {
   protected loadModels(config: ModelConfig) {
     this.mixer?.stopAllAction();
 
@@ -19,6 +19,5 @@ export class ConfigurableModelController extends ModelController<ModelConfig> {
         this.onTargetLoaded(modelState.model, modelState.animations, config);
       })
       .catch(error => console.error(error));
-
   }
 }
