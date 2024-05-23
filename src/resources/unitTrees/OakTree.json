@@ -3,21 +3,27 @@
     "trunk": {
       "shape": "Cylinder",
       "color": "#805800",
-      "offset": [0, 8, 0],
+      "offset": [-1, -1, -1],
       "height": 16,
       "radius": 1
     },
     "crown1": {
       "shape": "Box",
       "color": "#57965c",
-      "offset": [0, 24, 0],
-      "size": [10, 16, 10]
+      "offset": [-10, 15, -10],
+      "size": [20, 10, 20]
     },
     "crown2": {
       "shape": "Box",
       "color": "#57965c",
-      "offset": [5, 35, 0],
-      "size": [5, 6, 5]
+      "offset": [-5, 25, -5],
+      "size": [10, 7, 10]
+    },
+    "crown3": {
+      "shape": "Box",
+      "color": "#57965c",
+      "offset": [-2, 32, -3],
+      "size": [5, 4, 5]
     }
   },
   "animations": {}

@@ -3,20 +3,20 @@
     "trunk": {
       "shape": "Cylinder",
       "color": "#805800",
-      "offset": [0, 5, 0],
+      "offset": [-2, -1, -2],
       "height": 10,
       "radius": 2
     },
     "crown1": {
       "shape": "Box",
       "color": "#57965c",
-      "offset": [0, 18, 0],
+      "offset": [-5, 9, -5],
       "size": [10, 16, 10]
     },
     "crown2": {
       "shape": "Box",
       "color": "#57965c",
-      "offset": [5, 29, 0],
+      "offset": [-1, 25, -3],
       "size": [5, 6, 5]
     }
   },
