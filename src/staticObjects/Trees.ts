@@ -6,7 +6,7 @@ export const trees: TreeConfig[] = [
   {
     name: 'PineTree',
     modelType: ModelType.JSON,
-    scale: 0.25,
+    scale: 1,
     surfaceType: [SurfaceType.Hill, SurfaceType.Rock, SurfaceType.Mountain],
     path: './resources/unitTrees/PineTree.json',
   },
