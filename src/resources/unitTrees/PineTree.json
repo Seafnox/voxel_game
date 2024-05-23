@@ -3,8 +3,8 @@
     "trunk": {
       "shape": "Cylinder",
       "color": "#805800",
-      "offset": [-4, -1, -4],
-      "height": 6,
+      "offset": [-4, -5, -4],
+      "height": 10,
       "radius": 4
     },
     "crown1": {

@@ -3,8 +3,8 @@
     "trunk": {
       "shape": "Cone",
       "color": "#fffef0",
-      "offset": [-2, -1, -2],
-      "height": 16,
+      "offset": [-2, -5, -2],
+      "height": 20,
       "radiusBottom": 2,
       "radiusTop": 1.5
     },
